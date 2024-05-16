@@ -1,0 +1,45 @@
+import os
+import shutil
+
+
+def create_and_move_obsidian_note_for_file(py_file_path, obsidian_vault_path):
+    # Get the base name without the extension
+    base_name = os.path.splitext(os.path.basename(py_file_path))[0]
+    md_file_path = os.path.join(os.path.dirname(py_file_path), base_name + '.md')
+    vault_md_file_path = os.path.join(obsidian_vault_path, base_name + '.md')
+
+    # Read the entire Python file content
+    with open(py_file_path, 'r') as file:
+        python_content = file.read()
+
+    # Create the markdown file with the Python file content
+    with open(md_file_path, 'w') as md_file:
+        md_file.write(f"# {base_name}\n\n")
+        md_file.write("Notes for the Python file:\n\n")
+        # Include the full Python code in a code block
+        md_file.write("```python\n")
+        md_file.write(python_content)
+        md_file.write("\n```\n")
+
+    # Check if the vault path exists and move the markdown file
+    if os.path.exists(obsidian_vault_path):
+        shutil.move(md_file_path, vault_md_file_path)
+    else:
+        print(f"Error: Vault path does not exist: {obsidian_vault_path}")
+
+
+def process_directory_for_notes(directory, obsidian_vault_path):
+    # Walk through all files in the directory
+    for filename in os.listdir(directory):
+        if filename.endswith('.py'):
+            full_path = os.path.join(directory, filename)
+            create_and_move_obsidian_note_for_file(full_path, obsidian_vault_path)
+
+
+if __name__ == '__main__':
+    # Set the directory path for your Python files
+    directory_path = '/Users/puppuccino/PycharmProjects/inner_mon/'
+    # Set the path to your Obsidian vault in iCloud
+    obsidian_vault_path = '/Users/puppuccino/Documents/Obsidian Vault'
+    process_directory_for_notes(directory_path, obsidian_vault_path)
+    print("Markdown notes have been created and moved directly into the Obsidian vault.")
