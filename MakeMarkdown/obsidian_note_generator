@@ -38,8 +38,8 @@ def process_directory_for_notes(directory, obsidian_vault_path):
 
 if __name__ == '__main__':
     # Set the directory path for your Python files
-    directory_path = '/Users/puppuccino/PycharmProjects/inner_mon/'
+    directory_path = '/PATH/'
     # Set the path to your Obsidian vault in iCloud
-    obsidian_vault_path = '/Users/puppuccino/Documents/Obsidian Vault'
+    obsidian_vault_path = '/PATH/Obsidian Vault'
     process_directory_for_notes(directory_path, obsidian_vault_path)
     print("Markdown notes have been created and moved directly into the Obsidian vault.")
