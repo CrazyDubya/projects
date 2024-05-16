@@ -2,7 +2,7 @@
 # Hive Mind Manager
 
 ## Overview
-`header.py` is a Python script designed to manage a hive mind structure, facilitating communication between nodes with the assistance of an AI model (Claude). It includes features for metadata prompt management, node communication, XML handling, logging, and a graphical interface for interaction.
+`hive-mind2.py` is a Python script designed to manage a hive mind structure, facilitating communication between nodes with the assistance of an AI model (Claude). It includes features for metadata prompt management, node communication, XML handling, logging, and a graphical interface for interaction.
 
 ## Features
 - **MetaPrompt Management**: Define and manage metadata prompts, including creation, modification, retrieval, and rating updates.
