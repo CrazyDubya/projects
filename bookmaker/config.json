@@ -1,0 +1,56 @@
+
+{
+  "CLAUDE_MODELS": {
+    "haiku": {
+      "name": "claude-3-haiku-20240307"
+    },
+    "sonnet": {
+      "name": "claude-3-sonnet-20240229"
+    }
+  },
+  "MONSTER_MODELS": {
+    "falcon-7b-instruct": {
+      "name": "falcon-7b-instruct"
+    },
+    "falcon-40b-instruct": {
+      "name": "falcon-40b-instruct"
+    },
+    "mpt-7b-instruct": {
+      "name": "mpt-7b-instruct"
+    }
+  },
+  "OPENAI_MODELS": {
+    "gpt-3.5-turbo-0125": {
+      "name": "gpt-3.5-turbo-0125"
+    }
+  },
+  "PERPLEXITY_MODELS": {
+    "codellama-70b-instruct": {
+      "name": "codellama-70b-instruct"
+    },
+    "mistral-7b-instruct": {
+      "name": "mistral-7b-instruct"
+    },
+    "mixtral-8x7b-instruct": {
+      "name": "mixtral-8x7b-instruct"
+    }
+  },
+  "LOCAL_MODELS": {
+    "mixtral-8x7b-local": {
+      "name": "mixtral-8x7b-local",
+      "port": 8080
+    },
+    "WizardCoder-17b": {
+      "name": "WizardCoder-17b",
+      "port": 8081
+    }
+  },
+  "GEMINI_MODELS": {
+    "gemini-pro": {
+      "name": "gemini-pro"
+    },
+    "gemini-pro-vision": {
+      "name": "gemini-pro-vision"
+    }
+  }
+}
