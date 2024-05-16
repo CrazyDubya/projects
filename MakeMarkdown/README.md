@@ -3,6 +3,7 @@
 
 ## Overview
 `obsidian_note_generator.py` is a Python script designed to create and move Obsidian notes from Python files. It reads the content of each Python file in a specified directory, creates a corresponding Markdown file with the content, and moves the Markdown file to an Obsidian vault.
+'texttomd.py" renames txt files to md
 
 ## Features
 - **Create Obsidian Notes**: Generate Markdown files from Python files.
