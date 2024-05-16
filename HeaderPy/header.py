@@ -1,4 +1,5 @@
 # header.py
+import os
 import re
 
 def update_file_header(path):
