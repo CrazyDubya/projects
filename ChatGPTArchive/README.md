@@ -13,7 +13,7 @@ Before you run `chatgptarchive.py`, you need to have Python installed on your sy
 
 ### Requesting the Archive
 
-1. **OpenAI Users:** Log in to your OpenAI account, navigate to settings/data controls, and request your data. The data will typically be delivered to you via email as a downloadable zip file.
+1. **OpenAI Users:** Log in to your ChatGPT account, navigate to settings/data controls, and request your data. The data will delivered to you via email as a downloadable zip file.
 
 ### Unzipping the Archive
 
