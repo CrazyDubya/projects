@@ -12,7 +12,7 @@ from wordcloud import WordCloud
 nltk.download('stopwords')
 
 # Load the conversations.json file
-file_path = '/Users/puppuccino/PycharmProjects/inner_mon/GPTLOG-2024-05-17-02-12-23/conversations.json'
+file_path = '/path/conversations.json'
 with open(file_path, 'r') as file:
     conversations_data = json.load(file)
 
