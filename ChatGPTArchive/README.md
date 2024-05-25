@@ -60,3 +60,11 @@ If you encounter any issues regarding file paths or permissions, ensure that the
 ---
 
 This README provides a comprehensive guide to obtaining, preparing, and processing your ChatGPT conversation data using `chatgptarchive.py`.
+
+### analyze_conversations.py
+
+This script analyzes the conversations to find common words and perform sentiment analysis.
+
+### chatgptreader.py
+This script helps you load and format a conversation from the saved JSON files.
+
