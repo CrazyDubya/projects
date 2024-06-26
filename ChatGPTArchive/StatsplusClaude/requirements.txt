@@ -1,0 +1,13 @@
+# Natural Language Processing
+nltk==3.6.5
+textstat==0.7.2
+
+# Data processing and analysis
+numpy==1.21.4
+scikit-learn==1.0.1
+
+# Graph creation and analysis
+networkx==2.6.3
+
+# Anthropic API for Claude integration
+anthropic==0.3.4
