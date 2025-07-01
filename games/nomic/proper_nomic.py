@@ -58,10 +58,10 @@ class OpenRouterClient:
 
         # Working OpenRouter models (verified IDs)
         self.available_models = [
-            "google/gemini-2.0-flash-001",  # Gemini 2.0 Flash - latest and working!
-            "openai/gpt-4o-mini",  # GPT-4o Mini - definitely available
-            "anthropic/claude-3.5-haiku",  # Claude 3.5 Haiku - newer version!
-            "anthropic/claude-3-haiku",  # Claude 3 Haiku - verified working
+            "google/gemini-2.0-flash-001",  # Gemini 2.0 Flash - 1M context
+            "openai/gpt-4o-mini",  # GPT-4o Mini - 128k context
+            "anthropic/claude-3.5-haiku",  # Claude 3.5 Haiku - 200k context
+            "anthropic/claude-3.5-sonnet",  # Claude 3.5 Sonnet - 200k context (larger than haiku)
         ]
 
         # Cost tracking per model (approximate from research)
@@ -69,7 +69,7 @@ class OpenRouterClient:
             "google/gemini-2.0-flash-001": {"input": 0.35, "output": 1.05},
             "openai/gpt-4o-mini": {"input": 0.15, "output": 0.60},
             "anthropic/claude-3.5-haiku": {"input": 0.25, "output": 1.25},
-            "anthropic/claude-3-haiku": {"input": 0.25, "output": 1.25},  # Claude 3 Haiku
+            "anthropic/claude-3.5-sonnet": {"input": 3.00, "output": 15.00},  # Larger context, higher cost
         }
 
         self.session_costs = {}  # Track costs per session
@@ -399,6 +399,8 @@ class ContextWindowManager:
             "google/gemini-2.0-flash-001": 2000000,  # Gemini 2.0 Flash - 2M context
             "openai/gpt-4o-mini": 128000,  # GPT-4o Mini - 128k context
             "anthropic/claude-3.5-haiku": 200000,  # Claude 3.5 Haiku - 200k context
+            "anthropic/claude-3.5-sonnet": 200000,  # Claude 3.5 Sonnet - 200k context (was missing!)
+            "anthropic/claude-3-haiku": 200000,  # Claude 3 Haiku - 200k context
             "xai/grok-3-mini": 1000000,  # Grok 3 Mini - 1M context, very cheap
             "default": 8000,  # Conservative default for local models
         }
@@ -543,11 +545,32 @@ class ContextWindowManager:
 
     def _split_prompt_sections(self, prompt: str) -> dict:
         """Split prompt into sections for selective trimming"""
-        # This is a simplified implementation - could be enhanced with actual parsing
-        sections = {
-            "current_turn": prompt[:1000],  # First part usually contains current context
-            "game_history": prompt[1000:],  # Rest is usually history
-        }
+        # Enhanced prompt parsing to better identify sections
+        sections = {}
+        
+        # Look for common Nomic prompt markers
+        if "NOMIC STRATEGIC REALITY" in prompt:
+            # This is a main game context - treat as high priority
+            sections["current_rules"] = prompt
+        elif "DELIBERATION" in prompt or "PROPOSAL" in prompt:
+            # Deliberation/proposal prompt - high priority
+            sections["current_turn"] = prompt
+        elif "VOTING" in prompt:
+            # Voting prompt - high priority  
+            sections["current_turn"] = prompt
+        elif "REFLECTION" in prompt:
+            # End game reflection - medium priority
+            sections["player_states"] = prompt
+        else:
+            # Unknown prompt type - treat conservatively
+            if len(prompt) <= 2000:
+                # Short prompt - keep it all as high priority
+                sections["current_turn"] = prompt
+            else:
+                # Long prompt - split more intelligently
+                sections["current_turn"] = prompt[:2000]  # Increased from 1000
+                sections["game_history"] = prompt[2000:]
+        
         return sections
 
     def get_usage_analytics(self) -> dict:
@@ -773,6 +796,141 @@ class Player:
     port: int = 11434
     assigned_model_metrics: Optional[ModelMetrics] = None
     is_human: bool = False
+    character: Optional["ProtoCharacter"] = None
+
+
+@dataclass
+class ProtoCharacter:
+    """Persistent character that carries across games"""
+    name: str
+    strategy: str
+    model: str
+    persistent_thought: str = ""
+    games_played: int = 0
+    total_wins: int = 0
+    total_points_scored: int = 0
+    favorite_rule_types: List[str] = field(default_factory=list)
+    nemesis_characters: List[str] = field(default_factory=list)
+    last_game_reflection: str = ""
+    
+    def get_win_rate(self) -> float:
+        return (self.total_wins / self.games_played) if self.games_played > 0 else 0.0
+    
+    def update_after_game(self, points_scored: int, won: bool, reflection: str):
+        """Update character stats after a game"""
+        self.games_played += 1
+        self.total_points_scored += points_scored
+        if won:
+            self.total_wins += 1
+        self.last_game_reflection = reflection
+    
+    def set_persistent_thought(self, thought: str):
+        """Set the thought this character wants to remember for next game"""
+        self.persistent_thought = thought[:200]  # Limit length
+
+
+class CharacterManager:
+    """Manages persistent proto characters across games"""
+    
+    def __init__(self, characters_file: str = "game_sessions/proto_characters.json"):
+        self.characters_file = characters_file
+        self.characters: Dict[str, ProtoCharacter] = {}
+        self.load_characters()
+        
+        # Predefined characters with locked models and strategies
+        self.default_characters = [
+            ProtoCharacter(
+                name="Dr. Maya Chen", 
+                strategy="Analytical Strategist - uses data and logic to find optimal rule combinations",
+                model="google/gemini-2.0-flash-001"
+            ),
+            ProtoCharacter(
+                name="Rex Thunder", 
+                strategy="Aggressive Competitor - favors bold moves and direct confrontation", 
+                model="openai/gpt-4o-mini"
+            ),
+            ProtoCharacter(
+                name="Professor Iris", 
+                strategy="Cooperation Theorist - seeks mutually beneficial rules and alliances",
+                model="anthropic/claude-3.5-sonnet"  # Upgraded to larger context model
+            ),
+            ProtoCharacter(
+                name="Jack Chaos", 
+                strategy="Chaos Agent - creates unpredictable and disruptive rule changes",
+                model="anthropic/claude-3.5-haiku"
+            ),
+            ProtoCharacter(
+                name="Lady Victoria", 
+                strategy="Elegant Tactician - uses sophisticated long-term planning",
+                model="google/gemini-2.0-flash-001"
+            ),
+            ProtoCharacter(
+                name="Rusty", 
+                strategy="Underdog Fighter - specializes in comeback strategies from behind",
+                model="openai/gpt-4o-mini"
+            )
+        ]
+    
+    def load_characters(self):
+        """Load characters from persistent storage"""
+        try:
+            if os.path.exists(self.characters_file):
+                with open(self.characters_file, 'r') as f:
+                    data = json.load(f)
+                    for char_data in data:
+                        char = ProtoCharacter(**char_data)
+                        self.characters[char.name] = char
+        except Exception as e:
+            print(f"Warning: Could not load characters: {e}")
+    
+    def save_characters(self):
+        """Save characters to persistent storage"""
+        try:
+            os.makedirs(os.path.dirname(self.characters_file), exist_ok=True)
+            with open(self.characters_file, 'w') as f:
+                char_list = [asdict(char) for char in self.characters.values()]
+                json.dump(char_list, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Could not save characters: {e}")
+    
+    def get_character(self, name: str) -> ProtoCharacter:
+        """Get character by name, creating from defaults if needed"""
+        if name in self.characters:
+            return self.characters[name]
+        
+        # Look for default character
+        for default_char in self.default_characters:
+            if default_char.name == name:
+                # Copy the default to our active characters
+                new_char = ProtoCharacter(
+                    name=default_char.name,
+                    strategy=default_char.strategy,
+                    model=default_char.model
+                )
+                self.characters[name] = new_char
+                return new_char
+        
+        # Fallback - shouldn't happen with proper selection
+        raise ValueError(f"Character '{name}' not found")
+    
+    def get_available_characters(self) -> List[ProtoCharacter]:
+        """Get list of all available characters"""
+        return self.default_characters.copy()
+    
+    def assign_characters_to_players(self, num_players: int) -> List[ProtoCharacter]:
+        """Assign characters to players based on game size"""
+        available = self.default_characters.copy()
+        random.shuffle(available)
+        
+        selected = available[:num_players]
+        
+        # Load their persistent data
+        result = []
+        for char_template in selected:
+            persistent_char = self.get_character(char_template.name)
+            result.append(persistent_char)
+        
+        return result
 
 
 @dataclass
@@ -784,10 +942,21 @@ class Proposal:
     internal_thoughts: str
     turn: int
     votes: Dict[int, bool] = None
-
+    is_transmutation: bool = False
+    transmute_target_rule: int = None
+    
     def __post_init__(self):
         if self.votes is None:
             self.votes = {}
+        
+        # Auto-detect transmutation from rule text
+        if "transmute rule" in self.rule_text.lower():
+            self.is_transmutation = True
+            # Extract rule number
+            import re
+            match = re.search(r'transmute rule (\d+)', self.rule_text.lower())
+            if match:
+                self.transmute_target_rule = int(match.group(1))
 
 
 @dataclass
@@ -1612,16 +1781,35 @@ class DeliberationManager:
         """Generate enhanced Nomic game context header with temporal context and game history"""
         sorted_players = sorted(game_state["players"], key=lambda p: p["points"], reverse=True)
         
-        # Calculate points needed to win for each player
+        # Calculate points needed to win for each player and handle ties better
         player_progress = []
+        tied_players = []
+        
+        # Check if everyone is tied (early game scenario)
+        all_same_points = all(p["points"] == sorted_players[0]["points"] for p in sorted_players)
+        
         for i, p in enumerate(sorted_players):
             points_needed = max(0, 100 - p["points"])
-            rank_indicator = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else f"#{i + 1}"
+            
+            if all_same_points:
+                # Everyone tied - show as equal footing
+                rank_indicator = "🟰" 
+                status = "TIED"
+            else:
+                # Normal ranking
+                rank_indicator = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else f"#{i + 1}"
+                status = f"Rank #{i + 1}"
+                
             player_progress.append(f"{rank_indicator} {p['name']}: {p['points']}/100 pts (need {points_needed})")
 
         # Get current leader info
         leader = sorted_players[0]
-        leader_advantage = leader["points"] - sorted_players[1]["points"] if len(sorted_players) > 1 else 0
+        if all_same_points:
+            leader_advantage = 0
+            leader_status = "Everyone tied"
+        else:
+            leader_advantage = leader["points"] - sorted_players[1]["points"] if len(sorted_players) > 1 else 0
+            leader_status = f"{leader['name']} leads"
 
         # Generate temporal context - recent game history
         temporal_context = self._generate_temporal_context(game_state, player)
@@ -1637,11 +1825,29 @@ class DeliberationManager:
             current_turn = game_state.get('turn', 1)
             turn_order_info = self._get_turn_order_context(player, game_state)
             
+            # Add character-specific context
+            character_context = ""
+            if hasattr(player, 'character') and player.character:
+                char = player.character
+                character_context = f"""
+🎭 YOUR CHARACTER: {char.name} ({char.strategy})
+📊 YOUR TRACK RECORD: {char.games_played} games played, {char.total_wins} wins ({char.get_win_rate()*100:.1f}% win rate)
+🧠 YOUR MEMORY: {char.persistent_thought if char.persistent_thought else "No persistent thoughts from previous games"}"""
+                
+            # Better status description for early game
+            if all_same_points:
+                status_description = f"🟰 TIED with all players at {my_points}/100 points ({points_to_win} points needed to WIN)"
+                competitive_note = "• Everyone starts on equal footing - focus on good proposals that can pass"
+            else:
+                status_description = f"🎯 YOUR STATUS: Rank #{my_rank} with {my_points}/100 points ({points_to_win} points needed to WIN)"
+                competitive_note = "• Focus on gaining advantage while getting unanimous support"
+                
             player_context = f"""
-🎯 YOUR STATUS: Rank #{my_rank} with {my_points}/100 points ({points_to_win} points needed to WIN)
+{status_description}
 📈 YOUR GOAL: Get to 100 points before anyone else does
 🔄 TURN ORDER: {turn_order_info}
-⏰ TEMPORAL POSITION: Turn {current_turn}, {self._get_game_phase_description(current_turn, leader['points'])}"""
+⏰ TEMPORAL POSITION: Turn {current_turn}, {self._get_game_phase_description(current_turn, leader['points'])}
+{competitive_note}{character_context}"""
 
         context_header = f"""
 ═══════════════════════════════════════════════════════════════
@@ -1654,9 +1860,9 @@ class DeliberationManager:
 {chr(10).join(player_progress)}
 
 🏁 VICTORY ANALYSIS:
-• Current Leader: {leader['name']} with {leader['points']} points (ahead by {leader_advantage})
-• Closest to Victory: {leader['name']} needs {100 - leader['points']} more points to WIN
-• Game Situation: {"Early stage" if leader['points'] < 70 else "LATE STAGE - Victory approaching!" if leader['points'] < 90 else "CRITICAL - Someone about to WIN!"}
+• Current Situation: {leader_status} {"(everyone equal)" if all_same_points else f"with {leader['points']} points (ahead by {leader_advantage})"}
+• Distance to Victory: {leader['name']} needs {100 - leader['points']} more points to WIN
+• Game Stage: {("🌱 Early game - all players equal, focus on fundament" if all_same_points else "Early stage") if leader['points'] < 70 else "LATE STAGE - Victory approaching!" if leader['points'] < 90 else "CRITICAL - Someone about to WIN!"}
 {player_context}
 
 {temporal_context}
@@ -1667,23 +1873,25 @@ class DeliberationManager:
 • Valid Nomic rules affect GAMEPLAY: how points are gained/lost, how turns work, how voting works
 • INVALID rules: Real-world topics (city planning, energy audits, external policies)
 
-✅ EXAMPLES OF VALID NOMIC RULES:
-• "Players in last place gain 3 bonus points each turn"
-• "Players may steal 2 points from opponents who vote against their proposals"  
-• "The current leader loses 1 point at the start of each turn"
-• "Players may skip their turn to give another player -2 points"
-• "Players who propose rules in new categories get +2 bonus points"
+✅ EXAMPLES OF VALID NOMIC RULES (with mutual benefit appeal):
+• "Players in last place gain 3 bonus points each turn" (helps trailing players - likely to get support)
+• "All players gain 1 point for voting on proposals" (benefits everyone - encourages participation)  
+• "Players gain 2 points for proposing creative rules" (incentivizes good proposals from all)
+• "If no proposals pass for 2 turns, all players lose 2 points" (motivates cooperation)
+• "Players who reach 90+ points lose 1 point per turn" (anti-runaway, appeals to non-leaders)
 
 ❌ INVALID (NOT NOMIC RULES):
 • City council policies, energy audits, building regulations
 • Real-world governance, environmental policies
 • Rules about external games or non-Nomic activities
 
-🎯 STRATEGIC REALITY:
+🎯 NOMIC STRATEGIC REALITY:
 • You are competing to WIN - reach 100 points first
-• Other players are your COMPETITORS trying to beat you
-• Propose rules that help YOU more than others
-• Vote for rules that benefit YOU, against rules that benefit opponents more
+• BUT: All proposals need UNANIMOUS SUPPORT to pass (100% agreement required)
+• THEREFORE: You must propose rules that others will vote FOR, not against
+• WINNING STRATEGY: Create rules that benefit you while being acceptable to others
+• MUTUAL BENEFIT is key - purely selfish rules always fail in Nomic
+• Consider: "How can this rule help me while also being appealing to others?"
 ═══════════════════════════════════════════════════════════════
 """
         return context_header
@@ -1711,19 +1919,64 @@ class DeliberationManager:
         return temporal_section
     
     def _get_recent_proposals(self, game_state: Dict) -> str:
-        """Get summary of recent proposals and outcomes"""
-        # This would ideally access recent game logs
-        # For now, return basic info from mutable rules
-        rules = game_state.get('mutable_rules', [])
-        
-        if not rules:
-            return "📋 RECENT PROPOSALS: No rules have been successfully passed yet"
-        
-        recent_rules_text = "📋 RECENT SUCCESSFUL RULES:\n"
-        for i, rule in enumerate(rules[-3:], 1):  # Last 3 rules
-            recent_rules_text += f"   {i}. {rule.get('text', 'Unknown rule')[:60]}...\n"
-        
-        return recent_rules_text
+        """Get summary of recent proposals and outcomes with failure analysis"""
+        try:
+            # Access the actual game instance for full proposal history
+            if hasattr(self, 'game_instance') and self.game_instance and hasattr(self.game_instance, 'proposals'):
+                proposals = self.game_instance.proposals[-5:]  # Last 5 proposals
+                
+                if not proposals:
+                    return "📋 RECENT PROPOSALS: No proposals have been made yet"
+                
+                proposal_summary = "📋 RECENT PROPOSAL HISTORY (Learn from failures!):\n"
+                
+                for proposal in proposals:
+                    # Calculate vote results
+                    if proposal.votes:
+                        ayes = sum(proposal.votes.values())
+                        total = len(proposal.votes)
+                        percentage = (ayes / total) * 100 if total > 0 else 0
+                        passed = percentage >= 100  # Assuming unanimous requirement
+                        
+                        result_emoji = "✅" if passed else "❌"
+                        vote_summary = f"({ayes}/{total} = {percentage:.0f}%)"
+                        
+                        # Analyze why failed proposals failed
+                        failure_reason = ""
+                        if not passed:
+                            if percentage < 25:
+                                failure_reason = " [REJECTED: Too selfish/harmful to others]"
+                            elif percentage < 50:
+                                failure_reason = " [REJECTED: Benefits proposer more than others]"
+                            elif percentage < 75:
+                                failure_reason = " [REJECTED: Not enough mutual benefit]"
+                            else:
+                                failure_reason = " [REJECTED: Almost passed - small tweaks needed]"
+                        
+                        proposal_summary += f"   {result_emoji} \"{proposal.rule_text[:50]}...\" {vote_summary}{failure_reason}\n"
+                    else:
+                        proposal_summary += f"   ⏳ \"{proposal.rule_text[:50]}...\" (voting in progress)\n"
+                
+                # Add learning note
+                failed_count = len([p for p in proposals if p.votes and sum(p.votes.values()) < len(p.votes)])
+                if failed_count > 0:
+                    proposal_summary += f"\n💡 LEARNING: {failed_count} recent proposals failed - focus on MUTUAL BENEFIT to get unanimous support!"
+                
+                return proposal_summary
+            else:
+                # Fallback to simple display
+                rules = game_state.get('mutable_rules', [])
+                if not rules:
+                    return "📋 RECENT PROPOSALS: No rules have been successfully passed yet"
+                
+                recent_rules_text = "📋 RECENT SUCCESSFUL RULES:\n"
+                for i, rule in enumerate(rules[-3:], 1):  # Last 3 rules
+                    recent_rules_text += f"   {i}. {rule.get('text', 'Unknown rule')[:60]}...\n"
+                
+                return recent_rules_text
+                
+        except Exception as e:
+            return "📋 RECENT PROPOSALS: Unable to load proposal history"
     
     def _get_voting_trends(self, game_state: Dict) -> str:
         """Analyze recent voting patterns"""
@@ -2012,6 +2265,13 @@ Everything before these sections can be free-form thinking."""
 Based on your {total_turns}-turn deliberation above, now create your actual rule proposal.
 
 You have 2000+ tokens for final proposal crafting. Think creatively and strategically.
+
+🔄 PROPOSAL TYPES AVAILABLE:
+1. NEW RULE: Create a completely new rule for the game
+2. TRANSMUTATION: Change an existing rule from mutable ↔ immutable
+   - Format: "Transmute rule [number]" (e.g., "Transmute rule 301")
+   - This changes rule mutability status and can be strategic
+   - Consider which rules would benefit you if made mutable/immutable
 
 REQUIREMENTS - You MUST end with this exact format:
 
@@ -2504,6 +2764,9 @@ class ProperNomicGame:
         else:
             self.provider_type = "ollama_legacy"
 
+        # Initialize proto character system
+        self.character_manager = CharacterManager()
+
         # Initialize performance tracking
         self.performance_manager = ModelPerformanceManager()
         self.behavioral_analyzer = BehavioralAnalyzer()
@@ -2569,38 +2832,6 @@ class ProperNomicGame:
         self.current_voting_threshold = 100  # Start with unanimous
 
     def _create_players(self):
-        roles = [
-            "Strategic Planner - focuses on long-term winning strategies",
-            "Chaos Agent - creates disruptive and unexpected rules",
-            "Point Optimizer - maximizes point-gaining opportunities",
-            "Rule Lawyer - ensures precise wording and finds loopholes",
-            "Diplomatic Negotiator - builds consensus and alliances",
-            "Creative Innovator - proposes novel game mechanics",
-        ]
-
-        # Available models for selection - use provider-specific models
-        if self.llm_provider and hasattr(self.llm_provider, "get_available_models"):
-            available_models = self.llm_provider.get_available_models()
-        else:
-            # Default Ollama models
-            available_models = ["llama3.2:3b", "gemma2:2b", "qwen2.5:3b", "qwen2.5:1.5b", "smollm2:1.7b", "llama3.2:1b"]
-
-        # Get weighted model selection based on performance
-        weighted_models = self.performance_manager.get_weighted_model_selection(available_models)
-
-        # Randomly assign models based on weights (no rotation during game)
-        selected_models = []
-        for i in range(self.num_players):
-            if weighted_models:
-                model = random.choice(weighted_models)
-                selected_models.append(model)
-                # Remove selected model to ensure variety (if possible)
-                if len(set(selected_models)) < len(available_models):
-                    weighted_models = [m for m in weighted_models if m != model or selected_models.count(model) < 2]
-            else:
-                model = available_models[i % len(available_models)]
-                selected_models.append(model)
-
         players = []
 
         # Create human player first if requested
@@ -2610,25 +2841,38 @@ class ProperNomicGame:
             )
             players.append(human_player)
 
-        # Create AI players
+        # Get proto characters for AI players
         ai_player_count = self.num_players - (1 if self.include_human else 0)
-        for i in range(ai_player_count):
-            model = selected_models[i] if i < len(selected_models) else available_models[i % len(available_models)]
+        selected_characters = self.character_manager.assign_characters_to_players(ai_player_count)
+        
+        # Create AI players using proto characters
+        for i, character in enumerate(selected_characters):
             player_id = len(players) + 1
             player = Player(
                 id=player_id,
-                name=f"Player {player_id}",
-                role=roles[(player_id - 1) % len(roles)],
-                model=model,
+                name=character.name,  # Use character name instead of "Player X"
+                role=character.strategy,  # Use character strategy as role
+                model=character.model,  # Use character's locked model
                 is_human=False,
+                character=character  # Link the character
             )
+            
             # Assign model metrics for tracking
-            player.assigned_model_metrics = self.performance_manager.get_or_create_metrics(model)
+            player.assigned_model_metrics = self.performance_manager.get_or_create_metrics(character.model)
             players.append(player)
 
-        # Log model assignments
-        model_assignments = {p.name: p.model for p in players}
-        print(f"🎲 Model assignments for this game: {model_assignments}")
+        # Log character assignments
+        character_assignments = {}
+        for p in players:
+            if p.character:
+                win_rate = p.character.get_win_rate() * 100
+                character_assignments[p.name] = f"{p.model} (Win rate: {win_rate:.1f}%, Games: {p.character.games_played})"
+            else:
+                character_assignments[p.name] = p.model
+                
+        print(f"🎭 Proto Character assignments for this game:")
+        for name, info in character_assignments.items():
+            print(f"  {name}: {info}")
 
         return players
 
@@ -2760,6 +3004,47 @@ class ProperNomicGame:
 
     def get_current_player(self):
         return self.players[self.current_player_idx]
+
+    def execute_transmutation(self, proposal) -> bool:
+        """Execute transmutation of a rule between mutable and immutable"""
+        target_rule_id = proposal.transmute_target_rule
+        
+        # Find the rule in mutable rules
+        target_rule = None
+        source_list = None
+        target_list = None
+        
+        for rule in self.rules["mutable"]:
+            if rule.id == target_rule_id:
+                target_rule = rule
+                source_list = self.rules["mutable"]
+                target_list = self.rules["immutable"]
+                break
+        
+        # If not in mutable, check immutable
+        if not target_rule:
+            for rule in self.rules["immutable"]:
+                if rule.id == target_rule_id:
+                    target_rule = rule
+                    source_list = self.rules["immutable"]
+                    target_list = self.rules["mutable"]
+                    break
+        
+        if not target_rule:
+            self.add_event(f"❌ Rule {target_rule_id} not found for transmutation")
+            return False
+        
+        # Perform the transmutation
+        source_list.remove(target_rule)
+        target_rule.mutable = not target_rule.mutable  # Flip mutability
+        target_list.append(target_rule)
+        
+        # Log the transmutation
+        status_change = "mutable → immutable" if target_rule.mutable == False else "immutable → mutable"
+        self.add_event(f"🔄 TRANSMUTATION: Rule {target_rule_id} changed from {status_change}")
+        self.add_event(f"📜 Rule {target_rule_id}: {target_rule.text}")
+        
+        return True
 
     def execute_rule_effects(self, trigger: str, **kwargs):
         """Execute all rule effects for a given trigger"""
@@ -3726,7 +4011,8 @@ You have unlimited freedom in your thinking, but your final output must include:
 VOTE: [AYE or NAY]
 REASONING: [Your strategic reasoning for this vote]
 
-Focus on YOUR victory and strategic advantage."""
+Remember: In Nomic, you need unanimous support for YOUR future proposals to pass.
+Consider both your immediate advantage and the precedent this vote sets for future cooperation."""
 
             final_response = self.unified_generate(player, final_vote_prompt, temperature=0.5, max_tokens=2000)
 
@@ -3820,6 +4106,20 @@ Focus on YOUR victory and strategic advantage."""
             passes = percentage >= self.current_voting_threshold
 
             if passes:
+                # Handle transmutation proposals first
+                if proposal.is_transmutation and proposal.transmute_target_rule:
+                    if self.execute_transmutation(proposal):
+                        # Transmutation successful
+                        proposer.points += 10
+                        self.add_event(f"💰 {proposer.name} gains 10 points → {proposer.points}")
+                        return True
+                    else:
+                        # Transmutation failed - treat as failed proposal
+                        self.add_event(f"❌ TRANSMUTATION FAILED - Invalid rule number {proposal.transmute_target_rule}")
+                        # Execute vote_fail effects
+                        self.execute_rule_effects("vote_fail", proposer=proposer)
+                        return False
+                
                 # Check if rule needs GM interpretation
                 rule_complexity = self.game_master._assess_complexity(proposal.rule_text)
                 
@@ -4033,6 +4333,14 @@ Focus on YOUR victory and strategic advantage."""
             self.finalize_game_metrics()
             return
 
+        # Check Rule 117 (zero points auto-lose)
+        if self.check_zero_points_rule():
+            # Game over - do not advance turn
+            final_scores = {p.id: p.points for p in self.players}
+            self.session_manager.end_session(final_scores, None, self.turn_number)
+            self.finalize_game_metrics()
+            return
+
         # Advance turn
         self.advance_turn()
 
@@ -4073,6 +4381,14 @@ Focus on YOUR victory and strategic advantage."""
                 self.session_manager.end_session(final_scores, winner.id, self.turn_number)
 
                 # Update final game statistics for all players
+                self.finalize_game_metrics()
+                return
+
+            # Check Rule 117 (zero points auto-lose)
+            if self.check_zero_points_rule():
+                # Game over - do not advance turn
+                final_scores = {p.id: p.points for p in self.players}
+                self.session_manager.end_session(final_scores, None, self.turn_number)
                 self.finalize_game_metrics()
                 return
 
@@ -4159,6 +4475,11 @@ Focus on YOUR victory and strategic advantage."""
 
     def advance_turn(self):
         """Advance to next player"""
+        # Double-check that game isn't over before advancing
+        if self.game_over:
+            self.add_event("⚠️ Cannot advance turn - game is over")
+            return
+            
         self.current_player_idx = (self.current_player_idx + 1) % self.num_players
         if self.current_player_idx == 0:
             self.turn_number += 1
@@ -4276,6 +4597,9 @@ No format required, just think strategically about the implications."""
 
         # Save all metrics
         self.performance_manager.save_metrics()
+        
+        # Update proto character statistics and get reflections
+        self.update_character_stats_and_reflections()
 
         # Log game completion
         self.game_logger.log_game_end(
@@ -4297,6 +4621,65 @@ No format required, just think strategically about the implications."""
         sorted_models = sorted(model_stats.items(), key=lambda x: x[1]["overall_score"], reverse=True)
         for i, (model, stats) in enumerate(sorted_models[:3], 1):
             self.add_event(f"  #{i} {model}: {stats['overall_score']:.1f} points ({stats['games_played']} games)")
+
+    def update_character_stats_and_reflections(self):
+        """Update character statistics and get reflections for next game"""
+        self.add_event("🎭 Updating character memories and gathering reflections...")
+        
+        for player in self.players:
+            if not player.character or player.is_human:
+                continue
+                
+            character = player.character
+            won = self.winner and player.id == self.winner.id
+            
+            # Update character stats
+            character.update_after_game(player.points, won, "")
+            
+            # Generate reflection for next game
+            reflection_prompt = f"""🎭 END-GAME REFLECTION for {character.name}
+
+GAME SUMMARY:
+• Final Result: {"🏆 WON" if won else "❌ Lost"} 
+• Final Points: {player.points}/100
+• Your Strategy: {character.strategy}
+• Games Played: {character.games_played} (Win Rate: {character.get_win_rate()*100:.1f}%)
+
+REFLECTION TASK:
+What is ONE key insight or lesson you want to remember for your next Nomic game? 
+This thought will be included in your context for future games.
+
+Think about:
+- What worked well or poorly in your strategy this game?
+- What did you learn about other players or the game dynamics?
+- What would you do differently next time?
+
+Provide a single, concise thought (max 200 characters) for your future self:
+
+PERSISTENT_THOUGHT: [Your key insight for next game]"""
+
+            try:
+                reflection_response = self.unified_generate(player, reflection_prompt, temperature=0.7, max_tokens=200)
+                
+                # Extract the persistent thought
+                if "PERSISTENT_THOUGHT:" in reflection_response:
+                    thought = reflection_response.split("PERSISTENT_THOUGHT:")[1].strip()
+                    character.set_persistent_thought(thought)
+                    self.add_event(f"💭 {character.name}: \"{thought[:100]}{'...' if len(thought) > 100 else ''}\"")
+                else:
+                    # Fallback thought
+                    fallback = f"Game {character.games_played}: {'Won' if won else 'Lost'} with {player.points} points"
+                    character.set_persistent_thought(fallback)
+                    
+            except Exception as e:
+                # Error generating reflection
+                self.add_event(f"⚠️ Could not generate reflection for {character.name}: {e}")
+                fallback = f"Game {character.games_played}: Experience gained"
+                character.set_persistent_thought(fallback)
+        
+        # Save updated character data
+        self.character_manager.save_characters()
+        self.add_event("💾 Character memories saved for future games")
 
     def add_event(self, message):
         """Add game event"""
@@ -7368,6 +7751,10 @@ def human_propose():
     if not total_validation["valid"]:
         return jsonify({"success": False, "error": total_validation["error"]})
 
+    # Handle transmutation data
+    is_transmutation = data.get("rule_type") == "transmute"
+    transmute_target = data.get("transmute_number") if is_transmutation else None
+    
     # Create proposal from sanitized human input
     proposal = Proposal(
         id=len(game.proposals) + 1,
@@ -7376,6 +7763,8 @@ def human_propose():
         explanation=explanation_sanitization["sanitized"],
         internal_thoughts=f"Human player proposal - {data.get('rule_type', 'new')} rule (sanitized: {rule_sanitization['final_length']}/{rule_sanitization['original_length']} chars)",
         turn=game.turn_number,
+        is_transmutation=is_transmutation,
+        transmute_target_rule=transmute_target,
     )
 
     # Parse effects with enhanced parsing using sanitized text
