@@ -800,11 +800,24 @@ class Player:
 
 
 @dataclass
+class CharacterTraits:
+    """Character-specific traits and behaviors"""
+    risk_tolerance: str  # "low", "medium", "high"
+    cooperation_level: str  # "competitive", "balanced", "cooperative"
+    deliberation_range: tuple  # (min_turns, max_turns)
+    strategic_focus: str  # "analytical", "aggressive", "diplomatic", "creative", "adaptive"
+    decision_speed: str  # "fast", "medium", "slow"
+    complexity_preference: str  # "simple", "balanced", "complex"
+
+
+@dataclass
 class ProtoCharacter:
-    """Persistent character that carries across games"""
+    """Enhanced persistent character with traits and family system"""
     name: str
     strategy: str
     model: str
+    family: str  # Model family name
+    traits: CharacterTraits
     persistent_thought: str = ""
     games_played: int = 0
     total_wins: int = 0
@@ -812,125 +825,570 @@ class ProtoCharacter:
     favorite_rule_types: List[str] = field(default_factory=list)
     nemesis_characters: List[str] = field(default_factory=list)
     last_game_reflection: str = ""
+    games_without_decision: int = 0  # For rotation tracking
+    last_played: str = ""  # Timestamp
     
     def get_win_rate(self) -> float:
         return (self.total_wins / self.games_played) if self.games_played > 0 else 0.0
     
-    def update_after_game(self, points_scored: int, won: bool, reflection: str):
+    def update_after_game(self, points_scored: int, won: bool, reflection: str, game_outcome: str = "none"):
         """Update character stats after a game"""
         self.games_played += 1
         self.total_points_scored += points_scored
         if won:
             self.total_wins += 1
+            self.games_without_decision = 0  # Reset counter
+        elif game_outcome == "lost":
+            self.games_without_decision = 0  # Reset counter  
+        else:
+            self.games_without_decision += 1  # Increment for neutral outcome
         self.last_game_reflection = reflection
+        self.last_played = datetime.now().isoformat()
     
     def set_persistent_thought(self, thought: str):
         """Set the thought this character wants to remember for next game"""
         self.persistent_thought = thought[:200]  # Limit length
+    
+    def should_be_rotated_out(self) -> bool:
+        """Check if character should be rotated out due to neutral games limit"""
+        return self.games_without_decision >= 2
+    
+    def get_preferred_deliberation_turns(self, complexity: str = "medium") -> int:
+        """Get preferred number of deliberation turns based on traits and situation"""
+        min_turns, max_turns = self.traits.deliberation_range
+        
+        # Adjust based on complexity preference and situation
+        if complexity == "simple" and self.traits.decision_speed == "fast":
+            return min_turns
+        elif complexity == "complex" and self.traits.complexity_preference == "complex":
+            return max_turns
+        else:
+            return min_turns + 1 if max_turns > min_turns else min_turns
 
 
 class CharacterManager:
-    """Manages persistent proto characters across games"""
+    """Enhanced character manager with model families and dynamic rotation"""
     
     def __init__(self, characters_file: str = "game_sessions/proto_characters.json"):
         self.characters_file = characters_file
         self.characters: Dict[str, ProtoCharacter] = {}
+        self.last_game_winner: Optional[str] = None
         self.load_characters()
         
-        # Predefined characters with locked models and strategies
-        self.default_characters = [
+        # Enhanced character families (5 characters per model family)
+        self.character_families = self._create_character_families()
+        self.available_models = ["google/gemini-2.0-flash-001", "openai/gpt-4o-mini", 
+                                "anthropic/claude-3.5-sonnet", "anthropic/claude-3.5-haiku"]
+    
+    def _create_character_families(self) -> Dict[str, List[ProtoCharacter]]:
+        """Create the full character families with traits"""
+        families = {}
+        
+        # Gemini Family - Analytical and Strategic
+        families["gemini"] = [
             ProtoCharacter(
-                name="Dr. Maya Chen", 
+                name="Dr. Maya Chen",
                 strategy="Analytical Strategist - uses data and logic to find optimal rule combinations",
-                model="google/gemini-2.0-flash-001"
+                model="google/gemini-2.0-flash-001",
+                family="gemini",
+                traits=CharacterTraits(
+                    risk_tolerance="medium",
+                    cooperation_level="balanced",
+                    deliberation_range=(2, 3),
+                    strategic_focus="analytical",
+                    decision_speed="medium",
+                    complexity_preference="complex"
+                )
             ),
             ProtoCharacter(
-                name="Rex Thunder", 
-                strategy="Aggressive Competitor - favors bold moves and direct confrontation", 
-                model="openai/gpt-4o-mini"
+                name="Lady Victoria",
+                strategy="Elegant Tactician - uses sophisticated long-term planning with refined approach",
+                model="google/gemini-2.0-flash-001",
+                family="gemini",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="cooperative",
+                    deliberation_range=(2, 3),
+                    strategic_focus="diplomatic",
+                    decision_speed="slow",
+                    complexity_preference="complex"
+                )
             ),
             ProtoCharacter(
-                name="Professor Iris", 
-                strategy="Cooperation Theorist - seeks mutually beneficial rules and alliances",
-                model="anthropic/claude-3.5-sonnet"  # Upgraded to larger context model
+                name="Professor Atlas",
+                strategy="Academic Theorist - approaches rules with scientific method and research focus",
+                model="google/gemini-2.0-flash-001",
+                family="gemini",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="cooperative",
+                    deliberation_range=(3, 3),
+                    strategic_focus="analytical",
+                    decision_speed="slow",
+                    complexity_preference="complex"
+                )
             ),
             ProtoCharacter(
-                name="Jack Chaos", 
-                strategy="Chaos Agent - creates unpredictable and disruptive rule changes",
-                model="anthropic/claude-3.5-haiku"
+                name="Captain Nova",
+                strategy="Bold Risk-Taker - uses calculated risks and innovative strategies for breakthrough wins",
+                model="google/gemini-2.0-flash-001",
+                family="gemini",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 2),
+                    strategic_focus="aggressive",
+                    decision_speed="fast",
+                    complexity_preference="balanced"
+                )
             ),
             ProtoCharacter(
-                name="Lady Victoria", 
-                strategy="Elegant Tactician - uses sophisticated long-term planning",
-                model="google/gemini-2.0-flash-001"
-            ),
-            ProtoCharacter(
-                name="Rusty", 
-                strategy="Underdog Fighter - specializes in comeback strategies from behind",
-                model="openai/gpt-4o-mini"
+                name="Sage Minerva",
+                strategy="Wisdom-Focused Elder - relies on deep game understanding and patient strategic positioning",
+                model="google/gemini-2.0-flash-001",
+                family="gemini",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="balanced",
+                    deliberation_range=(2, 3),
+                    strategic_focus="adaptive",
+                    decision_speed="medium",
+                    complexity_preference="complex"
+                )
             )
         ]
+        
+        # GPT-4o Mini Family - Direct and Action-Oriented
+        families["gpt4o"] = [
+            ProtoCharacter(
+                name="Rex Thunder",
+                strategy="Aggressive Competitor - favors bold moves and direct confrontation to dominate",
+                model="openai/gpt-4o-mini",
+                family="gpt4o",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 2),
+                    strategic_focus="aggressive",
+                    decision_speed="fast",
+                    complexity_preference="simple"
+                )
+            ),
+            ProtoCharacter(
+                name="Rusty",
+                strategy="Underdog Fighter - specializes in comeback strategies and never-give-up attitude",
+                model="openai/gpt-4o-mini",
+                family="gpt4o",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="balanced",
+                    deliberation_range=(1, 2),
+                    strategic_focus="adaptive",
+                    decision_speed="fast",
+                    complexity_preference="balanced"
+                )
+            ),
+            ProtoCharacter(
+                name="Blitz Martinez",
+                strategy="Speed & Efficiency Expert - makes rapid tactical decisions and exploits timing advantages",
+                model="openai/gpt-4o-mini",
+                family="gpt4o",
+                traits=CharacterTraits(
+                    risk_tolerance="medium",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 1),
+                    strategic_focus="aggressive",
+                    decision_speed="fast",
+                    complexity_preference="simple"
+                )
+            ),
+            ProtoCharacter(
+                name="Storm Walker",
+                strategy="Unpredictable Maverick - uses erratic patterns and surprising moves to confuse opponents",
+                model="openai/gpt-4o-mini",
+                family="gpt4o",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 3),
+                    strategic_focus="creative",
+                    decision_speed="medium",
+                    complexity_preference="balanced"
+                )
+            ),
+            ProtoCharacter(
+                name="Phoenix Rising",
+                strategy="Comeback Specialist - thrives in difficult positions and turns defeats into victories",
+                model="openai/gpt-4o-mini",
+                family="gpt4o",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="balanced",
+                    deliberation_range=(1, 2),
+                    strategic_focus="adaptive",
+                    decision_speed="medium",
+                    complexity_preference="balanced"
+                )
+            )
+        ]
+        
+        # Claude Sonnet Family - Thoughtful and Cooperative
+        families["claude_sonnet"] = [
+            ProtoCharacter(
+                name="Professor Iris",
+                strategy="Cooperation Theorist - seeks mutually beneficial rules and builds strategic alliances",
+                model="anthropic/claude-3.5-sonnet",
+                family="claude_sonnet",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="cooperative",
+                    deliberation_range=(2, 3),
+                    strategic_focus="diplomatic",
+                    decision_speed="medium",
+                    complexity_preference="complex"
+                )
+            ),
+            ProtoCharacter(
+                name="Judge Sterling",
+                strategy="Rule Lawyer & Analyst - finds loopholes and ensures precise rule interpretation",
+                model="anthropic/claude-3.5-sonnet",
+                family="claude_sonnet",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="balanced",
+                    deliberation_range=(2, 3),
+                    strategic_focus="analytical",
+                    decision_speed="slow",
+                    complexity_preference="complex"
+                )
+            ),
+            ProtoCharacter(
+                name="Harmony Bell",
+                strategy="Diplomatic Mediator - builds consensus and finds win-win solutions for complex conflicts",
+                model="anthropic/claude-3.5-sonnet",
+                family="claude_sonnet",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="cooperative",
+                    deliberation_range=(2, 3),
+                    strategic_focus="diplomatic",
+                    decision_speed="medium",
+                    complexity_preference="balanced"
+                )
+            ),
+            ProtoCharacter(
+                name="Scholar Moon",
+                strategy="Research & Logic Expert - applies systematic analysis and evidence-based decision making",
+                model="anthropic/claude-3.5-sonnet",
+                family="claude_sonnet",
+                traits=CharacterTraits(
+                    risk_tolerance="low",
+                    cooperation_level="balanced",
+                    deliberation_range=(3, 3),
+                    strategic_focus="analytical",
+                    decision_speed="slow",
+                    complexity_preference="complex"
+                )
+            ),
+            ProtoCharacter(
+                name="Architect Prime",
+                strategy="System Builder - designs comprehensive rule frameworks and long-term game structures",
+                model="anthropic/claude-3.5-sonnet",
+                family="claude_sonnet",
+                traits=CharacterTraits(
+                    risk_tolerance="medium",
+                    cooperation_level="balanced",
+                    deliberation_range=(2, 3),
+                    strategic_focus="analytical",
+                    decision_speed="slow",
+                    complexity_preference="complex"
+                )
+            )
+        ]
+        
+        # Claude Haiku Family - Creative and Disruptive
+        families["claude_haiku"] = [
+            ProtoCharacter(
+                name="Jack Chaos",
+                strategy="Chaos Agent - creates unpredictable and disruptive rule changes to shake up the game",
+                model="anthropic/claude-3.5-haiku",
+                family="claude_haiku",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 2),
+                    strategic_focus="creative",
+                    decision_speed="fast",
+                    complexity_preference="balanced"
+                )
+            ),
+            ProtoCharacter(
+                name="Spark Wild",
+                strategy="Creative Disruptor - breaks conventional patterns with innovative and unexpected rule proposals",
+                model="anthropic/claude-3.5-haiku",
+                family="claude_haiku",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 2),
+                    strategic_focus="creative",
+                    decision_speed="fast",
+                    complexity_preference="simple"
+                )
+            ),
+            ProtoCharacter(
+                name="Echo Dance",
+                strategy="Pattern Breaker - identifies and disrupts established game patterns and player habits",
+                model="anthropic/claude-3.5-haiku",
+                family="claude_haiku",
+                traits=CharacterTraits(
+                    risk_tolerance="medium",
+                    cooperation_level="balanced",
+                    deliberation_range=(1, 2),
+                    strategic_focus="creative",
+                    decision_speed="medium",
+                    complexity_preference="balanced"
+                )
+            ),
+            ProtoCharacter(
+                name="Rebel Knight",
+                strategy="Anti-Establishment Fighter - challenges existing power structures and dominant strategies",
+                model="anthropic/claude-3.5-haiku",
+                family="claude_haiku",
+                traits=CharacterTraits(
+                    risk_tolerance="high",
+                    cooperation_level="competitive",
+                    deliberation_range=(1, 2),
+                    strategic_focus="aggressive",
+                    decision_speed="fast",
+                    complexity_preference="simple"
+                )
+            ),
+            ProtoCharacter(
+                name="Trickster Fox",
+                strategy="Cunning Opportunist - exploits temporary advantages and creates clever rule combinations",
+                model="anthropic/claude-3.5-haiku",
+                family="claude_haiku",
+                traits=CharacterTraits(
+                    risk_tolerance="medium",
+                    cooperation_level="balanced",
+                    deliberation_range=(1, 2),
+                    strategic_focus="creative",
+                    decision_speed="medium",
+                    complexity_preference="balanced"
+                )
+            )
+        ]
+        
+        return families
     
     def load_characters(self):
-        """Load characters from persistent storage"""
+        """Load characters from persistent storage with enhanced format support"""
         try:
             if os.path.exists(self.characters_file):
                 with open(self.characters_file, 'r') as f:
                     data = json.load(f)
                     for char_data in data:
-                        char = ProtoCharacter(**char_data)
+                        # Handle both old and new character formats
+                        if 'traits' in char_data and 'family' in char_data:
+                            # New enhanced format
+                            traits_data = char_data['traits']
+                            char_data['traits'] = CharacterTraits(**traits_data)
+                            char = ProtoCharacter(**char_data)
+                        else:
+                            # Legacy format - upgrade to new format
+                            char = self._upgrade_legacy_character(char_data)
                         self.characters[char.name] = char
         except Exception as e:
             print(f"Warning: Could not load characters: {e}")
+    
+    def _upgrade_legacy_character(self, char_data: dict) -> ProtoCharacter:
+        """Upgrade legacy character data to new enhanced format"""
+        name = char_data['name']
+        
+        # Find matching character in families to get traits
+        for family_name, characters in self.character_families.items():
+            for char_template in characters:
+                if char_template.name == name:
+                    # Copy template traits and merge with existing data
+                    enhanced_char = ProtoCharacter(
+                        name=char_data['name'],
+                        strategy=char_data['strategy'],
+                        model=char_data['model'],
+                        family=char_template.family,
+                        traits=char_template.traits,
+                        persistent_thought=char_data.get('persistent_thought', ''),
+                        games_played=char_data.get('games_played', 0),
+                        total_wins=char_data.get('total_wins', 0),
+                        total_points_scored=char_data.get('total_points_scored', 0),
+                        favorite_rule_types=char_data.get('favorite_rule_types', []),
+                        nemesis_characters=char_data.get('nemesis_characters', []),
+                        last_game_reflection=char_data.get('last_game_reflection', ''),
+                        games_without_decision=0,  # Reset for new system
+                        last_played=char_data.get('last_played', '')
+                    )
+                    return enhanced_char
+        
+        # Fallback if character not found in families
+        default_traits = CharacterTraits(
+            risk_tolerance="medium",
+            cooperation_level="balanced", 
+            deliberation_range=(1, 2),
+            strategic_focus="adaptive",
+            decision_speed="medium",
+            complexity_preference="balanced"
+        )
+        return ProtoCharacter(
+            name=char_data['name'],
+            strategy=char_data['strategy'], 
+            model=char_data['model'],
+            family="unknown",
+            traits=default_traits,
+            persistent_thought=char_data.get('persistent_thought', ''),
+            games_played=char_data.get('games_played', 0),
+            total_wins=char_data.get('total_wins', 0),
+            total_points_scored=char_data.get('total_points_scored', 0)
+        )
     
     def save_characters(self):
         """Save characters to persistent storage"""
         try:
             os.makedirs(os.path.dirname(self.characters_file), exist_ok=True)
             with open(self.characters_file, 'w') as f:
-                char_list = [asdict(char) for char in self.characters.values()]
+                char_list = []
+                for char in self.characters.values():
+                    char_dict = asdict(char)
+                    # Convert traits to dict for JSON serialization
+                    if isinstance(char_dict['traits'], CharacterTraits):
+                        char_dict['traits'] = asdict(char_dict['traits'])
+                    char_list.append(char_dict)
                 json.dump(char_list, f, indent=2)
         except Exception as e:
             print(f"Warning: Could not save characters: {e}")
     
     def get_character(self, name: str) -> ProtoCharacter:
-        """Get character by name, creating from defaults if needed"""
+        """Get character by name, creating from families if needed"""
         if name in self.characters:
             return self.characters[name]
         
-        # Look for default character
-        for default_char in self.default_characters:
-            if default_char.name == name:
-                # Copy the default to our active characters
-                new_char = ProtoCharacter(
-                    name=default_char.name,
-                    strategy=default_char.strategy,
-                    model=default_char.model
-                )
-                self.characters[name] = new_char
-                return new_char
+        # Look for character in families
+        for family_name, characters in self.character_families.items():
+            for char_template in characters:
+                if char_template.name == name:
+                    # Copy template to our active characters
+                    new_char = ProtoCharacter(
+                        name=char_template.name,
+                        strategy=char_template.strategy,
+                        model=char_template.model,
+                        family=char_template.family,
+                        traits=char_template.traits
+                    )
+                    self.characters[name] = new_char
+                    return new_char
         
         # Fallback - shouldn't happen with proper selection
-        raise ValueError(f"Character '{name}' not found")
+        raise ValueError(f"Character '{name}' not found in any family")
     
-    def get_available_characters(self) -> List[ProtoCharacter]:
-        """Get list of all available characters"""
-        return self.default_characters.copy()
+    def get_all_characters(self) -> List[ProtoCharacter]:
+        """Get list of all available characters from all families"""
+        all_chars = []
+        for family_chars in self.character_families.values():
+            all_chars.extend(family_chars)
+        return all_chars
+    
+    def set_winner(self, winner_name: str):
+        """Set the winner of the last game for rotation purposes"""
+        self.last_game_winner = winner_name
     
     def assign_characters_to_players(self, num_players: int) -> List[ProtoCharacter]:
-        """Assign characters to players based on game size"""
-        available = self.default_characters.copy()
-        random.shuffle(available)
+        """Enhanced character assignment with dynamic rotation system"""
+        return self._select_characters_with_rotation(num_players)
+    
+    def _select_characters_with_rotation(self, num_players: int) -> List[ProtoCharacter]:
+        """Select characters using the dynamic rotation system"""
+        selected_characters = []
+        family_names = list(self.character_families.keys())
         
-        selected = available[:num_players]
+        # Step 1: Handle winner retention
+        if self.last_game_winner and num_players >= 1:
+            winner_char = self.get_character(self.last_game_winner)
+            selected_characters.append(winner_char)
+            print(f"🏆 Winner {self.last_game_winner} retained for next game")
+            
+            # Remove winner's family from selection pool for this round
+            winner_family = winner_char.family
+            if winner_family in family_names:
+                family_names.remove(winner_family)
         
-        # Load their persistent data
+        # Step 2: Select one character from each remaining family
+        families_needed = min(num_players - len(selected_characters), len(family_names))
+        selected_families = family_names[:families_needed]
+        
+        for family_name in selected_families:
+            char = self._select_character_from_family(family_name)
+            selected_characters.append(char)
+        
+        # Step 3: If we need more characters (larger games), add from families
+        while len(selected_characters) < num_players:
+            # Pick from families that aren't represented yet, or cycle through
+            remaining_families = [f for f in self.character_families.keys() 
+                                if f not in [c.family for c in selected_characters]]
+            if not remaining_families:
+                remaining_families = list(self.character_families.keys())
+            
+            family_name = random.choice(remaining_families)
+            char = self._select_character_from_family(family_name, exclude=[c.name for c in selected_characters])
+            selected_characters.append(char)
+        
+        # Load persistent data for all selected characters
         result = []
-        for char_template in selected:
+        for char_template in selected_characters:
             persistent_char = self.get_character(char_template.name)
             result.append(persistent_char)
         
         return result
+    
+    def _select_character_from_family(self, family_name: str, exclude: List[str] = None) -> ProtoCharacter:
+        """Select a character from a specific family using rotation rules"""
+        if exclude is None:
+            exclude = []
+            
+        family_chars = self.character_families[family_name]
+        eligible_chars = [c for c in family_chars if c.name not in exclude]
+        
+        if not eligible_chars:
+            # All characters excluded, pick any from family
+            eligible_chars = family_chars
+        
+        # Priority 1: Characters that need to be rotated out (games_without_decision >= 2)
+        chars_needing_rotation = []
+        for char in eligible_chars:
+            persistent_char = self.characters.get(char.name)
+            if persistent_char and persistent_char.should_be_rotated_out():
+                chars_needing_rotation.append(char)
+        
+        if chars_needing_rotation:
+            return random.choice(chars_needing_rotation)
+        
+        # Priority 2: Characters that haven't played recently
+        chars_by_recency = []
+        for char in eligible_chars:
+            persistent_char = self.characters.get(char.name)
+            if persistent_char:
+                last_played = persistent_char.last_played if persistent_char.last_played else "1970-01-01"
+                chars_by_recency.append((char, last_played))
+            else:
+                # Never played - high priority
+                chars_by_recency.append((char, "1970-01-01"))
+        
+        # Sort by last played date (oldest first)
+        chars_by_recency.sort(key=lambda x: x[1])
+        
+        # Select from the 2-3 least recently played characters
+        top_candidates = chars_by_recency[:min(3, len(chars_by_recency))]
+        selected_char, _ = random.choice(top_candidates)
+        
+        return selected_char
 
 
 @dataclass
@@ -2112,11 +2570,65 @@ class DeliberationManager:
         self.recent_categories = self.recent_categories[-10:]  # Keep last 10
         self.category_usage_history[category] += 1
 
+    def _customize_prompt_for_character(self, base_prompt: str, player) -> str:
+        """Customize prompts based on character traits and personality"""
+        if not (hasattr(player, 'character') and player.character and hasattr(player.character, 'traits')):
+            return base_prompt
+        
+        char = player.character
+        traits = char.traits
+        
+        # Add character-specific personality adjustments
+        personality_adjustments = ""
+        
+        # Risk tolerance adjustments
+        if traits.risk_tolerance == "high":
+            personality_adjustments += "🎰 As a HIGH RISK character, favor bold, aggressive moves that could pay off big. Don't be afraid of failure - big risks bring big rewards.\n"
+        elif traits.risk_tolerance == "low":
+            personality_adjustments += "🛡️ As a LOW RISK character, prioritize safe, reliable strategies. Focus on steady progress over risky gambles.\n"
+        
+        # Cooperation level adjustments  
+        if traits.cooperation_level == "cooperative":
+            personality_adjustments += "🤝 As a COOPERATIVE character, seek win-win solutions. Frame proposals to benefit multiple players.\n"
+        elif traits.cooperation_level == "competitive":
+            personality_adjustments += "⚔️ As a COMPETITIVE character, focus on getting ahead of opponents. Look for advantages others might miss.\n"
+        
+        # Strategic focus adjustments
+        if traits.strategic_focus == "analytical":
+            personality_adjustments += "📊 Use your ANALYTICAL nature - examine data, patterns, and logical connections in detail.\n"
+        elif traits.strategic_focus == "creative":
+            personality_adjustments += "🎨 Use your CREATIVE instincts - think outside the box and propose unconventional solutions.\n"
+        elif traits.strategic_focus == "aggressive":
+            personality_adjustments += "⚡ Use your AGGRESSIVE approach - make decisive moves and put pressure on opponents.\n"
+        elif traits.strategic_focus == "diplomatic":
+            personality_adjustments += "🎭 Use your DIPLOMATIC skills - build consensus and find solutions that appeal to everyone.\n"
+        
+        # Decision speed adjustments
+        if traits.decision_speed == "fast":
+            personality_adjustments += "🏃 Trust your quick instincts - don't overthink obvious opportunities.\n"
+        elif traits.decision_speed == "slow":
+            personality_adjustments += "🤔 Take time to thoroughly consider all angles before deciding.\n"
+        
+        # Add personality section to prompt
+        if personality_adjustments:
+            character_section = f"""
+🎭 YOUR CHARACTER TRAITS ({char.name}):
+{personality_adjustments}
+Remember: Play true to your character's personality while pursuing victory.
+"""
+            # Insert after the role description
+            base_prompt = base_prompt.replace(
+                f"Your Role: {player.role}",
+                f"Your Role: {player.role}\n{character_section}"
+            )
+        
+        return base_prompt
+
     def generate_turn_choice_prompt(self, player, game_state: Dict) -> str:
         """Let the model choose how many deliberation turns it wants (1-3)"""
         context_header = self.generate_nomic_context_header(game_state, player)
 
-        return f"""{context_header}
+        base_prompt = f"""{context_header}
 
 🧠 DELIBERATION PLANNING PHASE
 
@@ -2152,6 +2664,9 @@ RESPOND WITH:
 - Your chosen number of turns (1, 2, or 3)
 - Brief reasoning for your choice
 - Any initial strategic direction"""
+        
+        # Apply character customization
+        return self._customize_prompt_for_character(base_prompt, player)
 
     def generate_flexible_deliberation_prompt(
         self, player, game_state: Dict, turn_num: int, total_turns: int, previous_results: Dict
@@ -2172,7 +2687,7 @@ RESPOND WITH:
         scratchpad_content = self._get_player_scratchpad_content(player, game_state)
         temporal_reminders = self._get_temporal_reminders(player, game_state)
 
-        return f"""{context_header}
+        base_prompt = f"""{context_header}
 {previous_insights}
 {scratchpad_content}
 {temporal_reminders}
@@ -2210,6 +2725,9 @@ Optional: If you want to preserve an insight for the current deliberation, use:
 INSIGHT: [key insight you want to remember]
 
 Focus on developing a winning strategy to reach 100 points first."""
+        
+        # Apply character customization
+        return self._customize_prompt_for_character(base_prompt, player)
 
     def generate_final_proposal_prompt(
         self, player, game_state: Dict, deliberation_results: Dict, total_turns: int
@@ -2331,68 +2849,73 @@ Everything before these sections can be free-form thinking."""
             return self._generate_final_selection_prompt(player, game_state)
 
     def _generate_state_analysis_prompt(self, player, game_state: Dict) -> str:
-        """Turn 1: Analyze current position and threats"""
+        """Turn 1: Analyze current position and threats - optimized for efficiency"""
         context_header = self.generate_nomic_context_header(game_state, player)
+        
+        # Check if this is a simple game state that doesn't need deep analysis
+        players_data = game_state.get('players', [])
+        early_game = len(players_data) <= 4 and all(abs(p.get('points', 50) - 50) <= 10 for p in players_data)
+        
+        if early_game:
+            return f"""{context_header}
+
+🧠 QUICK ANALYSIS: Early game, similar positions.
+
+Your Role: {player.role}
+
+FOCUS: What rule would help YOUR role most right now?
+
+OUTPUT FORMAT:
+POSITION_ANALYSIS: [Your competitive situation - be brief]
+PATTERN_OBSERVATION: [What gaps exist in current rules]
+
+Keep it concise - save deep strategy for your actual proposal."""
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 1: STRATEGIC POSITION ANALYSIS
+🧠 DELIBERATION TURN 1: STRATEGIC ANALYSIS
 
-Your Role in this NOMIC game: {player.role}
+Your Role: {player.role}
+Position: #{game_state.get('rank', '?')} with {player.points} points
 
-STRATEGIC ANALYSIS REQUIRED:
-1. Who is currently winning and by how much in this 100-point race?
-2. Who poses the biggest threat to YOUR victory in reaching 100 points first?
-3. What is your current strategic position (leading/trailing/middle)?
-4. Which players might help you vs block you from reaching 100 points?
-5. What patterns do you see in recent Nomic rule changes?
+FOCUS ON:
+1. Who's your biggest threat to reaching 100?
+2. What's your path to victory?
+3. What patterns can you exploit?
 
 OUTPUT FORMAT:
-THREAT_ASSESSMENT: [Identify your biggest threats to winning this Nomic game]
-POSITION_ANALYSIS: [Your current strategic situation in the 100-point race]
-ALLIANCE_POTENTIAL: [Who might work with you vs against you in Nomic]
-PATTERN_OBSERVATION: [What trends do you see in the Nomic rule changes]
+THREAT_ASSESSMENT: [Key threat and why - one sentence]
+POSITION_ANALYSIS: [Your situation - brief]
+PATTERN_OBSERVATION: [Exploitable trends - brief]
 
-🎯 REMEMBER: You're playing NOMIC to reach 100 points first. Focus on YOUR chances of winning this specific game."""
+🎯 Goal: Win efficiently. Be strategic, not cooperative."""
 
     def _generate_gap_analysis_prompt(self, player, game_state: Dict) -> str:
-        """Turn 2: Identify strategic gaps and opportunities"""
+        """Turn 2: Identify strategic gaps and opportunities - simplified"""
         context_header = self.generate_nomic_context_header(game_state, player)
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 2: NOMIC RULE GAP ANALYSIS
+🧠 DELIBERATION TURN 2: RULE GAP ANALYSIS
 
-Your Role in this NOMIC game: {player.role}
-Current Nomic Game Turn: {game_state.get('turn', 1)}
+Your Role: {player.role}
 
-EXISTING NOMIC RULES ANALYSIS:
-{chr(10).join([f"Nomic Rule {r['id']}: {r['text']}" for r in game_state.get('mutable_rules', [])])}
+EXISTING RULES:
+{chr(10).join([f"Rule {r['id']}: {r['text']}" for r in game_state.get('mutable_rules', [])[-5:]])}
 
-STRATEGIC GAP IDENTIFICATION IN NOMIC:
-1. What Nomic game mechanics are completely unexplored?
-2. What aspects of point scoring in Nomic are unaddressed?
-3. Are there Nomic rule loopholes you could exploit to reach 100 points?
-4. What Nomic areas give you the best advantage given your role?
+QUICK QUESTIONS:
+1. What's missing that your role could exploit?
+2. What point-scoring opportunities exist?
+3. Which category suits your strategy?
 
-NOMIC CATEGORY OPPORTUNITIES:
-Based on your analysis, which Nomic rule categories offer the most strategic potential for reaching 100 points:
-
-- Point Distribution: {self.proposal_categories['point_distribution']['description']} in Nomic
-- Turn Mechanics: {self.proposal_categories['turn_mechanics']['description']} in Nomic  
-- Victory Conditions: {self.proposal_categories['victory_conditions']['description']} in Nomic
-- Player Interaction: {self.proposal_categories['player_interaction']['description']} in Nomic
-- Resource Management: {self.proposal_categories['resource_management']['description']} in Nomic
-- Information Systems: {self.proposal_categories['information_systems']['description']} in Nomic
-- Penalty Mechanisms: {self.proposal_categories['penalty_mechanisms']['description']} in Nomic
+Categories: Point Distribution, Turn Mechanics, Victory Conditions, Player Interaction, Resource Management, Information Systems, Penalty Mechanisms
 
 OUTPUT FORMAT:
-UNEXPLORED_MECHANICS: [What Nomic mechanics are missing from the game]
-EXPLOITABLE_GAPS: [Nomic opportunities you could use to reach 100 points]
-TOP_CATEGORIES: [Which 2-3 Nomic categories offer you the most advantage]
-ROLE_ADVANTAGE: [How your role gives you unique Nomic opportunities]
+EXPLOITABLE_GAPS: [One specific opportunity]
+TOP_CATEGORIES: [Pick 1-2 that help YOU most]
+ROLE_ADVANTAGE: [How your role helps - brief]
 
-🎯 Think competitively about NOMIC - what Nomic rules help YOU reach 100 points first, not everyone."""
+🎯 Focus on YOUR advantage, not game balance."""
 
     def _generate_category_selection_prompt(self, player, game_state: Dict) -> str:
         """Turn 3: Select specific category and approach"""
@@ -2498,44 +3021,39 @@ LONG_TERM_PLAN: [How this fits your overall Nomic strategy]
 🎯 Focus on maximizing YOUR advantage in NOMIC while getting enough votes to pass."""
 
     def _generate_final_selection_prompt(self, player, game_state: Dict) -> str:
-        """Turn 5: Craft the final proposal"""
+        """Turn 5: Craft the final proposal - with successful examples"""
         context_header = self.generate_nomic_context_header(game_state, player)
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 5: FINAL NOMIC PROPOSAL CRAFTING
+🧠 FINAL PROPOSAL: Create your rule
 
-Your Strategic Nomic Analysis Complete:
-- Position: #{game_state.get('rank', '?')} with {player.points} points in the 100-point race
-- Nomic Category: {game_state.get('selected_category', 'Unknown')}
-- Target Advantage: {game_state.get('personal_benefit', 'Unknown')}
+Position: #{game_state.get('rank', '?')} with {player.points} points
 
-FINAL NOMIC PROPOSAL REQUIREMENTS:
-1. Must advance YOUR winning chances significantly in Nomic
-2. Must be different from recent Nomic proposals
-3. Must get enough votes to pass (need unanimous currently)
-4. Must be clear, specific, and enforceable Nomic rule
-5. Must demonstrate strategic thinking, not cooperation in Nomic
+SUCCESSFUL PROPOSAL EXAMPLES (study these patterns):
+✅ "Players gain 1 point when they vote for a successful proposal." - Universal benefit
+✅ "When a rule is repealed, all players gain 2 points." - Shared incentive
+✅ "Players in last place gain 2 bonus points at turn start." - Helps underdogs
+✅ "If no proposals pass for 2 turns, all players gain 3 points." - Prevents deadlock
 
-NOMIC CRAFTING GUIDELINES:
-- Rule text: Under 30 words, crystal clear Nomic rule
-- Internal thought: Show sophisticated strategic analysis of Nomic
-- Explanation: Frame benefits to convince other Nomic players
-- Avoid obvious self-dealing that others will reject in Nomic
-- Show understanding of Nomic game mechanics and competition
+WHY THESE WORK:
+- Give EVERYONE something (crucial for unanimous votes)
+- Help trailing players (most players aren't winning)
+- Don't obviously target the leader
+- Simple and clear
 
-COMPETITIVE NOMIC FRAMING:
-- Don't mention "fairness" or "helping everyone"
-- Focus on Nomic game improvement and strategic depth
-- Highlight how this addresses gaps in current Nomic rules
-- Show this creates interesting strategic choices in Nomic
+YOUR PROPOSAL STRATEGY:
+1. Include a benefit for ALL players
+2. Give extra help to non-leaders
+3. Keep rule under 25 words
+4. Avoid obvious self-dealing
 
 OUTPUT FORMAT:
-INTERNAL_THOUGHT: [Your private strategic reasoning - be brutally honest about Nomic advantages]
-RULE_TEXT: [Exact Nomic rule text - clear, specific, enforceable, under 30 words]
-EXPLANATION: [Public justification - convince others this improves the Nomic game]
+INTERNAL_THOUGHT: [Your real strategy - be honest]
+RULE_TEXT: [Clear rule under 25 words - must benefit others too]
+EXPLANATION: [Why this helps everyone and improves the game]
 
-🎯 Remember: You're trying to WIN NOMIC, not make friends. Propose a Nomic rule that gives you a real advantage while getting enough votes to pass."""
+🎯 Key: Get everyone's vote by giving everyone something.
 
     def _parse_scratchpad_notes(self, response: str) -> List[str]:
         """Parse scratchpad notes from AI response"""
@@ -3370,17 +3888,23 @@ RECENT RULE ADDITIONS:
             "vote_history": self.vote_history[-10:] if hasattr(self, "vote_history") else [],
         }
 
-        # First, let the model choose how many deliberation turns it wants
-        choice_prompt = self.deliberation_manager.generate_turn_choice_prompt(player, game_state)
-        choice_response = self.unified_generate(player, choice_prompt, temperature=0.3, max_tokens=2000)
-
-        # Parse the chosen number of turns (default to 2 if unclear)
-        chosen_turns = self._parse_deliberation_turns(choice_response)
-        self.add_event(f"🎯 {player.name} chooses {chosen_turns}-turn deliberation approach")
+        # Use character traits to determine deliberation approach
+        if hasattr(player, 'character') and player.character and hasattr(player.character, 'traits'):
+            # Use character-specific deliberation preferences
+            game_complexity = self._assess_game_complexity(game_state)
+            chosen_turns = player.character.get_preferred_deliberation_turns(game_complexity)
+            self.add_event(f"🎭 {player.name} ({player.character.traits.decision_speed} decision maker) chooses {chosen_turns}-turn deliberation")
+        else:
+            # Fallback to original choice method for characters without traits
+            choice_prompt = self.deliberation_manager.generate_turn_choice_prompt(player, game_state)
+            choice_response = self.unified_generate(player, choice_prompt, temperature=0.3, max_tokens=2000)
+            chosen_turns = self._parse_deliberation_turns(choice_response)
+            self.add_event(f"🎯 {player.name} chooses {chosen_turns}-turn deliberation approach")
         
         # Log the deliberation choice
+        choice_reasoning = choice_response[:200] if 'choice_response' in locals() else f"Character-based: {chosen_turns} turns via {player.character.traits.decision_speed} speed"
         self.game_logger.log_deliberation_choice(
-            player.id, chosen_turns, choice_response[:200]
+            player.id, chosen_turns, choice_reasoning
         )
 
         # Store deliberation results for building final proposal
@@ -3573,6 +4097,25 @@ Focus on the current game situation and be creative!
             "explanation": "Encourages proper rule formatting for better game flow.",
             "internal_thought": "Generated after parsing failure - must improve format compliance next time.",
         }
+
+    def _assess_game_complexity(self, game_state: Dict) -> str:
+        """Assess the complexity of the current game state"""
+        players = game_state.get('players', [])
+        mutable_rules = game_state.get('mutable_rules', [])
+        turn = game_state.get('turn', 1)
+        
+        # Calculate complexity factors
+        point_spread = max(p['points'] for p in players) - min(p['points'] for p in players) if players else 0
+        rules_count = len(mutable_rules)
+        
+        # Simple early game with little differentiation
+        if turn <= 3 and point_spread <= 20 and rules_count <= 12:
+            return "simple"
+        # Complex late game with high stakes
+        elif turn >= 10 or max(p['points'] for p in players if players) >= 80 or point_spread >= 40:
+            return "complex"
+        else:
+            return "medium"
 
     def _parse_deliberation_turns(self, response: str) -> int:
         """Parse the number of deliberation turns chosen by the model"""
@@ -3987,46 +4530,75 @@ REASONING: [Your strategic reasoning for this vote]"""
                 # Small delay between voting turns
                 time.sleep(0.3)
 
-            # Final vote decision based on all deliberation
-            final_vote_prompt = f"""🗳️ FINAL VOTING DECISION
-            
-Your Voting Analysis:
-{chr(10).join([f"Turn {i}: {result}" for i, result in voting_results.items()])}
+            # Final vote decision - simplified and more effective
+            final_vote_prompt = f"""🗳️ VOTING DECISION
 
-PROPOSAL DETAILS:
-Rule: "{proposal.rule_text}"
-Proposed by: {proposer.name} (Rank #{proposer_rank})
-Your Position: {player.name} (Rank #{my_rank})
+PROPOSAL: "{proposal.rule_text}"
+BY: {proposer.name} (Rank #{proposer_rank})
+YOU: {player.name} (Rank #{my_rank})
 
-Based on your {chosen_turns}-turn analysis, make your final strategic voting decision.
+QUICK DECISION:
+1. Does this help YOU reach 100 points? 
+2. Does this help others MORE than you?
+3. Will this rule hurt your future chances?
 
-CRITICAL REQUIREMENTS:
-- Vote AYE if this rule helps YOU more than others
-- Vote NAY if this rule helps the proposer more than you
-- Consider your competitive position and victory chances
-- Be strategic about your ranking and point needs
+VOTE STRATEGY:
+- Vote AYE if you benefit or if it's neutral but helps underdogs
+- Vote NAY if it primarily helps the proposer or hurts you
+- Remember: You need others' votes for YOUR proposals later
 
-You have unlimited freedom in your thinking, but your final output must include:
-
+REQUIRED OUTPUT:
 VOTE: [AYE or NAY]
-REASONING: [Your strategic reasoning for this vote]
+REASONING: [One sentence why]
 
-Remember: In Nomic, you need unanimous support for YOUR future proposals to pass.
-Consider both your immediate advantage and the precedent this vote sets for future cooperation."""
+Keep it simple - overthinking leads to poor decisions."""
 
             final_response = self.unified_generate(player, final_vote_prompt, temperature=0.5, max_tokens=2000)
 
-            # Parse vote decision - no default bias
+            # Parse vote decision - improved parsing with fallbacks
             vote = False  # Fallback only if parsing fails
             reasoning = "Failed to determine vote from response - defaulting to NAY for safety"
 
+            # Try multiple parsing approaches
+            vote_parsed = False
+            
+            # Primary parsing: Look for VOTE: format
             if "VOTE:" in final_response:
                 vote_text = final_response.split("VOTE:")[1].split("REASONING:")[0].strip()
-                vote = "AYE" in vote_text.upper()
+                if "AYE" in vote_text.upper():
+                    vote = True
+                    vote_parsed = True
+                elif "NAY" in vote_text.upper():
+                    vote = False
+                    vote_parsed = True
 
                 if "REASONING:" in final_response:
                     reasoning = final_response.split("REASONING:")[1].strip()
                     reasoning = reasoning[:300]  # Allow longer reasoning display
+            
+            # Fallback parsing: Look for standalone AYE/NAY anywhere in response
+            if not vote_parsed:
+                response_upper = final_response.upper()
+                if "AYE" in response_upper and "NAY" not in response_upper:
+                    vote = True
+                    vote_parsed = True
+                    reasoning = "Parsed AYE from response text"
+                elif "NAY" in response_upper and "AYE" not in response_upper:
+                    vote = False
+                    vote_parsed = True
+                    reasoning = "Parsed NAY from response text"
+                elif "YES" in response_upper and "NO" not in response_upper:
+                    vote = True
+                    vote_parsed = True
+                    reasoning = "Parsed YES from response text"
+                elif "NO" in response_upper and "YES" not in response_upper:
+                    vote = False
+                    vote_parsed = True
+                    reasoning = "Parsed NO from response text"
+            
+            # Log parsing issues for debugging
+            if not vote_parsed:
+                self.add_event(f"⚠️ {player.name} vote parsing failed, response: {final_response[:100]}...")
 
             # Only set vote if player hasn't voted yet
             if player.id not in votes:
