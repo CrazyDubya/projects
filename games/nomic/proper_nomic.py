@@ -23,7 +23,8 @@ import requests
 from flask import Flask, jsonify, render_template_string, request
 
 # Import Game Master system
-from game_master import GameMaster, DynamicRuleEngine, LinguisticAnalyzer
+from game_master import GameMaster, DynamicRuleEngine, LinguisticAnalyzer, ContextRestorationManager
+from game_master_api import GameMasterEngine, create_game_master_engine
 
 
 # LLM Provider Architecture for unified Ollama and OpenRouter support
@@ -46,7 +47,7 @@ class LLMProvider(Protocol):
 class OpenRouterClient:
     """OpenRouter API client for cloud-based LLM access"""
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, use_big_models: bool = False, use_hybrid: bool = False):
         self.api_key = api_key
         self.base_url = "https://openrouter.ai/api/v1"
         self.headers = {
@@ -56,37 +57,147 @@ class OpenRouterClient:
             "Content-Type": "application/json",
         }
 
-        # Working OpenRouter models (verified IDs)
-        self.available_models = [
+        # Small models (cost-efficient)
+        self.small_models = [
+            "google/gemini-2.5-flash",        # Gemini 2.5 Flash - cost-efficient
+            "google/gemini-2.0-flash-001",    # Gemini 2.0 Flash - 1M context (fallback)
+            "openai/gpt-4o-mini",             # GPT-4o Mini - 128k context
+            "anthropic/claude-3.5-haiku",     # Claude 3.5 Haiku - 200k context
+            "x-ai/grok-3-mini"                # Grok-3 Mini - cost-efficient
+        ]
+
+        # Standard OpenRouter models (verified IDs)
+        self.standard_models = [
             "google/gemini-2.0-flash-001",  # Gemini 2.0 Flash - 1M context
             "openai/gpt-4o-mini",  # GPT-4o Mini - 128k context
             "anthropic/claude-3.5-haiku",  # Claude 3.5 Haiku - 200k context
             "anthropic/claude-3.5-sonnet",  # Claude 3.5 Sonnet - 200k context (larger than haiku)
         ]
 
-        # Cost tracking per model (approximate from research)
+        # Big models (premium SOTA models)
+        self.big_models = [
+            "anthropic/claude-3.5-sonnet",      # Claude 3.5 Sonnet - 200k context
+            "openai/gpt-4o",                    # GPT-4o - 128k context  
+            "google/gemini-2.5-pro-preview",    # Gemini 2.5 Pro - 1.05M context
+            "x-ai/grok-3-beta"                  # Grok-3 Beta - TBD context
+        ]
+
+        # Model family pairings for hybrid mode
+        self.model_families = {
+            "claude": {
+                "big": "anthropic/claude-3.5-sonnet",
+                "small": "anthropic/claude-3.5-haiku"
+            },
+            "openai": {
+                "big": "openai/gpt-4o", 
+                "small": "openai/gpt-4o-mini"
+            },
+            "google": {
+                "big": "google/gemini-2.5-pro-preview",
+                "small": "google/gemini-2.5-flash"  # Prefer 2.5 Flash, fallback to 2.0
+            },
+            "xai": {
+                "big": "x-ai/grok-3-beta",
+                "small": "x-ai/grok-3-mini"
+            }
+        }
+
+        # Select model set based on configuration
+        self.use_big_models = use_big_models
+        self.use_hybrid = use_hybrid
+        
+        if use_hybrid:
+            # In hybrid mode, make both big and small models available
+            self.available_models = list(set(self.big_models + self.small_models))
+        else:
+            self.available_models = self.big_models if use_big_models else self.standard_models
+
+        # Cost tracking per model ($/1M tokens - verified from research)
         self.model_costs = {
+            # Small models (cost-efficient)
+            "google/gemini-2.5-flash": {"input": 0.30, "output": 1.20},  # Estimated similar to 2.0 Flash
             "google/gemini-2.0-flash-001": {"input": 0.35, "output": 1.05},
             "openai/gpt-4o-mini": {"input": 0.15, "output": 0.60},
             "anthropic/claude-3.5-haiku": {"input": 0.25, "output": 1.25},
-            "anthropic/claude-3.5-sonnet": {"input": 3.00, "output": 15.00},  # Larger context, higher cost
+            "x-ai/grok-3-mini": {"input": 0.20, "output": 0.80},  # Estimated cost-efficient
+            # Standard models
+            "anthropic/claude-3.5-sonnet": {"input": 3.00, "output": 15.00},
+            # Big models (premium pricing)
+            "openai/gpt-4o": {"input": 5.00, "output": 15.00},
+            "google/gemini-2.5-pro-preview": {"input": 1.25, "output": 10.00},
+            "x-ai/grok-3-beta": {"input": 3.00, "output": 15.00},  # TBD - will verify
+        }
+        
+        # Maximum output tokens per model (based on API documentation)
+        self.max_output_tokens = {
+            # Small models
+            "google/gemini-2.5-flash": 8192,  # Estimated similar to 2.0 Flash
+            "google/gemini-2.0-flash-001": 8192,  # Confirmed 8192 max output tokens
+            "openai/gpt-4o-mini": 16000,  # Documented 16k max output
+            "anthropic/claude-3.5-haiku": 4096,  # Documented 4k max output
+            "x-ai/grok-3-mini": 8192,  # Estimated standard output limit
+            # Standard/Big models
+            "anthropic/claude-3.5-sonnet": 8192,  # 8k with beta header, 4k without
+            "openai/gpt-4o": 16000,  # Same as mini for output
+            "google/gemini-2.5-pro-preview": 8192,  # Standard Gemini output limit
+            "x-ai/grok-3-beta": 8192,  # Estimated standard output limit
+        }
+        
+        # Context window sizes (for calculating safe output space)
+        self.context_windows = {
+            # Standard models
+            "google/gemini-2.0-flash-001": 1000000,  # 1M context window
+            "openai/gpt-4o-mini": 128000,  # 128k context window
+            "anthropic/claude-3.5-haiku": 200000,  # 200k context window
+            "anthropic/claude-3.5-sonnet": 200000,  # 200k context window
+            # Big models
+            "openai/gpt-4o": 128000,  # 128k context window
+            "google/gemini-2.5-pro-preview": 1050000,  # 1.05M context window
+            "x-ai/grok-3-beta": 256000,  # Estimated 256k context window
         }
 
         self.session_costs = {}  # Track costs per session
+        self.session_budget = 5.0  # Default $5 budget limit
+        self.budget_warnings_shown = set()  # Track which warnings we've already shown
+
+    def calculate_safe_max_tokens(self, model: str, prompt: str) -> int:
+        """Calculate safe max tokens based on prompt size and model limits"""
+        # Rough token estimation: ~1 token per 4 characters
+        prompt_tokens = len(prompt) // 4
+        
+        # Get model's context window and max output
+        context_window = self.context_windows.get(model, 128000)
+        max_output = self.max_output_tokens.get(model, 4096)
+        
+        # Calculate available space (use 90% of remaining context to be safe)
+        available_space = int((context_window - prompt_tokens) * 0.90)
+        
+        # Return the smaller of: available space or model's max output
+        return min(available_space, max_output)
 
     def generate(self, model: str, prompt: str, **kwargs) -> str:
         """Generate text using OpenRouter API"""
+        # Calculate safe max tokens if not explicitly provided
+        if "max_tokens" not in kwargs:
+            safe_max = self.calculate_safe_max_tokens(model, prompt)
+            kwargs["max_tokens"] = safe_max
+        
+        # Add special header for Claude 3.5 Sonnet to enable 8k output
+        headers = self.headers.copy()
+        if model == "anthropic/claude-3.5-sonnet":
+            headers["anthropic-beta"] = "max-tokens-3-5-sonnet-2024-07-15"
+        
         payload = {
             "model": model,
             "messages": [{"role": "user", "content": prompt}],
             "temperature": kwargs.get("temperature", 0.7),
-            "max_tokens": kwargs.get("max_tokens", 200),
+            "max_tokens": kwargs.get("max_tokens", 4096),
             "stream": False,
         }
 
         try:
             response = requests.post(
-                f"{self.base_url}/chat/completions", headers=self.headers, json=payload, timeout=30
+                f"{self.base_url}/chat/completions", headers=headers, json=payload, timeout=30
             )
 
             if response.status_code == 200:
@@ -96,6 +207,8 @@ class OpenRouterClient:
                 # Track usage and costs
                 if "usage" in data:
                     self._track_usage(model, data["usage"])
+                    # Check budget after tracking costs
+                    self._check_budget_limits()
 
                 return content
             else:
@@ -129,7 +242,7 @@ class OpenRouterClient:
             player.model = models[i]
             player.port = None  # No port needed for API calls
             
-        print(f"🎲 Model assignments for this game: {dict(zip([f'Player {p.id}' for p in players], [p.model for p in players]))}")
+        print(f" Model assignments for this game: {dict(zip([f'Player {p.id}' for p in players], [p.model for p in players]))}")
 
     def get_available_models(self) -> List[str]:
         """Get list of available OpenRouter models"""
@@ -155,6 +268,126 @@ class OpenRouterClient:
     def get_session_costs(self) -> dict:
         """Get current session costs"""
         return self.session_costs.copy()
+    
+    def get_total_session_cost(self) -> float:
+        """Get total cost for all models in current session"""
+        total = 0.0
+        for model_costs in self.session_costs.values():
+            total += model_costs.get("total_cost", 0.0)
+        return total
+    
+    def verify_api_models(self) -> dict:
+        """Verify which models are available on OpenRouter API"""
+        print("🔍 Verifying API model availability...")
+        verification_results = {}
+        
+        # Simple test prompt for verification
+        test_prompt = "Respond with exactly the word 'TEST' and nothing else."
+        
+        for model in self.available_models:
+            try:
+                print(f"  Testing {model}...")
+                
+                # Make a minimal request to test availability
+                headers = self.headers.copy()
+                if model == "anthropic/claude-3.5-sonnet":
+                    headers["anthropic-beta"] = "max-tokens-3-5-sonnet-2024-07-15"
+                
+                payload = {
+                    "model": model,
+                    "messages": [{"role": "user", "content": test_prompt}],
+                    "temperature": 0.0,
+                    "max_tokens": 10,
+                    "stream": False,
+                }
+                
+                response = requests.post(
+                    f"{self.base_url}/chat/completions", 
+                    headers=headers, 
+                    json=payload, 
+                    timeout=15
+                )
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    content = data["choices"][0]["message"]["content"].strip()
+                    
+                    # Track tiny usage for verification
+                    if "usage" in data:
+                        self._track_usage(model, data["usage"])
+                    
+                    verification_results[model] = {
+                        "available": True,
+                        "response": content,
+                        "context_window": self.context_windows.get(model, "Unknown"),
+                        "max_output": self.max_output_tokens.get(model, "Unknown")
+                    }
+                    print(f"    ✅ {model} - Available (response: '{content}')")
+                    
+                else:
+                    error_msg = f"HTTP {response.status_code}: {response.text[:100]}"
+                    verification_results[model] = {
+                        "available": False,
+                        "error": error_msg,
+                        "context_window": self.context_windows.get(model, "Unknown"),
+                        "max_output": self.max_output_tokens.get(model, "Unknown")
+                    }
+                    print(f"    ❌ {model} - Error: {error_msg}")
+                    
+            except Exception as e:
+                error_msg = str(e)
+                verification_results[model] = {
+                    "available": False,
+                    "error": error_msg,
+                    "context_window": self.context_windows.get(model, "Unknown"),
+                    "max_output": self.max_output_tokens.get(model, "Unknown")
+                }
+                print(f"    ❌ {model} - Exception: {error_msg}")
+        
+        # Summary
+        available_count = sum(1 for result in verification_results.values() if result["available"])
+        total_count = len(verification_results)
+        
+        print(f"\n📊 Verification Summary: {available_count}/{total_count} models available")
+        if available_count == 0:
+            print("⚠️  WARNING: No models are available! Check your OpenRouter API key and credits.")
+        elif available_count < total_count:
+            print("⚠️  Some models unavailable - game will use available models only")
+        else:
+            print("✅ All models verified and ready!")
+            
+        return verification_results
+    
+    def _check_budget_limits(self):
+        """Check if we're approaching or exceeding budget limits"""
+        total_cost = self.get_total_session_cost()
+        
+        # Budget warning thresholds
+        warning_50 = self.session_budget * 0.5  # 50% warning
+        warning_80 = self.session_budget * 0.8  # 80% warning
+        
+        # Check for budget warnings
+        if total_cost >= self.session_budget:
+            if "over_budget" not in self.budget_warnings_shown:
+                print(f"\n🚨 BUDGET EXCEEDED: ${total_cost:.4f} / ${self.session_budget:.2f}")
+                print("💰 Session budget limit reached!")
+                response = input("   Continue anyway? (y/N): ").strip().lower()
+                if response != 'y':
+                    print("🛑 Session stopped due to budget limit")
+                    raise Exception("Budget limit exceeded - user chose to stop")
+                else:
+                    print("⚠️  Continuing with budget exceeded...")
+                self.budget_warnings_shown.add("over_budget")
+                
+        elif total_cost >= warning_80:
+            if "warning_80" not in self.budget_warnings_shown:
+                print(f"\n⚠️  Budget Warning: ${total_cost:.4f} / ${self.session_budget:.2f} (80%)")
+                self.budget_warnings_shown.add("warning_80")
+                
+        elif total_cost >= warning_50:
+            if "warning_50" not in self.budget_warnings_shown:
+                print(f"\n💡 Budget Notice: ${total_cost:.4f} / ${self.session_budget:.2f} (50%)")
+                self.budget_warnings_shown.add("warning_50")
 
     def validate_rule(self, rule_text: str, context: str):
         """Validate rule using OpenRouter API (compatible with OllamaManager interface)"""
@@ -178,7 +411,7 @@ SUGGESTION: [how to improve if invalid]"""
 
         try:
             # Use a small, fast model for validation
-            response = self.generate("openai/gpt-4o-mini", prompt, temperature=0.3, max_tokens=200)
+            response = self.generate("openai/gpt-4o-mini", prompt, temperature=0.3, max_tokens=500)
 
             # Parse response
             valid = "VALID: true" in response or "true" in response.lower()
@@ -192,8 +425,10 @@ SUGGESTION: [how to improve if invalid]"""
 class OllamaClient:
     """Existing Ollama client wrapped in new interface"""
 
-    def __init__(self):
-        self.base_ports = list(range(11435, 11442))  # 7 ports for validator + 6 players
+    def __init__(self, base_port: int = 11435):
+        self.base_port = base_port
+        self.validator_port = base_port  # First port for validator
+        self.base_ports = list(range(base_port + 1, base_port + 8))  # Next 7 ports for players
         self.assigned_ports = {}
 
     def generate(self, model: str, prompt: str, port: int = 11434, **kwargs) -> str:
@@ -245,8 +480,8 @@ VALID: true/false
 ISSUES: [list any problems]"""
 
         try:
-            # Use a available model for validation
-            response = self.generate("llama3.2:3b", prompt, 11434, temperature=0.3, max_tokens=200)
+            # Use validator port for rule validation
+            response = self.generate("llama3.2:3b", prompt, self.validator_port, temperature=0.3, max_tokens=200)
 
             # Parse response
             valid = "VALID: true" in response or "true" in response.lower()
@@ -394,14 +629,20 @@ class ContextWindowManager:
     """Context window optimization and token tracking for different LLM models"""
 
     def __init__(self):
-        # Model-specific context limits (tokens)
+        # Model-specific context limits (tokens) - synchronized with OpenRouterManager
         self.model_limits = {
-            "google/gemini-2.0-flash-001": 2000000,  # Gemini 2.0 Flash - 2M context
+            # Standard models
+            "google/gemini-2.0-flash-001": 1000000,  # Gemini 2.0 Flash - 1M context (matches OpenRouter)
             "openai/gpt-4o-mini": 128000,  # GPT-4o Mini - 128k context
             "anthropic/claude-3.5-haiku": 200000,  # Claude 3.5 Haiku - 200k context
-            "anthropic/claude-3.5-sonnet": 200000,  # Claude 3.5 Sonnet - 200k context (was missing!)
+            "anthropic/claude-3.5-sonnet": 200000,  # Claude 3.5 Sonnet - 200k context
             "anthropic/claude-3-haiku": 200000,  # Claude 3 Haiku - 200k context
-            "xai/grok-3-mini": 1000000,  # Grok 3 Mini - 1M context, very cheap
+            # Big models
+            "openai/gpt-4o": 128000,  # GPT-4o - 128k context
+            "google/gemini-2.5-pro-preview": 1050000,  # Gemini 2.5 Pro - 1.05M context
+            "x-ai/grok-3-beta": 256000,  # Grok 3 Beta - 256k context (added missing model)
+            # Legacy support
+            "xai/grok-3-mini": 1000000,  # Grok 3 Mini - 1M context (legacy naming)
             "default": 8000,  # Conservative default for local models
         }
 
@@ -421,6 +662,17 @@ class ContextWindowManager:
             "game_history": 4,  # Game history can be trimmed
             "idle_thoughts": 2,  # Idle thoughts can be removed first
         }
+        
+        # History reservation settings - always reserve a portion for historical context
+        self.history_reservation_percentage = 0.15  # Reserve 15% of context for history
+        self.minimum_history_tokens = 2000  # Minimum tokens to reserve for history
+        self.maximum_history_tokens = 50000  # Maximum tokens to use for history
+        
+        # Context degradation detection settings
+        self.degradation_threshold = 0.95  # Consider degraded if consistently above 95%
+        self.degradation_window = 5  # Number of consecutive high-usage events to trigger
+        self.player_degradation_status = {}  # player_id -> degradation tracking
+        self.emergency_resets_per_game = {}  # Track emergency resets per player
 
     def get_model_limit(self, model: str) -> int:
         """Get context window limit for a specific model"""
@@ -477,6 +729,143 @@ class ContextWindowManager:
             "cumulative_usage": self.current_usage[model],
         }
 
+    def reset_usage(self, models: List[str] = None):
+        """Reset context usage for specified models or all models"""
+        if models is None:
+            # Reset all models
+            self.current_usage.clear()
+            print(" Context usage reset for all models")
+        else:
+            # Reset specific models
+            reset_count = 0
+            for model in models:
+                if model in self.current_usage:
+                    del self.current_usage[model]
+                    reset_count += 1
+            print(f" Context usage reset for {reset_count} models")
+        
+        # Add reset event to history
+        self.usage_history.append({
+            "timestamp": datetime.now(),
+            "event": "context_reset",
+            "models_reset": models or "all",
+            "action": "Manual context reset - starting fresh"
+        })
+
+    def reset_for_new_game(self):
+        """Reset context usage when starting a new game"""
+        previous_usage = self.current_usage.copy()
+        self.reset_usage()
+        
+        # Log previous game usage for analytics
+        if previous_usage:
+            total_previous = sum(previous_usage.values())
+            print(f" Previous game context usage: {total_previous:,} tokens across {len(previous_usage)} models")
+        
+        print(" ✅ Context reset for new game - starting fresh")
+
+    def track_degradation(self, model: str, player_id: int, usage_percentage: float) -> dict:
+        """Track context degradation for a specific player and detect intervention needs"""
+        if player_id not in self.player_degradation_status:
+            self.player_degradation_status[player_id] = {
+                "consecutive_high_usage": 0,
+                "total_degradation_events": 0,
+                "last_intervention": None,
+                "degradation_history": [],
+                "model": model
+            }
+        
+        status = self.player_degradation_status[player_id]
+        
+        # Track this usage event
+        is_degraded = usage_percentage >= (self.degradation_threshold * 100)
+        status["degradation_history"].append({
+            "timestamp": datetime.now(),
+            "usage_percentage": usage_percentage,
+            "is_degraded": is_degraded,
+            "model": model
+        })
+        
+        # Keep only recent history (last 10 events)
+        status["degradation_history"] = status["degradation_history"][-10:]
+        
+        if is_degraded:
+            status["consecutive_high_usage"] += 1
+            status["total_degradation_events"] += 1
+        else:
+            status["consecutive_high_usage"] = 0  # Reset counter on good usage
+        
+        # Determine if intervention is needed
+        needs_intervention = (
+            status["consecutive_high_usage"] >= self.degradation_window and
+            (status["last_intervention"] is None or 
+             (datetime.now() - status["last_intervention"]).total_seconds() > 1800)  # 30 min cooldown
+        )
+        
+        intervention_urgency = "none"
+        if needs_intervention:
+            if status["consecutive_high_usage"] >= self.degradation_window * 2:
+                intervention_urgency = "critical"  # Severe degradation
+            else:
+                intervention_urgency = "moderate"  # Standard intervention
+        
+        return {
+            "player_id": player_id,
+            "model": model,
+            "current_usage": usage_percentage,
+            "consecutive_high_usage": status["consecutive_high_usage"],
+            "total_degradation_events": status["total_degradation_events"],
+            "needs_intervention": needs_intervention,
+            "intervention_urgency": intervention_urgency,
+            "time_since_last_intervention": (
+                (datetime.now() - status["last_intervention"]).total_seconds()
+                if status["last_intervention"] else None
+            )
+        }
+
+    def mark_intervention_applied(self, player_id: int):
+        """Mark that an intervention has been applied to a player"""
+        if player_id in self.player_degradation_status:
+            self.player_degradation_status[player_id]["last_intervention"] = datetime.now()
+            self.player_degradation_status[player_id]["consecutive_high_usage"] = 0
+            
+            # Track emergency resets
+            if player_id not in self.emergency_resets_per_game:
+                self.emergency_resets_per_game[player_id] = 0
+            self.emergency_resets_per_game[player_id] += 1
+            
+            print(f" 🚨 Context intervention applied to player {player_id} (#{self.emergency_resets_per_game[player_id]} this game)")
+
+    def get_degradation_summary(self) -> dict:
+        """Get summary of all player degradation status"""
+        summary = {
+            "players_needing_intervention": [],
+            "players_at_risk": [],
+            "total_interventions_this_game": sum(self.emergency_resets_per_game.values()),
+            "degradation_overview": {}
+        }
+        
+        for player_id, status in self.player_degradation_status.items():
+            recent_avg = sum(h["usage_percentage"] for h in status["degradation_history"][-3:]) / max(1, len(status["degradation_history"][-3:]))
+            
+            player_summary = {
+                "player_id": player_id,
+                "model": status["model"],
+                "consecutive_high_usage": status["consecutive_high_usage"],
+                "recent_average_usage": round(recent_avg, 1),
+                "total_degradation_events": status["total_degradation_events"],
+                "interventions_this_game": self.emergency_resets_per_game.get(player_id, 0)
+            }
+            
+            summary["degradation_overview"][player_id] = player_summary
+            
+            if status["consecutive_high_usage"] >= self.degradation_window:
+                summary["players_needing_intervention"].append(player_id)
+            elif status["consecutive_high_usage"] >= self.degradation_window // 2:
+                summary["players_at_risk"].append(player_id)
+        
+        return summary
+
     def optimize_prompt(self, model: str, prompt: str, game_context: dict) -> str:
         """Optimize prompt length for model's context window"""
         usage = self.get_context_usage(model)
@@ -485,12 +874,16 @@ class ContextWindowManager:
         if usage["usage_percentage"] < 75:
             return prompt
 
-        # If critical, perform aggressive trimming
-        if usage["usage_percentage"] > 90:
-            return self._aggressive_trim(prompt, game_context, usage["remaining_tokens"])
+        # If critical, use emergency reduction
+        if usage["usage_percentage"] > 95:
+            return self._emergency_context_reduction(prompt, game_context)
 
-        # If warning, perform moderate trimming
-        return self._moderate_trim(prompt, game_context, usage["remaining_tokens"])
+        # If very high, use intelligent reduction with higher compression
+        if usage["usage_percentage"] > 85:
+            return self.intelligent_context_reduction(prompt, game_context, target_reduction=0.5, model=model)
+
+        # If warning level, use moderate intelligent reduction
+        return self.intelligent_context_reduction(prompt, game_context, target_reduction=0.3, model=model)
 
     def _moderate_trim(self, prompt: str, game_context: dict, remaining_tokens: int) -> str:
         """Moderate context trimming"""
@@ -522,16 +915,20 @@ class ContextWindowManager:
 
     def _aggressive_trim(self, prompt: str, game_context: dict, remaining_tokens: int) -> str:
         """Aggressive context trimming for critical usage"""
-        target_tokens = int(remaining_tokens * 0.6)  # Use 60% of remaining space
+        target_tokens = int(remaining_tokens * 0.5)  # Use 50% of remaining space (more aggressive)
+
+        # Emergency compression for critical context situations
+        if remaining_tokens < 1000:
+            return self._emergency_context_reduction(prompt, game_context)
 
         # Keep only highest priority content
         sections = self._split_prompt_sections(prompt)
         essential_sections = []
         current_tokens = 0
 
-        # Only keep priority 8+ content
+        # Only keep priority 9+ content (raised threshold)
         for section_name, section_content in sections.items():
-            if self.content_priorities.get(section_name, 5) >= 8:
+            if self.content_priorities.get(section_name, 5) >= 9:
                 section_tokens = self.estimate_tokens(section_content)
                 if current_tokens + section_tokens <= target_tokens:
                     essential_sections.append(section_content)
@@ -540,8 +937,40 @@ class ContextWindowManager:
         trimmed_prompt = "\n\n".join(essential_sections)
 
         # Add context warning
-        warning = "[CONTEXT OPTIMIZED: Some game history removed due to token limits]"
+        warning = "[CONTEXT CRITICALLY OPTIMIZED: Major game history removed due to token limits]"
         return f"{warning}\n\n{trimmed_prompt}"
+    
+    def _emergency_context_reduction(self, prompt: str, game_context: dict) -> str:
+        """Emergency context reduction for critical failures"""
+        # Extract absolute essentials only
+        game = game_context.get("game")
+        if not game:
+            return "EMERGENCY MODE: Minimal context due to critical token shortage."
+        
+        # Minimal essential context
+        essential_parts = []
+        
+        # Current turn and player info
+        current_turn = getattr(game, 'turn_number', 1)
+        essential_parts.append(f"TURN {current_turn} - EMERGENCY CONTEXT MODE")
+        
+        # Only current rules that are actively affecting the game
+        if hasattr(game, 'rules'):
+            mutable_count = len(game.rules.get("mutable", []))
+            immutable_count = len(game.rules.get("immutable", []))
+            essential_parts.append(f"RULES: {mutable_count} mutable, {immutable_count} immutable")
+        
+        # Current player status only
+        if hasattr(game, 'players'):
+            player_info = []
+            for p in game.players[:4]:  # Only show first 4 players
+                player_info.append(f"{p.name}: {p.points}pts")
+            essential_parts.append(f"PLAYERS: {', '.join(player_info)}")
+        
+        # Critical game state
+        essential_parts.append("TASK: Generate valid proposal in format INTERNAL_THOUGHT: / RULE_TEXT: / EXPLANATION:")
+        
+        return "\n\n".join(essential_parts)
 
     def _split_prompt_sections(self, prompt: str) -> dict:
         """Split prompt into sections for selective trimming"""
@@ -599,6 +1028,895 @@ class ContextWindowManager:
         else:
             self.current_usage.clear()
 
+    def compress_turn_history(self, game_context: dict, num_turns: int = 5) -> str:
+        """Compress recent turn history into a concise summary"""
+        if not game_context.get("game"):
+            return "No game context available for compression."
+        
+        game = game_context["game"]
+        
+        # Extract recent turn information
+        recent_events = []
+        if hasattr(game, 'events'):
+            recent_events = game.events[-num_turns * 5:]  # Approximate events per turn
+        
+        # Get recent proposals
+        recent_proposals = []
+        if hasattr(game, 'proposals'):
+            recent_proposals = game.proposals[-num_turns:]
+        
+        # Compress into summary
+        summary_parts = []
+        
+        # Current game status
+        if hasattr(game, 'turn_number'):
+            summary_parts.append(f"TURN SUMMARY (Last {num_turns} turns from turn {game.turn_number}):")
+        
+        # Successful proposals summary
+        successful_rules = []
+        failed_proposals = []
+        
+        for proposal in recent_proposals:
+            if hasattr(proposal, 'passed') and proposal.passed:
+                successful_rules.append(f"Rule {proposal.id}: {proposal.rule_text[:60]}...")
+            else:
+                failed_proposals.append(f"Failed by {proposal.player_id}: {proposal.rule_text[:40]}...")
+        
+        if successful_rules:
+            summary_parts.append(f"✅ NEW RULES ({len(successful_rules)}): " + "; ".join(successful_rules))
+        
+        if failed_proposals:
+            summary_parts.append(f"❌ FAILED PROPOSALS ({len(failed_proposals)}): " + "; ".join(failed_proposals[:3]))
+        
+        # Player scoring trends
+        if hasattr(game, 'players'):
+            score_summary = []
+            for player in game.players[:4]:  # Limit to 4 players
+                score_summary.append(f"{player.name}: {player.points}pts")
+            summary_parts.append(f"📊 CURRENT SCORES: {', '.join(score_summary)}")
+        
+        return "\n".join(summary_parts)
+
+    def create_hierarchical_summary(self, game_context: dict) -> dict:
+        """Create a hierarchical summary with different levels of detail"""
+        if not game_context.get("game"):
+            return {"error": "No game context available"}
+        
+        game = game_context["game"]
+        
+        # Level 1: Essential game state (highest priority)
+        level1 = {
+            "current_turn": getattr(game, 'turn_number', 1),
+            "total_rules": len(getattr(game, 'rules', {}).get('mutable', [])) + len(getattr(game, 'rules', {}).get('immutable', [])),
+            "leader_points": max([p.points for p in getattr(game, 'players', [])]) if hasattr(game, 'players') and game.players else 0
+        }
+        
+        # Level 2: Recent activity (medium priority)
+        level2 = {
+            "recent_turns_summary": self.compress_turn_history(game_context, 3),
+            "active_players": len(getattr(game, 'players', [])),
+            "last_proposal": getattr(game.proposals[-1], 'rule_text', 'None')[:100] if hasattr(game, 'proposals') and game.proposals else "None"
+        }
+        
+        # Level 3: Historical context (lowest priority)
+        level3 = {
+            "full_turn_summary": self.compress_turn_history(game_context, 10),
+            "total_events": len(getattr(game, 'events', [])),
+            "game_phase": self._determine_game_phase(game)
+        }
+        
+        return {
+            "priority_1_essential": level1,
+            "priority_2_recent": level2, 
+            "priority_3_historical": level3
+        }
+
+    def _determine_game_phase(self, game) -> str:
+        """Determine what phase of the game we're in"""
+        if not hasattr(game, 'players') or not game.players:
+            return "initialization"
+        
+        max_points = max([p.points for p in game.players])
+        turn_num = getattr(game, 'turn_number', 1)
+        
+        if max_points < 0:
+            return "crisis"
+        elif turn_num <= 3:
+            return "opening"
+        elif max_points < 70:
+            return "midgame"
+        elif max_points < 90:
+            return "lategame"
+        else:
+            return "endgame"
+
+    def intelligent_context_reduction(self, prompt: str, game_context: dict, target_reduction: float = 0.3, model: str = None) -> str:
+        """Intelligently reduce context using hierarchical summaries and history reservation"""
+        # Calculate context budget with history reservation
+        current_tokens = self.estimate_tokens(prompt)
+        target_tokens = int(current_tokens * (1 - target_reduction))
+        
+        # Calculate history reservation
+        model_limit = self.get_model_limit(model) if model else current_tokens
+        reserved_history_tokens = max(
+            self.minimum_history_tokens,
+            min(
+                self.maximum_history_tokens,
+                int(model_limit * self.history_reservation_percentage)
+            )
+        )
+        
+        # Adjust target tokens to account for history reservation
+        available_for_current = target_tokens - reserved_history_tokens
+        if available_for_current < current_tokens * 0.3:  # Safety check
+            available_for_current = int(current_tokens * 0.3)
+            reserved_history_tokens = target_tokens - available_for_current
+        
+        # Create hierarchical summary
+        hierarchical = self.create_hierarchical_summary(game_context)
+        
+        # Build optimized prompt using hierarchical approach with reserved history
+        optimized_sections = []
+        
+        # Always include level 1 (essential) - current context priority
+        level1_text = f"ESSENTIAL GAME STATE: Turn {hierarchical['priority_1_essential']['current_turn']}, {hierarchical['priority_1_essential']['total_rules']} rules, leader at {hierarchical['priority_1_essential']['leader_points']} points"
+        optimized_sections.append(level1_text)
+        current_size = self.estimate_tokens(level1_text)
+        
+        # Include level 2 if space allows in current context budget
+        level2_text = hierarchical['priority_2_recent']['recent_turns_summary']
+        level2_tokens = self.estimate_tokens(level2_text)
+        if current_size + level2_tokens <= available_for_current:
+            optimized_sections.append(level2_text)
+            current_size += level2_tokens
+        
+        # Dedicate reserved space to historical context (level 3)
+        level3_text = hierarchical['priority_3_historical']['full_turn_summary']
+        level3_tokens = self.estimate_tokens(level3_text)
+        
+        if level3_tokens <= reserved_history_tokens:
+            # Full history fits in reservation
+            optimized_sections.append(level3_text)
+            history_used = level3_tokens
+        else:
+            # Trim history to fit reservation
+            history_compression_ratio = reserved_history_tokens / level3_tokens
+            compressed_history = self._compress_historical_context(
+                level3_text, history_compression_ratio, game_context
+            )
+            optimized_sections.append(compressed_history)
+            history_used = self.estimate_tokens(compressed_history)
+        
+        # Add enhanced context reduction notice
+        total_reduction = 1 - (current_size + history_used) / current_tokens
+        reduction_notice = f"[CONTEXT OPTIMIZED: {total_reduction:.1%} reduction | Current: {current_size:,} tokens | History: {history_used:,} tokens | Reserved: {reserved_history_tokens:,}]"
+        optimized_sections.insert(0, reduction_notice)
+        
+        return "\n\n".join(optimized_sections)
+
+    def _compress_historical_context(self, history_text: str, compression_ratio: float, game_context: dict) -> str:
+        """Compress historical context to fit within reserved space"""
+        target_length = int(len(history_text) * compression_ratio)
+        
+        if target_length <= 200:
+            # Very aggressive compression - keep only key facts
+            return f"COMPRESSED HISTORY: Game in progress, multiple rules proposed, current strategic situation developing."
+        
+        # Split into sentences and prioritize key information
+        sentences = history_text.split('. ')
+        important_sentences = []
+        
+        # Prioritize sentences with key game information
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+                
+            # High priority patterns
+            if any(keyword in sentence.lower() for keyword in ['rule', 'points', 'proposal', 'vote', 'win', 'leader']):
+                important_sentences.append(sentence)
+            # Medium priority patterns  
+            elif any(keyword in sentence.lower() for keyword in ['turn', 'player', 'strategy']):
+                if len('. '.join(important_sentences)) < target_length * 0.7:
+                    important_sentences.append(sentence)
+        
+        # Combine and trim to target length
+        compressed = '. '.join(important_sentences)
+        if len(compressed) > target_length:
+            compressed = compressed[:target_length-3] + "..."
+        
+        return f"HISTORY SUMMARY: {compressed}"
+
+    def create_rolling_context_window(self, game_context: dict, window_size: int = 5, token_budget: int = None) -> str:
+        """Create an adaptive rolling window of the most recent turns for consistent context"""
+        if not game_context.get("game"):
+            return "No game context available for rolling window."
+        
+        game = game_context["game"]
+        current_turn = getattr(game, 'turn_number', 1)
+        
+        # Calculate adaptive window bounds based on token budget
+        if token_budget:
+            # Estimate tokens per turn and adjust window size accordingly
+            estimated_tokens_per_turn = 400  # Conservative estimate
+            max_turns_for_budget = max(3, token_budget // estimated_tokens_per_turn)
+            window_size = min(window_size, max_turns_for_budget)
+        
+        window_start = max(1, current_turn - window_size + 1)
+        window_end = current_turn
+        
+        # Build rolling context with priority-based content
+        context_parts = []
+        current_token_usage = 0
+        
+        # Priority 1: Current game state (always include)
+        header = f"🎯 ADAPTIVE ROLLING WINDOW (T{window_start}-{window_end})"
+        context_parts.append(header)
+        current_token_usage += self.estimate_tokens(header)
+        
+        # Priority 2: Current standings
+        if hasattr(game, 'players'):
+            sorted_players = sorted(game.players, key=lambda p: p.points, reverse=True)
+            standings = []
+            for i, player in enumerate(sorted_players, 1):
+                standings.append(f"{i}. {player.name}: {player.points}pts")
+            standings_text = f"📊 STANDINGS: {' | '.join(standings[:4])}"
+            
+            if not token_budget or current_token_usage + self.estimate_tokens(standings_text) <= token_budget:
+                context_parts.append(standings_text)
+                current_token_usage += self.estimate_tokens(standings_text)
+        
+        # Priority 3: Recent rule changes in window (most critical for strategy)
+        if hasattr(game, 'proposals'):
+            recent_rules = []
+            for proposal in game.proposals:
+                if hasattr(proposal, 'turn_number') and window_start <= proposal.turn_number <= window_end:
+                    status = "✅" if getattr(proposal, 'passed', False) else "❌"
+                    # Adaptive rule text length based on available space
+                    rule_length = 50 if not token_budget else min(50, max(20, (token_budget - current_token_usage) // 10))
+                    recent_rules.append(f"T{proposal.turn_number}: {status} {proposal.rule_text[:rule_length]}...")
+            
+            if recent_rules:
+                # Show most recent rules first, truncate if needed
+                display_rules = recent_rules[-3:] if len(recent_rules) > 3 else recent_rules
+                rules_text = f"📜 RECENT RULES ({len(recent_rules)}): {' | '.join(display_rules)}"
+                
+                if not token_budget or current_token_usage + self.estimate_tokens(rules_text) <= token_budget:
+                    context_parts.append(rules_text)
+                    current_token_usage += self.estimate_tokens(rules_text)
+        
+        # Priority 4: Key strategic events (if space allows)
+        if hasattr(game, 'events'):
+            key_events = []
+            # Look for strategic events: point changes, voting patterns, rule effects
+            for event in game.events[-window_size * 5:]:  # More events for better coverage
+                if isinstance(event, str):
+                    event_lower = event.lower()
+                    if any(keyword in event_lower for keyword in [
+                        'passed', 'failed', 'gained', 'lost', 'points', 'leads', 'won', 'transmut', 'amend'
+                    ]):
+                        event_text = event[:40] + "..." if len(event) > 40 else event
+                        key_events.append(event_text)
+            
+            if key_events:
+                # Show most recent strategic events
+                display_events = key_events[-2:] if len(key_events) > 2 else key_events
+                events_text = f"⚡ KEY EVENTS: {' | '.join(display_events)}"
+                
+                if not token_budget or current_token_usage + self.estimate_tokens(events_text) <= token_budget:
+                    context_parts.append(events_text)
+                    current_token_usage += self.estimate_tokens(events_text)
+        
+        # Priority 5: Context metadata (always include if space)
+        total_rules = len(getattr(game, 'rules', {}).get('mutable', [])) + len(getattr(game, 'rules', {}).get('immutable', []))
+        meta_text = f"🔧 META: Turn {current_turn}, {total_rules} rules, {current_token_usage} tokens used"
+        
+        if not token_budget or current_token_usage + self.estimate_tokens(meta_text) <= token_budget:
+            context_parts.append(meta_text)
+        
+        result = "\n".join(context_parts)
+        
+        # Final safety check for token budget
+        if token_budget and self.estimate_tokens(result) > token_budget:
+            # Emergency compression - keep only essential parts
+            emergency_parts = context_parts[:3]  # Header, standings, and rules
+            result = "\n".join(emergency_parts)
+            result += f"\n⚠️ CONTEXT COMPRESSED due to {token_budget} token limit"
+        
+        return result
+
+    def update_rolling_context(self, game_context: dict, new_event: str) -> None:
+        """Update the rolling context with a new event"""
+        # This would be called when significant events happen
+        # For now, we'll store events in the context manager
+        if not hasattr(self, 'rolling_events'):
+            self.rolling_events = []
+        
+        # Add timestamp and trim to rolling window
+        timestamped_event = f"{datetime.now().strftime('%H:%M')} {new_event}"
+        self.rolling_events.append(timestamped_event)
+        
+        # Keep only recent events (sliding window)
+        max_events = 20  # Roughly 4 events per turn * 5 turns
+        if len(self.rolling_events) > max_events:
+            self.rolling_events = self.rolling_events[-max_events:]
+
+    def get_optimized_context_for_model(self, model: str, base_prompt: str, game_context: dict) -> str:
+        """Get optimized context specifically tailored for a model's capabilities"""
+        usage = self.get_context_usage(model)
+        game = game_context.get("game")
+        
+        # Get RAG-enhanced context if available
+        rag_context = ""
+        if game and hasattr(game, 'rag_system'):
+            try:
+                # Extract key terms from the prompt for RAG retrieval
+                prompt_keywords = " ".join(base_prompt.split()[:50])  # First 50 words
+                relevant_rules = game.rag_system.retrieve_relevant_rules(prompt_keywords, max_results=3)
+                
+                if relevant_rules:
+                    rag_context = "🔍 RELEVANT GAME HISTORY:\n"
+                    for rule in relevant_rules:
+                        rag_context += f"  Rule {rule['rule_id']}: {rule['text']}\n"
+                    rag_context += "\n"
+            except Exception as e:
+                print(f"RAG retrieval error: {e}")
+        
+        # Choose context strategy based on usage and model capabilities
+        if usage["usage_percentage"] > 95:
+            # Emergency: Use minimal context
+            return self._emergency_context_reduction(base_prompt, game_context)
+        
+        elif usage["usage_percentage"] > 85:
+            # High pressure: Use adaptive rolling window + RAG only with strict token budget
+            remaining_tokens = usage["remaining_tokens"]
+            rag_tokens = self.estimate_tokens(rag_context)
+            rolling_budget = max(1500, remaining_tokens - rag_tokens - 1000)  # Reserve 1000 for prompt end
+            rolling_context = self.create_rolling_context_window(game_context, window_size=3, token_budget=rolling_budget)
+            return f"[HIGH CONTEXT PRESSURE: RAG + Adaptive sliding window]\n\n{rag_context}{rolling_context}\n\n{base_prompt[-1000:]}"
+        
+        elif usage["usage_percentage"] > 75:
+            # Moderate pressure: Use adaptive rolling window + RAG + compressed history
+            remaining_tokens = usage["remaining_tokens"]
+            rag_tokens = self.estimate_tokens(rag_context)
+            rolling_budget = max(2000, (remaining_tokens - rag_tokens) // 2)  # Split remaining space
+            rolling_context = self.create_rolling_context_window(game_context, window_size=5, token_budget=rolling_budget)
+            compressed_history = self.compress_turn_history(game_context, num_turns=3)
+            return f"{rag_context}{rolling_context}\n\n{compressed_history}\n\n{base_prompt}"
+        
+        else:
+            # Normal: Use full adaptive rolling window with RAG enhancement
+            rolling_context = self.create_rolling_context_window(game_context, window_size=5)
+            return f"{rag_context}{rolling_context}\n\n{base_prompt}"
+
+
+class ComplexityDetectionEngine:
+    """Detects game state complexity to inform hybrid model selection"""
+    
+    def __init__(self):
+        self.complexity_weights = {
+            "late_game": 0.3,           # Turn 15+ pressure
+            "elimination_risk": 0.4,    # Player below 30 points
+            "close_competition": 0.3,   # Within 10 points of leader
+            "rule_complexity": 0.2,     # High number of active rules
+            "close_vote": 0.4,          # Predicted margin ≤ 1 vote
+            "meta_rule": 0.3,           # Rules about rules
+            "failed_proposals": 0.3,    # Multiple failures increase stakes
+            "alliance_formation": 0.2   # Strategic cooperation detected
+        }
+    
+    def calculate_game_state_complexity(self, game_state, player) -> float:
+        """Calculate complexity score for current game state (0.0-1.0)"""
+        complexity = 0.0
+        
+        # Late game pressure
+        if game_state.turn_number >= 15:
+            complexity += self.complexity_weights["late_game"]
+            
+        # Elimination risk
+        if player.points < 30:
+            complexity += self.complexity_weights["elimination_risk"]
+            
+        # Close competition
+        if hasattr(game_state, 'players'):
+            leader_points = max(p.points for p in game_state.players)
+            if abs(player.points - leader_points) <= 10:
+                complexity += self.complexity_weights["close_competition"]
+        
+        # Rule complexity
+        if hasattr(game_state, 'rules'):
+            total_rules = len(game_state.rules.get("mutable", [])) + len(game_state.rules.get("immutable", []))
+            if total_rules > 10:
+                complexity += self.complexity_weights["rule_complexity"]
+        
+        # Failed proposal history
+        if hasattr(player, 'failed_proposals') and player.failed_proposals > 2:
+            complexity += self.complexity_weights["failed_proposals"]
+            
+        return min(complexity, 1.0)
+    
+    def calculate_task_complexity(self, task_type: str, context: dict) -> float:
+        """Calculate complexity for specific task type"""
+        complexity = 0.0
+        
+        if task_type == "proposal_deliberation":
+            # Meta-rules are more complex
+            if context.get("involves_meta_rules", False):
+                complexity += self.complexity_weights["meta_rule"]
+                
+            # Amendment/transmutation complexity
+            if context.get("is_amendment", False) or context.get("is_transmutation", False):
+                complexity += 0.2
+                
+        elif task_type == "voting_decision":
+            # Close votes require more careful analysis
+            predicted_margin = context.get("predicted_vote_margin", 3)
+            if predicted_margin <= 1:
+                complexity += self.complexity_weights["close_vote"]
+                
+            # Direct impact on player
+            if context.get("affects_player_directly", False):
+                complexity += 0.3
+                
+        elif task_type == "alliance_analysis":
+            if context.get("alliance_formation_detected", False):
+                complexity += self.complexity_weights["alliance_formation"]
+        
+        return min(complexity, 1.0)
+    
+    def should_escalate_to_big_model(self, game_state, player, task_type: str, context: dict, budget_pressure: float) -> bool:
+        """Determine if task should use big model based on complexity and budget"""
+        game_complexity = self.calculate_game_state_complexity(game_state, player)
+        task_complexity = self.calculate_task_complexity(task_type, context)
+        
+        # Combined complexity score
+        total_complexity = (game_complexity + task_complexity) / 2
+        
+        # Adjust threshold based on budget pressure
+        base_threshold = 0.6
+        budget_adjusted_threshold = base_threshold + (budget_pressure * 0.3)
+        
+        # Always escalate for critical situations
+        if task_complexity >= 0.8 or game_complexity >= 0.8:
+            return True
+            
+        # Normal escalation logic
+        return total_complexity >= budget_adjusted_threshold
+
+
+class HybridModelSelector:
+    """Selects appropriate model (big/small) for each task in hybrid mode"""
+    
+    def __init__(self, openrouter_client):
+        self.client = openrouter_client
+        self.complexity_engine = ComplexityDetectionEngine()
+        self.escalation_history = {}  # Track escalation decisions for learning
+        
+    def get_model_for_player_task(self, player, task_type: str, game_state, context: dict = None) -> str:
+        """Select optimal model for player task based on complexity and budget"""
+        if not self.client.use_hybrid:
+            return player.model  # Use assigned model if not in hybrid mode
+            
+        if context is None:
+            context = {}
+            
+        # Get player's model family
+        family = self._get_model_family(player.model)
+        if family not in self.client.model_families:
+            return player.model  # Fallback to assigned model
+            
+        # Calculate budget pressure
+        total_cost = self.client.get_total_session_cost()
+        budget_pressure = min(total_cost / self.client.session_budget, 1.0)
+        
+        # Check if we should escalate to big model
+        should_escalate = self.complexity_engine.should_escalate_to_big_model(
+            game_state, player, task_type, context, budget_pressure
+        )
+        
+        if should_escalate:
+            selected_model = self.client.model_families[family]["big"]
+            self._log_escalation(player.id, task_type, "escalated", selected_model)
+        else:
+            selected_model = self.client.model_families[family]["small"]
+            self._log_escalation(player.id, task_type, "small_model", selected_model)
+            
+        return selected_model
+    
+    def _get_model_family(self, model: str) -> str:
+        """Determine which model family a model belongs to"""
+        if "claude" in model or "anthropic" in model:
+            return "claude"
+        elif "gpt" in model or "openai" in model:
+            return "openai"
+        elif "gemini" in model or "google" in model:
+            return "google"
+        elif "grok" in model or "x-ai" in model:
+            return "xai"
+        else:
+            return "unknown"
+    
+    def _log_escalation(self, player_id: int, task_type: str, decision: str, model: str):
+        """Log escalation decisions for analysis"""
+        if player_id not in self.escalation_history:
+            self.escalation_history[player_id] = []
+            
+        self.escalation_history[player_id].append({
+            "timestamp": datetime.now().isoformat(),
+            "task_type": task_type,
+            "decision": decision,
+            "model": model
+        })
+    
+    def get_escalation_stats(self) -> dict:
+        """Get statistics about escalation decisions"""
+        stats = {
+            "total_decisions": 0,
+            "escalations": 0,
+            "small_model_usage": 0,
+            "by_task_type": {},
+            "by_player": {}
+        }
+        
+        for player_id, decisions in self.escalation_history.items():
+            stats["by_player"][player_id] = {
+                "total": len(decisions),
+                "escalated": sum(1 for d in decisions if d["decision"] == "escalated"),
+                "small_model": sum(1 for d in decisions if d["decision"] == "small_model")
+            }
+            
+            for decision in decisions:
+                stats["total_decisions"] += 1
+                if decision["decision"] == "escalated":
+                    stats["escalations"] += 1
+                else:
+                    stats["small_model_usage"] += 1
+                    
+                task_type = decision["task_type"]
+                if task_type not in stats["by_task_type"]:
+                    stats["by_task_type"][task_type] = {"escalated": 0, "small_model": 0}
+                if decision["decision"] == "escalated":
+                    stats["by_task_type"][task_type]["escalated"] += 1
+                else:
+                    stats["by_task_type"][task_type]["small_model"] += 1
+        
+        return stats
+
+
+class BasicRAGSystem:
+    """Basic Retrieval-Augmented Generation system for Nomic game context"""
+    
+    def __init__(self):
+        self.rule_index = {}  # rule_id -> rule_text with metadata
+        self.proposal_history = []  # List of past proposals with outcomes
+        self.player_patterns = {}  # player_id -> patterns in their behavior
+        self.keyword_index = {}  # keyword -> list of related rules/events
+        
+    def index_rule(self, rule_id: int, rule_text: str, metadata: dict):
+        """Index a rule for later retrieval"""
+        self.rule_index[rule_id] = {
+            "text": rule_text,
+            "metadata": metadata,
+            "keywords": self._extract_keywords(rule_text)
+        }
+        
+        # Update keyword index
+        for keyword in self._extract_keywords(rule_text):
+            if keyword not in self.keyword_index:
+                self.keyword_index[keyword] = []
+            self.keyword_index[keyword].append(f"rule_{rule_id}")
+    
+    def index_proposal(self, proposal_id: int, proposal_text: str, player_id: int, outcome: bool, turn: int):
+        """Index a proposal for pattern analysis"""
+        proposal_data = {
+            "id": proposal_id,
+            "text": proposal_text,
+            "player_id": player_id,
+            "outcome": outcome,
+            "turn": turn,
+            "keywords": self._extract_keywords(proposal_text)
+        }
+        
+        self.proposal_history.append(proposal_data)
+        
+        # Update player patterns
+        if player_id not in self.player_patterns:
+            self.player_patterns[player_id] = {"successful": [], "failed": []}
+        
+        if outcome:
+            self.player_patterns[player_id]["successful"].append(proposal_data)
+        else:
+            self.player_patterns[player_id]["failed"].append(proposal_data)
+    
+    def retrieve_relevant_rules(self, query: str, max_results: int = 5) -> list:
+        """Retrieve rules relevant to a query"""
+        query_keywords = self._extract_keywords(query)
+        
+        # Score rules by keyword overlap
+        rule_scores = {}
+        for rule_id, rule_data in self.rule_index.items():
+            score = len(set(query_keywords) & set(rule_data["keywords"]))
+            if score > 0:
+                rule_scores[rule_id] = score
+        
+        # Return top matches
+        top_rules = sorted(rule_scores.items(), key=lambda x: x[1], reverse=True)[:max_results]
+        
+        results = []
+        for rule_id, score in top_rules:
+            results.append({
+                "rule_id": rule_id,
+                "text": self.rule_index[rule_id]["text"][:200] + "...",
+                "relevance_score": score
+            })
+        
+        return results
+    
+    def get_player_patterns(self, player_id: int) -> dict:
+        """Get behavioral patterns for a specific player"""
+        if player_id not in self.player_patterns:
+            return {"message": "No patterns found for this player"}
+        
+        patterns = self.player_patterns[player_id]
+        successful_count = len(patterns["successful"])
+        failed_count = len(patterns["failed"])
+        total_count = successful_count + failed_count
+        
+        if total_count == 0:
+            return {"message": "No proposal history for this player"}
+        
+        # Extract common keywords from successful proposals
+        successful_keywords = []
+        for proposal in patterns["successful"]:
+            successful_keywords.extend(proposal["keywords"])
+        
+        # Find most common successful patterns
+        from collections import Counter
+        common_successful = Counter(successful_keywords).most_common(3)
+        
+        return {
+            "success_rate": round((successful_count / total_count) * 100, 1),
+            "total_proposals": total_count,
+            "successful_patterns": [keyword for keyword, count in common_successful],
+            "recent_successful": [p["text"][:60] + "..." for p in patterns["successful"][-2:]],
+            "recent_failed": [p["text"][:60] + "..." for p in patterns["failed"][-2:]]
+        }
+    
+    def get_contextual_suggestions(self, current_situation: str, player_id: int) -> dict:
+        """Get AI-powered suggestions based on current situation and history"""
+        situation_keywords = self._extract_keywords(current_situation)
+        
+        # Find similar past situations
+        similar_proposals = []
+        for proposal in self.proposal_history[-20:]:  # Recent history
+            overlap = len(set(situation_keywords) & set(proposal["keywords"]))
+            if overlap > 0:
+                similar_proposals.append((proposal, overlap))
+        
+        # Sort by relevance
+        similar_proposals.sort(key=lambda x: x[1], reverse=True)
+        
+        # Get player-specific insights
+        player_patterns = self.get_player_patterns(player_id)
+        
+        suggestions = {
+            "relevant_history": [
+                f"T{p[0]['turn']}: {p[0]['text'][:60]}... ({'✅' if p[0]['outcome'] else '❌'})"
+                for p in similar_proposals[:3]
+            ],
+            "player_success_rate": player_patterns.get("success_rate", 0),
+            "recommended_approach": self._generate_approach_recommendation(situation_keywords, player_patterns)
+        }
+        
+        return suggestions
+    
+    def _extract_keywords(self, text: str) -> list:
+        """Extract relevant keywords from text"""
+        # Simple keyword extraction - could be enhanced with NLP
+        import re
+        
+        # Common Nomic keywords
+        nomic_keywords = [
+            "points", "vote", "proposal", "rule", "player", "turn", "mutable", "immutable",
+            "gain", "lose", "win", "pass", "fail", "unanimous", "majority", "transmute",
+            "amend", "repeal", "leader", "last place", "negative", "positive"
+        ]
+        
+        text_lower = text.lower()
+        found_keywords = []
+        
+        for keyword in nomic_keywords:
+            if keyword in text_lower:
+                found_keywords.append(keyword)
+        
+        # Extract numbers (often important in Nomic)
+        numbers = re.findall(r'\d+', text)
+        found_keywords.extend([f"num_{num}" for num in numbers[:3]])  # Limit to first 3 numbers
+        
+        return found_keywords
+    
+    def _generate_approach_recommendation(self, keywords: list, player_patterns: dict) -> str:
+        """Generate a strategic approach recommendation"""
+        if not player_patterns or player_patterns.get("total_proposals", 0) == 0:
+            return "Focus on mutual benefit proposals for first-time success"
+        
+        success_rate = player_patterns.get("success_rate", 0)
+        successful_patterns = player_patterns.get("successful_patterns", [])
+        
+        if success_rate > 70:
+            return f"High success rate! Continue using your effective patterns: {', '.join(successful_patterns[:2])}"
+        elif success_rate > 40:
+            return f"Moderate success. Try incorporating successful elements: {', '.join(successful_patterns[:2])}"
+        else:
+            return "Low success rate. Consider more collaborative, mutual-benefit approaches"
+
+
+class FailureRecoverySystem:
+    """System to detect and recover from critical game failures"""
+    
+    def __init__(self):
+        self.failure_history = []
+        self.recovery_strategies = []
+        self.critical_thresholds = {
+            "context_failures": 3,  # Too many context window failures
+            "generation_failures": 5,  # Too many generation failures
+            "all_negative_turns": 3,  # All players negative for too long
+            "no_progress_turns": 10,  # No successful proposals for too long
+        }
+        self.active_interventions = []
+    
+    def detect_failure_patterns(self, game_context: dict) -> list:
+        """Detect if the game is in a failure state"""
+        failures = []
+        game = game_context.get("game")
+        
+        if not game:
+            return failures
+        
+        # Check for context window failures
+        if hasattr(game, 'context_manager'):
+            high_pressure_models = 0
+            for model in game.context_manager.current_usage:
+                usage = game.context_manager.get_context_usage(model)
+                if usage["usage_percentage"] > 95:
+                    high_pressure_models += 1
+            
+            if high_pressure_models >= 2:
+                failures.append({
+                    "type": "context_critical",
+                    "severity": "high", 
+                    "description": f"{high_pressure_models} models at critical context usage",
+                    "suggested_intervention": "emergency_context_reset"
+                })
+        
+        # Check for all players in negative points (death spiral)
+        if hasattr(game, 'players'):
+            all_negative = all(p.points < 0 for p in game.players)
+            if all_negative:
+                failures.append({
+                    "type": "death_spiral",
+                    "severity": "critical",
+                    "description": "All players have negative points",
+                    "suggested_intervention": "emergency_point_recovery"
+                })
+        
+        # Check for generation failures pattern
+        if hasattr(game, 'events'):
+            recent_events = game.events[-20:] if len(game.events) >= 20 else game.events
+            failure_count = sum(1 for event in recent_events if "failed" in str(event).lower() or "error" in str(event).lower())
+            if failure_count > 10:  # More than 50% failure rate
+                failures.append({
+                    "type": "generation_failures",
+                    "severity": "medium",
+                    "description": f"High failure rate: {failure_count}/20 recent events",
+                    "suggested_intervention": "simplify_prompts"
+                })
+        
+        # Check for no progress (no successful proposals)
+        if hasattr(game, 'proposals'):
+            recent_successful = 0
+            for proposal in game.proposals[-10:]:  # Last 10 proposals
+                if hasattr(proposal, 'passed') and proposal.passed:
+                    recent_successful += 1
+            
+            if len(game.proposals) >= 10 and recent_successful == 0:
+                failures.append({
+                    "type": "no_progress",
+                    "severity": "medium", 
+                    "description": "No successful proposals in last 10 attempts",
+                    "suggested_intervention": "collaborative_emergency_rule"
+                })
+        
+        return failures
+    
+    def implement_recovery_intervention(self, intervention_type: str, game_context: dict) -> dict:
+        """Implement a specific recovery intervention"""
+        game = game_context.get("game")
+        if not game:
+            return {"success": False, "error": "No game context"}
+        
+        intervention_result = {"success": False, "intervention": intervention_type, "actions": []}
+        
+        if intervention_type == "emergency_context_reset":
+            # Reset context usage for all models
+            if hasattr(game, 'context_manager'):
+                game.context_manager.reset_usage()
+                intervention_result["actions"].append("Reset all model context usage")
+                intervention_result["success"] = True
+        
+        elif intervention_type == "emergency_point_recovery":
+            # Emergency rule to help all players get positive points
+            if hasattr(game, 'players'):
+                for player in game.players:
+                    if player.points < 0:
+                        boost = abs(player.points) + 20  # Get to +20 points
+                        player.points += boost
+                        intervention_result["actions"].append(f"Emergency boost: {player.name} +{boost} points")
+                
+                # Add emergency rule to prevent future death spirals
+                emergency_rule_text = "Emergency Recovery: If all players have negative points, all players immediately gain 30 points."
+                intervention_result["actions"].append(f"Added emergency rule: {emergency_rule_text}")
+                intervention_result["success"] = True
+        
+        elif intervention_type == "simplify_prompts":
+            # Temporarily reduce context complexity
+            if hasattr(game, 'context_manager'):
+                # Force all models to use emergency context reduction
+                original_method = game.context_manager.get_optimized_context_for_model
+                def simplified_context(model, base_prompt, game_context):
+                    return game.context_manager._emergency_context_reduction(base_prompt, game_context)
+                
+                game.context_manager.get_optimized_context_for_model = simplified_context
+                intervention_result["actions"].append("Activated simplified prompt mode")
+                intervention_result["success"] = True
+        
+        elif intervention_type == "collaborative_emergency_rule":
+            # Suggest an emergency collaborative rule
+            emergency_rule = "Emergency Collaboration: All players gain 5 points when any proposal passes unanimously."
+            intervention_result["actions"].append(f"Suggested emergency rule: {emergency_rule}")
+            intervention_result["emergency_rule_suggestion"] = emergency_rule
+            intervention_result["success"] = True
+        
+        # Log the intervention
+        if intervention_result["success"]:
+            self.active_interventions.append({
+                "type": intervention_type,
+                "timestamp": datetime.now(),
+                "actions": intervention_result["actions"]
+            })
+            
+            if hasattr(game, 'add_event'):
+                game.add_event(f"🚨 FAILURE RECOVERY: {intervention_type} activated")
+        
+        return intervention_result
+    
+    def monitor_game_health(self, game_context: dict) -> dict:
+        """Continuous monitoring of game health with automated interventions"""
+        failures = self.detect_failure_patterns(game_context)
+        health_report = {
+            "status": "healthy" if not failures else "critical" if any(f["severity"] == "critical" for f in failures) else "warning",
+            "detected_failures": failures,
+            "interventions_applied": [],
+            "recommendations": []
+        }
+        
+        # Auto-apply critical interventions
+        for failure in failures:
+            if failure["severity"] == "critical":
+                intervention = self.implement_recovery_intervention(
+                    failure["suggested_intervention"], game_context
+                )
+                if intervention["success"]:
+                    health_report["interventions_applied"].append(intervention)
+            else:
+                # Add recommendations for non-critical issues
+                health_report["recommendations"].append({
+                    "issue": failure["description"],
+                    "suggested_action": failure["suggested_intervention"]
+                })
+        
+        return health_report
+
 
 @dataclass
 class RuleEffect:
@@ -622,6 +1940,7 @@ class ParsedRule:
     effects: List[RuleEffect] = field(default_factory=list)
     author: Optional[int] = None
     turn_added: Optional[int] = None
+    active: bool = True  # Allow rules to be dynamically enabled/disabled
 
 
 class RuleParser:
@@ -674,6 +1993,8 @@ class RuleParser:
                     trigger = "turn_start"
                 elif "vote" in text_lower and "pass" in text_lower:
                     trigger = "vote_pass"
+                elif "vote on" in text_lower or "voting" in text_lower:
+                    trigger = "vote_cast"
                 elif "propose" in text_lower:
                     trigger = "proposal_made"
 
@@ -853,9 +2174,17 @@ class ProtoCharacter:
         """Check if character should be rotated out due to neutral games limit"""
         return self.games_without_decision >= 2
     
-    def get_preferred_deliberation_turns(self, complexity: str = "medium") -> int:
-        """Get preferred number of deliberation turns based on traits and situation"""
+    def get_preferred_deliberation_turns(self, complexity: str = "medium", context_pressure: float = 0.0) -> int:
+        """Get preferred number of deliberation turns based on traits, situation, and context pressure"""
         min_turns, max_turns = self.traits.deliberation_range
+        
+        # Reduce deliberation turns under context pressure
+        if context_pressure > 0.95:  # Critical context pressure
+            return 1  # Emergency single-turn deliberation
+        elif context_pressure > 0.85:  # High context pressure
+            return min(2, min_turns)  # Maximum 2 turns
+        elif context_pressure > 0.75:  # Moderate context pressure
+            return min_turns  # Use minimum turns
         
         # Adjust based on complexity preference and situation
         if complexity == "simple" and self.traits.decision_speed == "fast":
@@ -1003,7 +2332,7 @@ class CharacterManager:
                 )
             ),
             ProtoCharacter(
-                name="Storm Walker",
+                name="Alex Storm",
                 strategy="Unpredictable Maverick - uses erratic patterns and surprising moves to confuse opponents",
                 model="openai/gpt-4o-mini",
                 family="gpt4o",
@@ -1017,7 +2346,7 @@ class CharacterManager:
                 )
             ),
             ProtoCharacter(
-                name="Phoenix Rising",
+                name="Riley Phoenix",
                 strategy="Comeback Specialist - thrives in difficult positions and turns defeats into victories",
                 model="openai/gpt-4o-mini",
                 family="gpt4o",
@@ -1091,7 +2420,7 @@ class CharacterManager:
                 )
             ),
             ProtoCharacter(
-                name="Architect Prime",
+                name="Morgan Prime",
                 strategy="System Builder - designs comprehensive rule frameworks and long-term game structures",
                 model="anthropic/claude-3.5-sonnet",
                 family="claude_sonnet",
@@ -1123,7 +2452,7 @@ class CharacterManager:
                 )
             ),
             ProtoCharacter(
-                name="Spark Wild",
+                name="Quinn Wild",
                 strategy="Creative Disruptor - breaks conventional patterns with innovative and unexpected rule proposals",
                 model="anthropic/claude-3.5-haiku",
                 family="claude_haiku",
@@ -1313,7 +2642,7 @@ class CharacterManager:
         if self.last_game_winner and num_players >= 1:
             winner_char = self.get_character(self.last_game_winner)
             selected_characters.append(winner_char)
-            print(f"🏆 Winner {self.last_game_winner} retained for next game")
+            print(f" Winner {self.last_game_winner} retained for next game")
             
             # Remove winner's family from selection pool for this round
             winner_family = winner_char.family
@@ -1402,6 +2731,9 @@ class Proposal:
     votes: Dict[int, bool] = None
     is_transmutation: bool = False
     transmute_target_rule: int = None
+    is_amendment: bool = False
+    amend_target_rule: int = None
+    original_rule_text: str = None
     
     def __post_init__(self):
         if self.votes is None:
@@ -1415,6 +2747,15 @@ class Proposal:
             match = re.search(r'transmute rule (\d+)', self.rule_text.lower())
             if match:
                 self.transmute_target_rule = int(match.group(1))
+        
+        # Auto-detect amendment from rule text
+        elif "amend rule" in self.rule_text.lower():
+            self.is_amendment = True
+            # Extract rule number
+            import re
+            match = re.search(r'amend rule (\d+)', self.rule_text.lower())
+            if match:
+                self.amend_target_rule = int(match.group(1))
 
 
 @dataclass
@@ -1579,6 +2920,81 @@ class GameSessionManager:
                         sessions.append(GameSession(**data))
         return sorted(sessions, key=lambda s: s.start_time, reverse=True)
 
+    def find_latest_in_progress_session(self) -> Optional[str]:
+        """Find the most recent session that is still in progress (no end_time)"""
+        if not os.path.exists(self.sessions_dir):
+            return None
+        
+        in_progress_sessions = []
+        for session_dir in os.listdir(self.sessions_dir):
+            metadata_path = os.path.join(self.sessions_dir, session_dir, "game_metadata.json")
+            if os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, "r") as f:
+                        data = json.load(f)
+                        # Check if session is in progress (no end_time)
+                        if not data.get("end_time"):
+                            in_progress_sessions.append((session_dir, data.get("start_time", "")))
+                except Exception as e:
+                    print(f"Warning: Could not read session {session_dir}: {e}")
+                    continue
+        
+        if not in_progress_sessions:
+            return None
+        
+        # Return the most recent in-progress session
+        in_progress_sessions.sort(key=lambda x: x[1], reverse=True)
+        return in_progress_sessions[0][0]
+
+    def load_session_data(self, session_id: str) -> Optional[Dict]:
+        """Load complete session data for resuming"""
+        session_path = os.path.join(self.sessions_dir, session_id)
+        if not os.path.exists(session_path):
+            return None
+        
+        session_data = {}
+        
+        # Load metadata
+        metadata_path = os.path.join(session_path, "game_metadata.json")
+        if os.path.exists(metadata_path):
+            with open(metadata_path, "r") as f:
+                session_data["metadata"] = json.load(f)
+        
+        # Load turn logs
+        turn_logs_path = os.path.join(session_path, "turn_logs.json")
+        if os.path.exists(turn_logs_path):
+            with open(turn_logs_path, "r") as f:
+                session_data["turn_logs"] = json.load(f)
+        
+        # Load player states
+        player_states_path = os.path.join(session_path, "player_states.json")
+        if os.path.exists(player_states_path):
+            with open(player_states_path, "r") as f:
+                player_states_data = json.load(f)
+                session_data["player_states"] = player_states_data.get("states", {})
+        
+        # Load idle turns
+        idle_turns_path = os.path.join(session_path, "idle_turns.json")
+        if os.path.exists(idle_turns_path):
+            with open(idle_turns_path, "r") as f:
+                session_data["idle_turns"] = json.load(f)
+        
+        return session_data
+
+    def resume_session(self, session_id: str) -> bool:
+        """Resume an existing session"""
+        session_data = self.load_session_data(session_id)
+        if not session_data or not session_data.get("metadata"):
+            return False
+        
+        metadata = session_data["metadata"]
+        self.current_session = GameSession(**metadata)
+        print(f"✅ Resumed session: {session_id}")
+        print(f"   Started: {metadata.get('start_time', 'Unknown')}")
+        print(f"   Players: {len(metadata.get('players', []))}")
+        print(f"   Total turns: {metadata.get('total_turns', 0)}")
+        return True
+
 
 class InternalStateTracker:
     """Manages comprehensive player internal state tracking"""
@@ -1653,14 +3069,14 @@ class IdleTurnProcessor:
 
         prompt = f"""{context_header}
 
-🧠 IDLE TURN STRATEGIC ANALYSIS (Background Thinking)
+ IDLE TURN STRATEGIC ANALYSIS (Background Thinking)
 
 You have idle time while other players take their turns. Use this time for deep strategic thinking.
 
 Your Current Strategic State:
-• Focus: {state.get('strategic_focus', 'Not set')}
-• Victory Path: {state.get('victory_path', 'Not defined')}
-• Current Threats: {state.get('threat_assessments', {})}
+- Focus: {state.get('strategic_focus', 'Not set')}
+- Victory Path: {state.get('victory_path', 'Not defined')}
+- Current Threats: {state.get('threat_assessments', {})}
 
 IDLE TURN ANALYSIS TASKS:
 
@@ -2251,11 +3667,11 @@ class DeliberationManager:
             
             if all_same_points:
                 # Everyone tied - show as equal footing
-                rank_indicator = "🟰" 
+                rank_indicator = "" 
                 status = "TIED"
             else:
                 # Normal ranking
-                rank_indicator = "🥇" if i == 0 else "🥈" if i == 1 else "🥉" if i == 2 else f"#{i + 1}"
+                rank_indicator = "" if i == 0 else "" if i == 1 else "" if i == 2 else f"#{i + 1}"
                 status = f"Rank #{i + 1}"
                 
             player_progress.append(f"{rank_indicator} {p['name']}: {p['points']}/100 pts (need {points_needed})")
@@ -2288,71 +3704,116 @@ class DeliberationManager:
             if hasattr(player, 'character') and player.character:
                 char = player.character
                 character_context = f"""
-🎭 YOUR CHARACTER: {char.name} ({char.strategy})
-📊 YOUR TRACK RECORD: {char.games_played} games played, {char.total_wins} wins ({char.get_win_rate()*100:.1f}% win rate)
-🧠 YOUR MEMORY: {char.persistent_thought if char.persistent_thought else "No persistent thoughts from previous games"}"""
+ YOUR CHARACTER: {char.name} ({char.strategy})
+ YOUR TRACK RECORD: {char.games_played} games played, {char.total_wins} wins ({char.get_win_rate()*100:.1f}% win rate)
+ YOUR MEMORY: {char.persistent_thought if char.persistent_thought else "No persistent thoughts from previous games"}"""
                 
             # Better status description for early game
             if all_same_points:
-                status_description = f"🟰 TIED with all players at {my_points}/100 points ({points_to_win} points needed to WIN)"
-                competitive_note = "• Everyone starts on equal footing - focus on good proposals that can pass"
+                status_description = f" TIED with all players at {my_points}/100 points ({points_to_win} points needed to WIN)"
+                competitive_note = "- Everyone starts on equal footing - focus on good proposals that can pass"
             else:
-                status_description = f"🎯 YOUR STATUS: Rank #{my_rank} with {my_points}/100 points ({points_to_win} points needed to WIN)"
-                competitive_note = "• Focus on gaining advantage while getting unanimous support"
+                status_description = f" YOUR STATUS: Rank #{my_rank} with {my_points}/100 points ({points_to_win} points needed to WIN)"
+                competitive_note = "- Focus on gaining advantage while getting unanimous support"
                 
             player_context = f"""
 {status_description}
-📈 YOUR GOAL: Get to 100 points before anyone else does
-🔄 TURN ORDER: {turn_order_info}
-⏰ TEMPORAL POSITION: Turn {current_turn}, {self._get_game_phase_description(current_turn, leader['points'])}
+ YOUR GOAL: Get to 100 points before anyone else does
+ TURN ORDER: {turn_order_info}
+ TEMPORAL POSITION: Turn {current_turn}, {self._get_game_phase_description(current_turn, leader['points'])}
 {competitive_note}{character_context}"""
 
         context_header = f"""
-═══════════════════════════════════════════════════════════════
-🎮 GAME: NOMIC (Self-Modifying Competitive Rule Game)
-🏆 VICTORY CONDITION: First player to reach 100 POINTS wins the game
-🎯 WIN OBJECTIVE: Propose and vote strategically to reach 100 points first
-═══════════════════════════════════════════════════════════════
 
-📊 CURRENT GAME STATUS (Turn {game_state.get('turn', 1)}):
+ GAME: NOMIC (Self-Modifying Competitive Rule Game)
+ VICTORY CONDITION: First player to reach 100 POINTS wins the game
+ WIN OBJECTIVE: Propose and vote strategically to reach 100 points first
+
+
+ CURRENT GAME STATUS (Turn {game_state.get('turn', 1)}):
 {chr(10).join(player_progress)}
 
-🏁 VICTORY ANALYSIS:
-• Current Situation: {leader_status} {"(everyone equal)" if all_same_points else f"with {leader['points']} points (ahead by {leader_advantage})"}
-• Distance to Victory: {leader['name']} needs {100 - leader['points']} more points to WIN
-• Game Stage: {("🌱 Early game - all players equal, focus on fundament" if all_same_points else "Early stage") if leader['points'] < 70 else "LATE STAGE - Victory approaching!" if leader['points'] < 90 else "CRITICAL - Someone about to WIN!"}
+ VICTORY ANALYSIS:
+- Current Situation: {leader_status} {"(everyone equal)" if all_same_points else f"with {leader['points']} points (ahead by {leader_advantage})"}
+- Distance to Victory: {leader['name']} needs {100 - leader['points']} more points to WIN
+- Game Stage: {(" Early game - all players equal, focus on fundament" if all_same_points else "Early stage") if leader['points'] < 70 else "LATE STAGE - Victory approaching!" if leader['points'] < 90 else "CRITICAL - Someone about to WIN!"}
 {player_context}
 
 {temporal_context}
 
-📜 NOMIC RULES PRIMER:
-• NOMIC is a game where players compete by changing the rules to help themselves win
-• You propose RULES that affect: point scoring, turn order, voting, player interactions
-• Valid Nomic rules affect GAMEPLAY: how points are gained/lost, how turns work, how voting works
-• INVALID rules: Real-world topics (city planning, energy audits, external policies)
+ NOMIC RULES PRIMER:
+- NOMIC is a game where players compete by changing the rules to help themselves win
+- You propose RULES that affect: point scoring, turn order, voting, player interactions
+- Valid Nomic rules affect GAMEPLAY: how points are gained/lost, how turns work, how voting works
+- INVALID rules: Real-world topics (city planning, energy audits, external policies)
 
-✅ EXAMPLES OF VALID NOMIC RULES (with mutual benefit appeal):
-• "Players in last place gain 3 bonus points each turn" (helps trailing players - likely to get support)
-• "All players gain 1 point for voting on proposals" (benefits everyone - encourages participation)  
-• "Players gain 2 points for proposing creative rules" (incentivizes good proposals from all)
-• "If no proposals pass for 2 turns, all players lose 2 points" (motivates cooperation)
-• "Players who reach 90+ points lose 1 point per turn" (anti-runaway, appeals to non-leaders)
+ EXAMPLES OF VALID NOMIC RULES (with mutual benefit appeal):
+- "Players in last place gain 3 bonus points each turn" (helps trailing players - likely to get support)
+- "All players gain 1 point for voting on proposals" (benefits everyone - encourages participation)  
+- "Players gain 2 points for proposing creative rules" (incentivizes good proposals from all)
+- "If no proposals pass for 2 turns, all players lose 2 points" (motivates cooperation)
+- "Players who reach 90+ points lose 1 point per turn" (anti-runaway, appeals to non-leaders)
 
-❌ INVALID (NOT NOMIC RULES):
-• City council policies, energy audits, building regulations
-• Real-world governance, environmental policies
-• Rules about external games or non-Nomic activities
+ INVALID (NOT NOMIC RULES):
+- City council policies, energy audits, building regulations
+- Real-world governance, environmental policies
+- Rules about external games or non-Nomic activities
 
-🎯 NOMIC STRATEGIC REALITY:
-• You are competing to WIN - reach 100 points first
-• BUT: All proposals need UNANIMOUS SUPPORT to pass (100% agreement required)
-• THEREFORE: You must propose rules that others will vote FOR, not against
-• WINNING STRATEGY: Create rules that benefit you while being acceptable to others
-• MUTUAL BENEFIT is key - purely selfish rules always fail in Nomic
-• Consider: "How can this rule help me while also being appealing to others?"
-═══════════════════════════════════════════════════════════════
+ NOMIC STRATEGIC REALITY:
+- You are competing to WIN - reach 100 points first
+- BUT: All proposals need UNANIMOUS SUPPORT to pass (100% agreement required)
+- THEREFORE: You must propose rules that others will vote FOR, not against
+- WINNING STRATEGY: Create rules that benefit you while being acceptable to others
+- MUTUAL BENEFIT is key - purely selfish rules always fail in Nomic
+- Consider: "How can this rule help me while also being appealing to others?"
+
+ RULE ECOSYSTEM AWARENESS:
+- Rules come in two types: MUTABLE (changeable) and IMMUTABLE (unchangeable)
+- Mutable rules can be: amended (changed/neutralized) or transmuted
+- Immutable rules can only be transmuted to mutable (then amended)
+- STRATEGIC QUESTION: Are harmful rules mutable? Can beneficial rules be protected?
+
+{self._get_rule_status_display(game_state)}
+
 """
         return context_header
+
+    def _get_rule_status_display(self, game_state: Dict) -> str:
+        """Display current rules with their mutable/immutable status"""
+        try:
+            if hasattr(self, 'game_instance') and self.game_instance and hasattr(self.game_instance, 'rules'):
+                display = " CURRENT RULE STATUS:\n"
+                
+                # Show key immutable rules
+                display += " IMMUTABLE RULES (cannot be changed directly):\n"
+                key_immutable = [
+                    ("117", "Zero points = everyone loses immediately"),
+                    ("109", "Transmuting immutable→mutable needs unanimous vote"),
+                    ("112", "Victory at 100 points cannot be changed")
+                ]
+                for rule_id, desc in key_immutable:
+                    display += f"   Rule {rule_id}: {desc}\n"
+                
+                # Show all mutable rules with emphasis on harmful ones
+                display += "\n MUTABLE RULES (CAN be amended!):\n"
+                
+                # Check for Rule 206 specifically
+                for rule in self.game_instance.rules.get('mutable', []):
+                    if rule.id == 206:
+                        display += f"   Rule 206: Failed proposals lose 10 points [CHANGEABLE - CAUSING PAIN!]\n"
+                        break
+                
+                # Show other mutable rules
+                for rule in self.game_instance.rules.get('mutable', []):
+                    if rule.id >= 301:  # Player-created rules
+                        display += f"   Rule {rule.id}: {rule.text[:60]}...\n"
+                
+                display += "\n STRATEGIC INSIGHT: Rules causing problems can be changed if they're mutable!\n"
+                return display
+            else:
+                return ""
+        except:
+            return ""
 
     def _generate_temporal_context(self, game_state: Dict, player=None) -> str:
         """Generate temporal context showing recent game history and trends"""
@@ -2369,7 +3830,7 @@ class DeliberationManager:
         if player and hasattr(self, 'game_instance') and self.game_instance:
             player_history = self._get_player_temporal_insights(player, game_state)
         
-        temporal_section = f"""⏰ TEMPORAL CONTEXT & GAME HISTORY:
+        temporal_section = f""" TEMPORAL CONTEXT & GAME HISTORY:
 {recent_proposals}
 {voting_trends}
 {player_history}"""
@@ -2384,9 +3845,9 @@ class DeliberationManager:
                 proposals = self.game_instance.proposals[-5:]  # Last 5 proposals
                 
                 if not proposals:
-                    return "📋 RECENT PROPOSALS: No proposals have been made yet"
+                    return " RECENT PROPOSALS: No proposals have been made yet"
                 
-                proposal_summary = "📋 RECENT PROPOSAL HISTORY (Learn from failures!):\n"
+                proposal_summary = " RECENT PROPOSAL HISTORY (Learn from failures!):\n"
                 
                 for proposal in proposals:
                     # Calculate vote results
@@ -2396,7 +3857,7 @@ class DeliberationManager:
                         percentage = (ayes / total) * 100 if total > 0 else 0
                         passed = percentage >= 100  # Assuming unanimous requirement
                         
-                        result_emoji = "✅" if passed else "❌"
+                        result_emoji = "" if passed else ""
                         vote_summary = f"({ayes}/{total} = {percentage:.0f}%)"
                         
                         # Analyze why failed proposals failed
@@ -2413,42 +3874,42 @@ class DeliberationManager:
                         
                         proposal_summary += f"   {result_emoji} \"{proposal.rule_text[:50]}...\" {vote_summary}{failure_reason}\n"
                     else:
-                        proposal_summary += f"   ⏳ \"{proposal.rule_text[:50]}...\" (voting in progress)\n"
+                        proposal_summary += f"    \"{proposal.rule_text[:50]}...\" (voting in progress)\n"
                 
                 # Add learning note
                 failed_count = len([p for p in proposals if p.votes and sum(p.votes.values()) < len(p.votes)])
                 if failed_count > 0:
-                    proposal_summary += f"\n💡 LEARNING: {failed_count} recent proposals failed - focus on MUTUAL BENEFIT to get unanimous support!"
+                    proposal_summary += f"\n LEARNING: {failed_count} recent proposals failed - focus on MUTUAL BENEFIT to get unanimous support!"
                 
                 return proposal_summary
             else:
                 # Fallback to simple display
                 rules = game_state.get('mutable_rules', [])
                 if not rules:
-                    return "📋 RECENT PROPOSALS: No rules have been successfully passed yet"
+                    return " RECENT PROPOSALS: No rules have been successfully passed yet"
                 
-                recent_rules_text = "📋 RECENT SUCCESSFUL RULES:\n"
+                recent_rules_text = " RECENT SUCCESSFUL RULES:\n"
                 for i, rule in enumerate(rules[-3:], 1):  # Last 3 rules
                     recent_rules_text += f"   {i}. {rule.get('text', 'Unknown rule')[:60]}...\n"
                 
                 return recent_rules_text
                 
         except Exception as e:
-            return "📋 RECENT PROPOSALS: Unable to load proposal history"
+            return " RECENT PROPOSALS: Unable to load proposal history"
     
     def _get_voting_trends(self, game_state: Dict) -> str:
         """Analyze recent voting patterns"""
         # Basic voting trend analysis
-        return "🗳️  VOTING TRENDS: Players showing strategic voting patterns based on position"
+        return "  VOTING TRENDS: Players showing strategic voting patterns based on position"
     
     def _get_player_temporal_insights(self, player, game_state: Dict) -> str:
         """Get player-specific historical insights"""
         current_turn = game_state.get('turn', 1)
         
-        insights = f"""🧠 YOUR RECENT PERFORMANCE:
-   • Turn History: You are in turn {current_turn} of the game
-   • Strategy Notes: Consider what worked/failed in previous proposals
-   • Learning Opportunity: Adapt based on other players' voting patterns"""
+        insights = f""" YOUR RECENT PERFORMANCE:
+   - Turn History: You are in turn {current_turn} of the game
+   - Strategy Notes: Consider what worked/failed in previous proposals
+   - Learning Opportunity: Adapt based on other players' voting patterns"""
         
         return insights
     
@@ -2473,7 +3934,15 @@ class DeliberationManager:
     
     def _get_game_phase_description(self, current_turn: int, leader_points: int) -> str:
         """Describe what phase of the game we're in"""
-        if current_turn <= 2:
+        # Check for crisis mode (everyone in negative points)
+        if hasattr(self, 'game_instance') and self.game_instance:
+            all_negative = all(p.points < 0 for p in self.game_instance.players)
+            if all_negative:
+                return "CRISIS MODE - All players negative! Rule fixes needed urgently!"
+        
+        if leader_points < 0:
+            return "CRISIS PHASE - Negative points detected, recovery strategies essential"
+        elif current_turn <= 2:
             return "Opening phase - establishing early strategy"
         elif current_turn <= 5:
             return "Early game - rule foundation building"
@@ -2495,9 +3964,9 @@ class DeliberationManager:
         scratchpad = player_state.get('scratchpad', [])
         
         if not scratchpad:
-            return "📝 SCRATCHPAD: Empty - start taking notes for future reference!"
+            return " SCRATCHPAD: Empty - start taking notes for future reference!"
         
-        scratchpad_text = "📝 YOUR SCRATCHPAD NOTES:\n"
+        scratchpad_text = " YOUR SCRATCHPAD NOTES:\n"
         for i, note in enumerate(scratchpad[-5:], 1):  # Show last 5 notes
             scratchpad_text += f"   {i}. {note}\n"
         
@@ -2518,22 +3987,22 @@ class DeliberationManager:
         # Get recent failed proposals
         recent_failures = [obs for obs in recent_observations if 'Failed proposal' in obs]
         
-        temporal_text = f"⏰ TEMPORAL REMINDERS (Turn {current_turn}):\n"
+        temporal_text = f" TEMPORAL REMINDERS (Turn {current_turn}):\n"
         
         if recent_failures:
-            temporal_text += "   💡 Recent lessons learned:\n"
+            temporal_text += "    Recent lessons learned:\n"
             for failure in recent_failures[-3:]:  # Last 3 failures
-                temporal_text += f"      • {failure[:80]}...\n"
+                temporal_text += f"      - {failure[:80]}...\n"
         else:
-            temporal_text += "   • This is early in your strategic development\n"
+            temporal_text += "   - This is early in your strategic development\n"
         
         # Add turn progression context
         if current_turn == 1:
-            temporal_text += "   • Opening turn - set foundation for your strategy\n"
+            temporal_text += "   - Opening turn - set foundation for your strategy\n"
         elif current_turn <= 3:
-            temporal_text += "   • Early game - establish your competitive position\n"
+            temporal_text += "   - Early game - establish your competitive position\n"
         else:
-            temporal_text += "   • Game progressing - adapt based on what you've learned\n"
+            temporal_text += "   - Game progressing - adapt based on what you've learned\n"
         
         return temporal_text
 
@@ -2583,36 +4052,36 @@ class DeliberationManager:
         
         # Risk tolerance adjustments
         if traits.risk_tolerance == "high":
-            personality_adjustments += "🎰 As a HIGH RISK character, favor bold, aggressive moves that could pay off big. Don't be afraid of failure - big risks bring big rewards.\n"
+            personality_adjustments += " As a HIGH RISK character, favor bold, aggressive moves that could pay off big. Don't be afraid of failure - big risks bring big rewards.\n"
         elif traits.risk_tolerance == "low":
-            personality_adjustments += "🛡️ As a LOW RISK character, prioritize safe, reliable strategies. Focus on steady progress over risky gambles.\n"
+            personality_adjustments += " As a LOW RISK character, prioritize safe, reliable strategies. Focus on steady progress over risky gambles.\n"
         
         # Cooperation level adjustments  
         if traits.cooperation_level == "cooperative":
-            personality_adjustments += "🤝 As a COOPERATIVE character, seek win-win solutions. Frame proposals to benefit multiple players.\n"
+            personality_adjustments += " As a COOPERATIVE character, seek win-win solutions. Frame proposals to benefit multiple players.\n"
         elif traits.cooperation_level == "competitive":
-            personality_adjustments += "⚔️ As a COMPETITIVE character, focus on getting ahead of opponents. Look for advantages others might miss.\n"
+            personality_adjustments += " As a COMPETITIVE character, focus on getting ahead of opponents. Look for advantages others might miss.\n"
         
         # Strategic focus adjustments
         if traits.strategic_focus == "analytical":
-            personality_adjustments += "📊 Use your ANALYTICAL nature - examine data, patterns, and logical connections in detail.\n"
+            personality_adjustments += " Use your ANALYTICAL nature - examine data, patterns, and logical connections in detail.\n"
         elif traits.strategic_focus == "creative":
-            personality_adjustments += "🎨 Use your CREATIVE instincts - think outside the box and propose unconventional solutions.\n"
+            personality_adjustments += " Use your CREATIVE instincts - think outside the box and propose unconventional solutions.\n"
         elif traits.strategic_focus == "aggressive":
-            personality_adjustments += "⚡ Use your AGGRESSIVE approach - make decisive moves and put pressure on opponents.\n"
+            personality_adjustments += " Use your AGGRESSIVE approach - make decisive moves and put pressure on opponents.\n"
         elif traits.strategic_focus == "diplomatic":
-            personality_adjustments += "🎭 Use your DIPLOMATIC skills - build consensus and find solutions that appeal to everyone.\n"
+            personality_adjustments += " Use your DIPLOMATIC skills - build consensus and find solutions that appeal to everyone.\n"
         
         # Decision speed adjustments
         if traits.decision_speed == "fast":
-            personality_adjustments += "🏃 Trust your quick instincts - don't overthink obvious opportunities.\n"
+            personality_adjustments += " Trust your quick instincts - don't overthink obvious opportunities.\n"
         elif traits.decision_speed == "slow":
-            personality_adjustments += "🤔 Take time to thoroughly consider all angles before deciding.\n"
+            personality_adjustments += " Take time to thoroughly consider all angles before deciding.\n"
         
         # Add personality section to prompt
         if personality_adjustments:
             character_section = f"""
-🎭 YOUR CHARACTER TRAITS ({char.name}):
+ YOUR CHARACTER TRAITS ({char.name}):
 {personality_adjustments}
 Remember: Play true to your character's personality while pursuing victory.
 """
@@ -2630,24 +4099,24 @@ Remember: Play true to your character's personality while pursuing victory.
 
         base_prompt = f"""{context_header}
 
-🧠 DELIBERATION PLANNING PHASE
+ DELIBERATION PLANNING PHASE
 
 Your Role: {player.role}
 Current Position: Rank #{game_state.get('rank', '?')} in the 100-point race to victory
 
 You can choose how many deliberation turns to use for your proposal strategy:
 
-📋 **1 TURN** - Quick Tactical Decision
+ **1 TURN** - Quick Tactical Decision
 - Use when you see an immediate opportunity
 - Fast reaction to current game state
 - Good for simple, obvious moves
 
-📋 **2 TURNS** - Balanced Strategic Planning  
+ **2 TURNS** - Balanced Strategic Planning  
 - Standard approach for most situations
 - Time to consider alternatives and opponents
 - Good balance of depth vs efficiency
 
-📋 **3 TURNS** - Deep Strategic Analysis
+ **3 TURNS** - Deep Strategic Analysis
 - Use for complex game situations
 - Comprehensive analysis of all factors
 - When you need maximum strategic depth
@@ -2677,7 +4146,7 @@ RESPOND WITH:
         # Include previous deliberation insights
         previous_insights = ""
         if previous_results:
-            previous_insights = "\n🧠 YOUR PREVIOUS DELIBERATION:\n"
+            previous_insights = "\n YOUR PREVIOUS DELIBERATION:\n"
             for key, value in previous_results.items():
                 if key.startswith("turn_"):
                     turn_number = key.split("_")[1]
@@ -2692,7 +4161,7 @@ RESPOND WITH:
 {scratchpad_content}
 {temporal_reminders}
 
-🧠 DELIBERATION TURN {turn_num}/{total_turns}
+ DELIBERATION TURN {turn_num}/{total_turns}
 
 Your Role: {player.role}
 Current Approach: {total_turns}-turn deliberation
@@ -2711,7 +4180,7 @@ You have 2000+ tokens to think deeply about your Nomic strategy. Consider any as
 
 THINK HOWEVER WORKS BEST FOR YOU. No rigid format required.
 
-📝 SCRATCHPAD NOTES:
+ SCRATCHPAD NOTES:
 Feel free to add notes to your persistent scratchpad by using:
 SCRATCHPAD_NOTE: [important insight to remember for future turns]
 
@@ -2736,7 +4205,7 @@ Focus on developing a winning strategy to reach 100 points first."""
         context_header = self.generate_nomic_context_header(game_state, player)
 
         # Compile all deliberation thinking
-        deliberation_summary = "🧠 YOUR COMPLETE DELIBERATION:\n"
+        deliberation_summary = " YOUR COMPLETE DELIBERATION:\n"
         for key, value in deliberation_results.items():
             if key.startswith("turn_"):
                 turn_number = key.split("_")[1]
@@ -2746,7 +4215,7 @@ Focus on developing a winning strategy to reach 100 points first."""
 
 {deliberation_summary}
 
-🎯 FINAL PROPOSAL CREATION
+ FINAL PROPOSAL CREATION
 
 Based on your {total_turns}-turn deliberation above, now create your actual rule proposal.
 
@@ -2768,7 +4237,7 @@ Everything before these sections can be free-form thinking."""
         context_header = self.generate_nomic_context_header(game_state, player)
 
         # Compile all deliberation thinking
-        deliberation_summary = "🧠 YOUR COMPLETE DELIBERATION:\n"
+        deliberation_summary = " YOUR COMPLETE DELIBERATION:\n"
         for key, value in deliberation_results.items():
             if key.startswith("turn_"):
                 turn_number = key.split("_")[1]
@@ -2778,18 +4247,35 @@ Everything before these sections can be free-form thinking."""
 
 {deliberation_summary}
 
-🎯 FINAL PROPOSAL CREATION WITH RULE EFFECTS CHECKBOXES
+ FINAL PROPOSAL CREATION WITH RULE EFFECTS CHECKBOXES
 
 Based on your {total_turns}-turn deliberation above, now create your actual rule proposal.
 
 You have 2000+ tokens for final proposal crafting. Think creatively and strategically.
 
-🔄 PROPOSAL TYPES AVAILABLE:
+ PROPOSAL TYPES AVAILABLE:
 1. NEW RULE: Create a completely new rule for the game
 2. TRANSMUTATION: Change an existing rule from mutable ↔ immutable
    - Format: "Transmute rule [number]" (e.g., "Transmute rule 301")
-   - This changes rule mutability status and can be strategic
+   - STRATEGIC POWER: This changes rule mutability status!
+   - Mutable rules can be amended, immutable rules cannot
+   - EXAMPLES: 
+     * Transmute Rule 117 to mutable (then amend to disable zero-point rule)
+     * Transmute beneficial rules to immutable (protect them from changes)
+     * Transmute opponent's favorable rules to mutable (then amend them)
    - Consider which rules would benefit you if made mutable/immutable
+3. AMENDMENT: Modify an existing MUTABLE rule
+   - Format: "Amend rule [number] to: [new text]"
+   - Can only amend MUTABLE rules!
+   - Strategic uses: Fix harmful rules, adjust point values, change conditions
+   - Note: Amendments can completely change a rule's meaning (de facto repeal)
+
+ CRISIS MODE STRATEGIC THINKING:
+When everyone has negative points, consider:
+- What rule is causing the most pain? (Is it mutable?)
+- Would everyone vote to fix a rule that hurts everyone?
+- Sometimes the best move is fixing broken rules, not adding new ones
+- Amendment can neutralize harmful rules or change their effects entirely
 
 REQUIREMENTS - You MUST end with this exact format:
 
@@ -2798,36 +4284,36 @@ RULE_TEXT: [The exact rule text for the game system]
 EXPLANATION: [Your public explanation for why this rule is good]
 EFFECTS: [Fill out this checkbox system to help the engine understand your rule]
 
-🔲 RULE EFFECTS CHECKLIST (Mark with ☑ for YES, ☐ for NO):
+ RULE EFFECTS CHECKLIST (Mark with  for YES,  for NO):
 
 POINTS SYSTEM:
-☐ Add points (how many? __ to whom? __)
-☐ Subtract points (how many? __ from whom? __)
-☐ Steal points (how many? __ from/to whom? __)
-☐ Redistribute points between players
+ Add points (how many? __ to whom? __)
+ Subtract points (how many? __ from whom? __)
+ Steal points (how many? __ from/to whom? __)
+ Redistribute points between players
 
 VOTING MECHANICS:
-☐ Change voting threshold (to what percentage? __)
-☐ Require unanimous consent
-☐ Change majority requirements
-☐ Add voting restrictions
+ Change voting threshold (to what percentage? __)
+ Require unanimous consent
+ Change majority requirements
+ Add voting restrictions
 
 TURN MECHANICS:
-☐ Skip turns (whose? __ when? __)
-☐ Extra turns (for whom? __ when? __)
-☐ Change turn order
-☐ Add time limits
+ Skip turns (whose? __ when? __)
+ Extra turns (for whom? __ when? __)
+ Change turn order
+ Add time limits
 
 WIN CONDITIONS:
-☐ Modify win threshold (to what? __)
-☐ Add alternative win conditions
-☐ Change victory requirements
+ Modify win threshold (to what? __)
+ Add alternative win conditions
+ Change victory requirements
 
 SPECIAL MECHANICS:
-☐ Add dice/random elements
-☐ Add conditional triggers (if/when)
-☐ Create compound effects
-☐ Add resource systems
+ Add dice/random elements
+ Add conditional triggers (if/when)
+ Create compound effects
+ Add resource systems
 
 The game system requires these sections in this format to process your proposal.
 Everything before these sections can be free-form thinking."""
@@ -2859,7 +4345,7 @@ Everything before these sections can be free-form thinking."""
         if early_game:
             return f"""{context_header}
 
-🧠 QUICK ANALYSIS: Early game, similar positions.
+ QUICK ANALYSIS: Early game, similar positions.
 
 Your Role: {player.role}
 
@@ -2873,7 +4359,7 @@ Keep it concise - save deep strategy for your actual proposal."""
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 1: STRATEGIC ANALYSIS
+ DELIBERATION TURN 1: STRATEGIC ANALYSIS
 
 Your Role: {player.role}
 Position: #{game_state.get('rank', '?')} with {player.points} points
@@ -2888,7 +4374,7 @@ THREAT_ASSESSMENT: [Key threat and why - one sentence]
 POSITION_ANALYSIS: [Your situation - brief]
 PATTERN_OBSERVATION: [Exploitable trends - brief]
 
-🎯 Goal: Win efficiently. Be strategic, not cooperative."""
+ Goal: Win efficiently. Be strategic, not cooperative."""
 
     def _generate_gap_analysis_prompt(self, player, game_state: Dict) -> str:
         """Turn 2: Identify strategic gaps and opportunities - simplified"""
@@ -2896,7 +4382,7 @@ PATTERN_OBSERVATION: [Exploitable trends - brief]
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 2: RULE GAP ANALYSIS
+ DELIBERATION TURN 2: RULE GAP ANALYSIS
 
 Your Role: {player.role}
 
@@ -2915,7 +4401,7 @@ EXPLOITABLE_GAPS: [One specific opportunity]
 TOP_CATEGORIES: [Pick 1-2 that help YOU most]
 ROLE_ADVANTAGE: [How your role helps - brief]
 
-🎯 Focus on YOUR advantage, not game balance."""
+ Focus on YOUR advantage, not game balance."""
 
     def _generate_category_selection_prompt(self, player, game_state: Dict) -> str:
         """Turn 3: Select specific category and approach"""
@@ -2925,7 +4411,7 @@ ROLE_ADVANTAGE: [How your role helps - brief]
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 3: NOMIC CATEGORY SELECTION & STRATEGIC APPROACH
+ DELIBERATION TURN 3: NOMIC CATEGORY SELECTION & STRATEGIC APPROACH
 
 Your Role in this NOMIC game: {player.role}
 Your Strategic Position: {game_state.get('position_analysis', 'Unknown')}
@@ -2971,7 +4457,7 @@ STRATEGIC_RATIONALE: [Why this Nomic category gives YOU the best advantage]
 COMPETITIVE_ANGLE: [How this Nomic rule hurts your competitors or helps your position]
 SPECIFIC_APPROACH: [The general type of Nomic rule you'll propose]
 
-🎯 Choose based on YOUR winning chances in NOMIC, not fairness to others."""
+ Choose based on YOUR winning chances in NOMIC, not fairness to others."""
 
     def _generate_impact_modeling_prompt(self, player, game_state: Dict) -> str:
         """Turn 4: Model impacts of potential approaches"""
@@ -2979,7 +4465,7 @@ SPECIFIC_APPROACH: [The general type of Nomic rule you'll propose]
 
         return f"""{context_header}
 
-🧠 DELIBERATION TURN 4: NOMIC IMPACT MODELING & STRATEGIC OPTIMIZATION
+ DELIBERATION TURN 4: NOMIC IMPACT MODELING & STRATEGIC OPTIMIZATION
 
 Your Selected Nomic Category: {game_state.get('selected_category', 'Unknown')}
 Your Current Position: #{game_state.get('rank', '?')} with {player.points} points in the 100-point race
@@ -3018,7 +4504,7 @@ VOTE_STRATEGY: [How to frame this Nomic rule to win votes]
 RISK_ASSESSMENT: [Potential downsides and mitigation in Nomic]
 LONG_TERM_PLAN: [How this fits your overall Nomic strategy]
 
-🎯 Focus on maximizing YOUR advantage in NOMIC while getting enough votes to pass."""
+ Focus on maximizing YOUR advantage in NOMIC while getting enough votes to pass."""
 
     def _generate_final_selection_prompt(self, player, game_state: Dict) -> str:
         """Turn 5: Craft the final proposal - with successful examples"""
@@ -3026,15 +4512,15 @@ LONG_TERM_PLAN: [How this fits your overall Nomic strategy]
 
         return f"""{context_header}
 
-🧠 FINAL PROPOSAL: Create your rule
+ FINAL PROPOSAL: Create your rule
 
 Position: #{game_state.get('rank', '?')} with {player.points} points
 
 SUCCESSFUL PROPOSAL EXAMPLES (study these patterns):
-✅ "Players gain 1 point when they vote for a successful proposal." - Universal benefit
-✅ "When a rule is repealed, all players gain 2 points." - Shared incentive
-✅ "Players in last place gain 2 bonus points at turn start." - Helps underdogs
-✅ "If no proposals pass for 2 turns, all players gain 3 points." - Prevents deadlock
+ "Players gain 1 point when they vote for a successful proposal." - Universal benefit
+ "When a rule is repealed, all players gain 2 points." - Shared incentive
+ "Players in last place gain 2 bonus points at turn start." - Helps underdogs
+ "If no proposals pass for 2 turns, all players gain 3 points." - Prevents deadlock
 
 WHY THESE WORK:
 - Give EVERYONE something (crucial for unanimous votes)
@@ -3053,7 +4539,7 @@ INTERNAL_THOUGHT: [Your real strategy - be honest]
 RULE_TEXT: [Clear rule under 25 words - must benefit others too]
 EXPLANATION: [Why this helps everyone and improves the game]
 
-🎯 Key: Get everyone's vote by giving everyone something.
+ Key: Get everyone's vote by giving everyone something."""
 
     def _parse_scratchpad_notes(self, response: str) -> List[str]:
         """Parse scratchpad notes from AI response"""
@@ -3180,15 +4666,15 @@ class BehavioralAnalyzer:
 class OllamaManager:
     """Manages multiple Ollama instances on different ports"""
 
-    def __init__(self):
-        self.base_port = 11434
-        self.validator_port = 11435  # Use larger model for validation
+    def __init__(self, validator_port: int = 11435):
+        self.base_port = 11434  # Main Ollama service (shared)
+        self.validator_port = validator_port  # Dedicated validator port
         self.player_ports = {}
 
     def assign_ports(self, players):
         """Assign unique ports to players"""
         for i, player in enumerate(players):
-            port = self.base_port + i + 2  # Start from 11436
+            port = self.validator_port + i + 1  # Start after validator port
             self.player_ports[player.id] = port
             player.port = port
 
@@ -3253,7 +4739,7 @@ SUGGESTION: [How to improve, or "Rule is acceptable"]
 
 class ProperNomicGame:
     def __init__(
-        self, num_players=6, provider: Union[OllamaClient, OllamaManager, OpenRouterClient] = None, include_human=False
+        self, num_players=6, provider: Union[OllamaClient, OllamaManager, OpenRouterClient] = None, include_human=False, session_dir: str = None
     ):
         self.num_players = num_players
         self.include_human = include_human
@@ -3290,18 +4776,33 @@ class ProperNomicGame:
         self.behavioral_analyzer = BehavioralAnalyzer()
         self.deliberation_manager = DeliberationManager(self)
 
-        # Initialize new systems
-        self.session_manager = GameSessionManager()
+        # Initialize new systems with port-specific session directory
+        if session_dir is None:
+            session_dir = "game_sessions"  # Default for backward compatibility
+        self.session_manager = GameSessionManager(sessions_dir=session_dir)
         self.state_tracker = InternalStateTracker()
         self.idle_processor = IdleTurnProcessor(self.ollama, self.deliberation_manager, self)
         self.game_logger = GameLogger(self.session_manager)
         self.input_sanitizer = InputSanitizer()  # Security hardening for human input
         self.context_manager = ContextWindowManager()  # Context window optimization and tracking
+        self.context_manager.reset_for_new_game()  # Reset context for fresh game start
+        self.rag_system = BasicRAGSystem()  # Retrieval-Augmented Generation for game history
+        self.failure_recovery = FailureRecoverySystem()  # Automated failure detection and recovery
         
         # Initialize Game Master system
         self.game_master = GameMaster(self.llm_provider or self.ollama)
+        self.context_restoration_manager = ContextRestorationManager(self.game_master, self.llm_provider or self.ollama)
         self.dynamic_rule_engine = DynamicRuleEngine()
         self.gm_enabled = True  # Can be toggled for testing
+        
+        # Initialize Advanced Game Master API
+        self.advanced_gm = create_game_master_engine(self)
+        self.gm_api_enabled = True  # Toggle for advanced GM features
+        
+        # Initialize Hybrid Model Selector (if using OpenRouter with hybrid mode)
+        self.hybrid_selector = None
+        if isinstance(self.llm_provider, OpenRouterClient) and self.llm_provider.use_hybrid:
+            self.hybrid_selector = HybridModelSelector(self.llm_provider)
         
         # Add threading lock to prevent race conditions
         self.turn_lock = threading.Lock()
@@ -3349,6 +4850,123 @@ class ProperNomicGame:
         self.dice_value = 0  # Last dice roll
         self.current_voting_threshold = 100  # Start with unanimous
 
+    @classmethod
+    def resume_last_game(cls, provider: Union[OllamaClient, OllamaManager, OpenRouterClient] = None, session_dir: str = None):
+        """Class method to resume the most recent in-progress game"""
+        # Create a temporary session manager to find in-progress sessions
+        if session_dir is None:
+            session_dir = "game_sessions"
+        temp_session_manager = GameSessionManager(sessions_dir=session_dir)
+        latest_session_id = temp_session_manager.find_latest_in_progress_session()
+        
+        if not latest_session_id:
+            print("❌ No in-progress sessions found to resume")
+            return None
+        
+        print(f"🔄 Found in-progress session: {latest_session_id}")
+        
+        # Load session data
+        session_data = temp_session_manager.load_session_data(latest_session_id)
+        if not session_data or not session_data.get("metadata"):
+            print("❌ Could not load session data")
+            return None
+        
+        metadata = session_data["metadata"]
+        players_data = metadata.get("players", [])
+        
+        print(f"📋 Session details:")
+        print(f"   Started: {metadata.get('start_time', 'Unknown')}")
+        print(f"   Players: {len(players_data)}")
+        for p in players_data:
+            print(f"     - {p.get('name', 'Unknown')} ({p.get('model', 'Unknown model')})")
+        print(f"   Total turns so far: {metadata.get('total_turns', 0)}")
+        print(f"   Rules created: {metadata.get('rules_created', 0)}")
+        
+        # Create new game instance with resume logic
+        game = cls(
+            num_players=len(players_data), 
+            provider=provider, 
+            include_human=any(p.get('model') == 'human' for p in players_data),
+            session_dir=session_dir
+        )
+        
+        # Resume the session in the session manager
+        if not game.session_manager.resume_session(latest_session_id):
+            print("❌ Failed to resume session")
+            return None
+        
+        # Restore game state from session data
+        game._restore_game_state(session_data)
+        
+        print("✅ Game resumed successfully!")
+        return game
+
+    def _restore_game_state(self, session_data: Dict):
+        """Restore game state from saved session data"""
+        metadata = session_data.get("metadata", {})
+        turn_logs = session_data.get("turn_logs", [])
+        player_states = session_data.get("player_states", {})
+        
+        # Restore basic game state
+        self.turn_number = metadata.get("total_turns", 0) + 1  # Next turn to play
+        self.next_rule_number = 301 + metadata.get("rules_created", 0)
+        
+        # Restore player points from final_scores or calculate from turn logs
+        final_scores = metadata.get("final_scores", {})
+        if final_scores:
+            for player in self.players:
+                if str(player.id) in final_scores:
+                    player.points = final_scores[str(player.id)]
+        
+        # Restore player internal states
+        for player_id_str, state_data in player_states.items():
+            player_id = int(player_id_str)
+            if player_id in self.state_tracker.player_states:
+                # Restore scratchpad and other internal state
+                player_state = self.state_tracker.player_states[player_id]
+                player_state.scratchpad = state_data.get("scratchpad", [])
+                player_state.strategic_focus = state_data.get("strategic_focus", "")
+                player_state.victory_path = state_data.get("victory_path", "")
+                player_state.threat_assessments = state_data.get("threat_assessments", {})
+                player_state.learning_observations = state_data.get("learning_observations", [])
+                player_state.planned_proposals = state_data.get("planned_proposals", [])
+                player_state.last_updated = state_data.get("last_updated", "")
+        
+        # Calculate current player index based on turn number
+        if self.turn_number > 1:
+            self.current_player_idx = (self.turn_number - 1) % len(self.players)
+        
+        # Restore rules from turn logs if available
+        self._restore_rules_from_logs(turn_logs)
+        
+        print(f"🔄 Restored game state:")
+        print(f"   Next turn: {self.turn_number}")
+        print(f"   Current player: {self.players[self.current_player_idx].name}")
+        print(f"   Next rule number: {self.next_rule_number}")
+        print(f"   Player scores:")
+        for player in self.players:
+            print(f"     {player.name}: {player.points} points")
+
+    def _restore_rules_from_logs(self, turn_logs: List[Dict]):
+        """Restore rules from turn logs to reconstruct game state"""
+        # This is a simplified restoration - in a full implementation,
+        # you might want to save the actual rules in the session data
+        rules_passed = 0
+        for turn_log in turn_logs:
+            for event in turn_log.get("events", []):
+                if event.get("type") == "rule_execution" and event.get("trigger") == "rule_adopted":
+                    rules_passed += 1
+        
+        # Add placeholder rules for now - in practice, you'd want to save actual rule text
+        for i in range(rules_passed):
+            rule_id = 301 + i
+            self.rules.append({
+                "id": rule_id,
+                "text": f"Rule {rule_id} (restored from session)",
+                "type": "mutable",
+                "active": True
+            })
+
     def _create_players(self):
         players = []
 
@@ -3388,7 +5006,7 @@ class ProperNomicGame:
             else:
                 character_assignments[p.name] = p.model
                 
-        print(f"🎭 Proto Character assignments for this game:")
+        print(f" Proto Character assignments for this game:")
         for name, info in character_assignments.items():
             print(f"  {name}: {info}")
 
@@ -3396,22 +5014,50 @@ class ProperNomicGame:
 
     def unified_generate(self, player, prompt, **kwargs):
         """Unified text generation method that works with both Ollama and OpenRouter"""
-        # Optimize prompt for context window if needed
+        
+        # Handle pending context restoration from previous degradation detection
+        if hasattr(player, 'pending_context_restoration'):
+            restoration_package = player.pending_context_restoration
+            delattr(player, 'pending_context_restoration')  # Remove after use
+            
+            # Prepend restoration package to current prompt for immediate context restoration
+            self.add_event(f" 🔧 Applying pending GM restoration package to {player.name}")
+            prompt = f"{restoration_package}\n\n---\n\n{prompt}"
+        
+        # Get optimized context using advanced rolling window system
         original_prompt = prompt
-        optimized_prompt = self.context_manager.optimize_prompt(player.model, prompt, {"game": self})
+        game_context = {"game": self}
+        optimized_prompt = self.context_manager.get_optimized_context_for_model(player.model, prompt, game_context)
 
         # Track if optimization occurred
         if len(optimized_prompt) != len(original_prompt):
+            reduction_percent = int((1 - len(optimized_prompt) / len(original_prompt)) * 100) if len(original_prompt) > 0 else 0
             self.add_event(
-                f"🧠 Context optimized for {player.name} ({player.model}): {len(original_prompt)} → {len(optimized_prompt)} chars"
+                f" 🎯 Advanced context optimization for {player.name}: {len(original_prompt)}→{len(optimized_prompt)} chars ({reduction_percent}% reduction)"
             )
 
         response = ""
         if self.llm_provider:
             # Using new provider system (Ollama or OpenRouter)
             if isinstance(self.llm_provider, OpenRouterClient):
-                # OpenRouter API call
-                response = self.llm_provider.generate(player.model, optimized_prompt, **kwargs)
+                # Determine which model to use (hybrid selector if available)
+                model_to_use = player.model  # Default to assigned model
+                
+                if self.hybrid_selector:
+                    # Use hybrid model selection based on task complexity
+                    task_type = kwargs.get('task_type', 'general')
+                    task_context = kwargs.get('task_context', {})
+                    model_to_use = self.hybrid_selector.get_model_for_player_task(
+                        player, task_type, self, task_context
+                    )
+                    
+                    # Log model selection for transparency
+                    if model_to_use != player.model:
+                        model_name = model_to_use.split('/')[-1]
+                        self.add_event(f" 🔄 {player.name} escalated to {model_name} for {task_type}")
+                
+                # OpenRouter API call with selected model
+                response = self.llm_provider.generate(model_to_use, optimized_prompt, **kwargs)
             else:
                 # OllamaClient call
                 response = self.llm_provider.generate(player.model, optimized_prompt, player.port, **kwargs)
@@ -3426,7 +5072,71 @@ class ProperNomicGame:
         context_status = self.context_manager.get_context_usage(player.model)
         if context_status["usage_percentage"] > 75:
             self.add_event(
-                f"⚠️ Context usage for {player.model}: {context_status['usage_percentage']}% ({context_status['status']})"
+                f" Context usage for {player.model}: {context_status['usage_percentage']}% ({context_status['status']})"
+            )
+        
+        # Track context degradation and apply interventions if needed
+        degradation_status = self.context_manager.track_degradation(
+            player.model, player.id, context_status["usage_percentage"]
+        )
+        
+        # Check for intervention needs
+        if degradation_status["needs_intervention"]:
+            intervention_applied = False
+            
+            if degradation_status["intervention_urgency"] == "critical":
+                self.add_event(f" 🚨 CRITICAL context degradation for {player.name} - applying emergency intervention")
+                
+                # Apply critical intervention: GM restoration package + context reset
+                try:
+                    game_context = {"game": self}
+                    restoration_package = self.context_restoration_manager.apply_restoration(
+                        player, game_context, intervention_urgency="critical"
+                    )
+                    
+                    # Force context reset for this player's model
+                    self.context_manager.reset_usage([player.model])
+                    
+                    # Replace current response with restoration package for immediate effect
+                    response = restoration_package
+                    intervention_applied = True
+                    
+                    self.add_event(f" ✅ Critical intervention applied: GM restoration package delivered to {player.name}")
+                    
+                except Exception as e:
+                    self.add_event(f" ❌ Critical intervention failed for {player.name}: {e}")
+                    
+            elif degradation_status["intervention_urgency"] == "moderate":
+                self.add_event(f" ⚠️ Context degradation detected for {player.name} - applying moderate intervention")
+                
+                # Apply moderate intervention: GM restoration package only
+                try:
+                    game_context = {"game": self}
+                    restoration_package = self.context_restoration_manager.apply_restoration(
+                        player, game_context, intervention_urgency="moderate"
+                    )
+                    
+                    # Add restoration package as context for next turn (don't replace current response)
+                    if hasattr(player, 'pending_context_restoration'):
+                        player.pending_context_restoration = restoration_package
+                    else:
+                        # Store in player object for next generation
+                        setattr(player, 'pending_context_restoration', restoration_package)
+                    
+                    intervention_applied = True
+                    self.add_event(f" ✅ Moderate intervention queued: GM restoration package for {player.name}")
+                    
+                except Exception as e:
+                    self.add_event(f" ❌ Moderate intervention failed for {player.name}: {e}")
+            
+            # Mark intervention as applied if successful
+            if intervention_applied:
+                self.context_manager.mark_intervention_applied(player.id)
+        
+        # Log degradation statistics occasionally 
+        elif degradation_status["consecutive_high_usage"] > 0:
+            self.add_event(
+                f" 📊 Context tracking for {player.name}: {degradation_status['consecutive_high_usage']} consecutive high-usage events"
             )
 
         return response
@@ -3439,7 +5149,7 @@ class ProperNomicGame:
         immutable_texts = [
             "101: All players must always abide by all the rules then in effect, in the form in which they are then in effect.",
             "102: Initially, rules in the 100's are immutable and rules in the 200's are mutable.",
-            "103: A rule change is: (a) enactment/repeal/amendment of a mutable rule; (b) transmutation of immutable↔mutable.",
+            "103: A rule change is: (a) enactment/repeal/amendment of a mutable rule; (b) transmutation of immutablemutable.",
             "104: All rule changes proposed in the proper way shall be voted on.",
             "105: Every player is an eligible voter.",
             "106: Any proposed rule change must be written down before it is voted on.",
@@ -3549,7 +5259,7 @@ class ProperNomicGame:
                     break
         
         if not target_rule:
-            self.add_event(f"❌ Rule {target_rule_id} not found for transmutation")
+            self.add_event(f" Rule {target_rule_id} not found for transmutation")
             return False
         
         # Perform the transmutation
@@ -3558,9 +5268,62 @@ class ProperNomicGame:
         target_list.append(target_rule)
         
         # Log the transmutation
-        status_change = "mutable → immutable" if target_rule.mutable == False else "immutable → mutable"
-        self.add_event(f"🔄 TRANSMUTATION: Rule {target_rule_id} changed from {status_change}")
-        self.add_event(f"📜 Rule {target_rule_id}: {target_rule.text}")
+        status_change = "mutable  immutable" if target_rule.mutable == False else "immutable  mutable"
+        self.add_event(f" TRANSMUTATION: Rule {target_rule_id} changed from {status_change}")
+        self.add_event(f" Rule {target_rule_id}: {target_rule.text}")
+        
+        return True
+
+    def execute_amendment(self, proposal) -> bool:
+        """Execute amendment of a mutable rule"""
+        target_rule_id = proposal.amend_target_rule
+        
+        # Find the rule in mutable rules (can only amend mutable rules)
+        target_rule = None
+        for rule in self.rules["mutable"]:
+            if rule.id == target_rule_id:
+                target_rule = rule
+                break
+        
+        if not target_rule:
+            # Check if rule exists in immutable rules
+            for rule in self.rules["immutable"]:
+                if rule.id == target_rule_id:
+                    self.add_event(f" Rule {target_rule_id} is IMMUTABLE and cannot be amended")
+                    self.add_event(f" Use transmutation to make it mutable first")
+                    return False
+            
+            # Rule doesn't exist at all
+            self.add_event(f" Rule {target_rule_id} not found for amendment")
+            return False
+        
+        # Store original text for history
+        original_text = target_rule.text
+        
+        # Perform the amendment
+        target_rule.text = proposal.rule_text
+        
+        # Log the amendment with a clear before/after
+        self.add_event(f" AMENDMENT: Rule {target_rule_id} modified")
+        self.add_event(f" OLD: {original_text}")
+        self.add_event(f" NEW: {target_rule.text}")
+        
+        # Update rule metadata
+        if hasattr(target_rule, 'author') and hasattr(target_rule, 'turn_added'):
+            # Keep original author but note the amendment
+            target_rule.turn_added = self.turn_number  # Update to amendment turn
+            self.add_event(f" Rule {target_rule_id} last modified turn {self.turn_number}")
+        
+        # Reparse effects for the amended rule
+        if hasattr(proposal, 'parsed_effects'):
+            target_rule.effects = proposal.parsed_effects
+        
+        # Update RAG system with amended rule
+        if hasattr(self, 'rag_system'):
+            self.rag_system.index_rule(
+                target_rule.id, target_rule.text,
+                {"type": "mutable", "amended_by": proposal.player_id, "turn_amended": self.turn_number, "original_text": original_text}
+            )
         
         return True
 
@@ -3612,14 +5375,14 @@ class ProperNomicGame:
                             player = next((p for p in self.players if p.id == effect['target']), None)
                             if player:
                                 player.points += effect['value']
-                                self.add_event(f"🧙 GM Rule {rule_id}: {player.name} gains {effect['value']} points → {player.points}")
+                                self.add_event(f" GM Rule {rule_id}: {player.name} gains {effect['value']} points  {player.points}")
                                 executed.append(f"GM Rule {rule_id}: Added {effect['value']} points")
                                 gm_executed_effects.append(('add_points', effect['target'], effect['value']))
                         elif effect.get('type') == 'subtract_points':
                             player = next((p for p in self.players if p.id == effect['target']), None)
                             if player:
                                 player.points -= effect['value']
-                                self.add_event(f"🧙 GM Rule {rule_id}: {player.name} loses {effect['value']} points → {player.points}")
+                                self.add_event(f" GM Rule {rule_id}: {player.name} loses {effect['value']} points  {player.points}")
                                 executed.append(f"GM Rule {rule_id}: Subtracted {effect['value']} points")
                                 gm_executed_effects.append(('subtract_points', effect['target'], effect['value']))
 
@@ -3655,7 +5418,7 @@ class ProperNomicGame:
                         continue
                         
                     player.points += effect.value
-                    self.add_event(f"📈 Rule {rule.id}: {player.name} gains {effect.value} points → {player.points}")
+                    self.add_event(f" Rule {rule.id}: {player.name} gains {effect.value} points  {player.points}")
                     executed.append(f"{effect.description} for {len(targets)} player(s)")
 
             elif effect.action == "subtract_points":
@@ -3672,7 +5435,7 @@ class ProperNomicGame:
                         continue
                         
                     player.points -= effect.value
-                    self.add_event(f"📉 Rule {rule.id}: {player.name} loses {effect.value} points → {player.points}")
+                    self.add_event(f" Rule {rule.id}: {player.name} loses {effect.value} points  {player.points}")
                     executed.append(f"{effect.description} for {len(targets)} player(s)")
                     # Check for zero points rule violation
                     if player.points <= 0:
@@ -3685,7 +5448,7 @@ class ProperNomicGame:
                     stolen = min(effect.value, victim.points)
                     victim.points -= stolen
                     stealer.points += stolen
-                    self.add_event(f"🏴‍☠️ Rule {rule.id}: {stealer.name} steals {stolen} points from {victim.name}")
+                    self.add_event(f" Rule {rule.id}: {stealer.name} steals {stolen} points from {victim.name}")
                     executed.append(f"Stole {stolen} points")
                     # Check for zero points rule violation
                     if victim.points <= 0:
@@ -3693,19 +5456,60 @@ class ProperNomicGame:
 
             elif effect.action == "change_voting":
                 self.current_voting_threshold = effect.value
-                self.add_event(f"🗳️ Rule {rule.id}: Voting threshold changed to {effect.value}%")
+                self.add_event(f" Rule {rule.id}: Voting threshold changed to {effect.value}%")
                 executed.append(effect.description)
 
         return executed
 
+    def get_rule_by_id(self, rule_id: int) -> Optional[ParsedRule]:
+        """Get a rule by its ID from immutable or mutable rules"""
+        # Check immutable rules first
+        for rule in self.rules["immutable"]:
+            if rule.id == rule_id:
+                return rule
+        # Check mutable rules
+        for rule in self.rules["mutable"]:
+            if rule.id == rule_id:
+                return rule
+        return None
+
+    def disable_rule(self, rule_id: int) -> bool:
+        """Disable a rule by setting its active flag to False"""
+        rule = self.get_rule_by_id(rule_id)
+        if rule:
+            rule.active = False
+            self.add_event(f" Rule {rule_id} has been disabled")
+            return True
+        return False
+
+    def enable_rule(self, rule_id: int) -> bool:
+        """Enable a rule by setting its active flag to True"""
+        rule = self.get_rule_by_id(rule_id)
+        if rule:
+            rule.active = True
+            self.add_event(f" Rule {rule_id} has been enabled")
+            return True
+        return False
+
     def check_zero_points_rule(self):
-        """Check if any player reached zero points, ending game for all"""
+        """Check if any player reached zero points, ending game for all (Rule 117)"""
+        # First check if Rule 117 is still active (could be transmuted/disabled)
+        rule_117 = self.get_rule_by_id(117)
+        if not rule_117 or not rule_117.active:
+            return False  # Rule 117 has been disabled by transmutation
+        
+        # Rule 117: "If any player reaches zero points BEFORE a rule proposal passes, all players lose"
+        # Only applies before first rule passes
+        if self.next_rule_number > 301:
+            return False  # Rules have already passed, Rule 117 no longer applies
+        
         zero_point_players = [p for p in self.players if p.points <= 0]
         if zero_point_players:
             player_names = ", ".join([p.name for p in zero_point_players])
-            self.add_event(f"🚨 GAME OVER: {player_names} reached 0 points! Rule 117 triggered - ALL PLAYERS LOSE!")
+            self.add_event(f" GAME OVER: {player_names} reached 0 points! Rule 117 triggered - ALL PLAYERS LOSE!")
+            self.add_event(f" Rule 117 applies because no rule proposals have passed yet (still at rule #{self.next_rule_number})")
             self.game_over = True
-            self.game_over_reason = f"Rule 117 violation: {player_names} reached 0 points before a rule passed"
+            self.game_over_reason = f"Rule 117 violation: {player_names} reached 0 points before any rule passed"
             # Log game end
             self.game_logger.log_game_end(None, self.turn_number, {p.id: p.points for p in self.players})
             return True
@@ -3803,11 +5607,12 @@ YOUR STRATEGY:
 - Consider what others will vote for (need {self.current_voting_threshold}% approval)
 - Avoid repeating previously proposed rules
 - Think about immediate vs long-term benefits
-- Use your role's personality to guide decisions
+- Use your role personality to guide decisions
 
 CRITICAL WARNINGS:
 - Each rule must be UNIQUE and not previously proposed. Be creative!
-- Rule 117: If ANY player reaches 0 points, ALL PLAYERS LOSE immediately!
+- Rule 117: If ANY player reaches 0 points BEFORE a rule passes, ALL PLAYERS LOSE!
+  (Note: Rule 117 only applies before first rule passes, and can be transmuted!)
 - Overly destructive strategies can backfire and end the game for everyone"""
 
     def get_game_history_summary(self):
@@ -3817,7 +5622,7 @@ CRITICAL WARNINGS:
 
         history = "RECENT GAME HISTORY:\n"
         for vote in self.vote_history[-5:]:  # Last 5 votes
-            history += f"Turn {vote['turn']}: {vote['proposer']} - '{vote['rule'][:50]}...' → {vote['outcome']} ({vote['ayes']}/{vote['total']})\n"
+            history += f"Turn {vote['turn']}: {vote['proposer']} - '{vote['rule'][:50]}...'  {vote['outcome']} ({vote['ayes']}/{vote['total']})\n"
 
         return history
 
@@ -3858,12 +5663,19 @@ CRITICAL WARNINGS:
         sorted_players = sorted(self.players, key=lambda p: p.points, reverse=True)
         standings = "; ".join([f"{p.name}: {p.points}pts" for p in sorted_players])
 
+        # Get key immutable rules with status
+        key_immutable_rules = [r for r in self.rules['immutable'] if r.id in [117, 109, 110, 114]]
+        immutable_status = chr(10).join([f"Rule {r.id}: {r.text} {'(ACTIVE)' if r.active else '(DISABLED)'}" for r in key_immutable_rules])
+        
         context = f"""GAME STATE:
 Turn: {self.turn_number}
 Standings: {standings}
 
 CURRENT MUTABLE RULES:
 {chr(10).join([f"Rule {r.id}: {r.text}" for r in self.rules['mutable'][-8:]])}
+
+KEY IMMUTABLE RULES (can be transmuted):
+{immutable_status}
 
 RECENT RULE ADDITIONS:
 {chr(10).join([f"Turn {p.turn}: {p.rule_text}" for p in self.proposals[-3:]]) if self.proposals else "None yet"}
@@ -3873,7 +5685,7 @@ RECENT RULE ADDITIONS:
     def generate_proposal_with_deliberation(self, player):
         """Generate proposal with flexible 1-3 turn deliberation for SOTA models"""
 
-        self.add_event(f"🧠 {player.name} entering deliberation phase...")
+        self.add_event(f" {player.name} entering deliberation phase...")
 
         # Prepare comprehensive game state for deliberation
         sorted_players = sorted(self.players, key=lambda p: p.points, reverse=True)
@@ -3882,24 +5694,53 @@ RECENT RULE ADDITIONS:
         game_state = {
             "turn": self.turn_number,
             "players": [{"id": p.id, "name": p.name, "points": p.points} for p in sorted_players],
-            "mutable_rules": [{"id": r.id, "text": r.text} for r in self.rules["mutable"]],
+            "mutable_rules": [{"id": r.id, "text": r.text, "active": r.active} for r in self.rules["mutable"]],
+            "immutable_rules": [{"id": r.id, "text": r.text, "active": r.active} for r in self.rules["immutable"]],
             "rank": my_rank,
             "proposals_history": self.proposals,
             "vote_history": self.vote_history[-10:] if hasattr(self, "vote_history") else [],
         }
 
+        # Calculate context pressure for adaptive deliberation
+        context_pressure = 0.0
+        if hasattr(self, 'context_manager') and self.context_manager:
+            try:
+                # Get context usage for the player's model
+                player_model = getattr(player, 'model', 'unknown')
+                context_status = self.context_manager.get_context_usage(player_model)
+                context_pressure = context_status.get('usage_percentage', 0.0) / 100.0
+                
+                if context_pressure > 0.8:
+                    self.add_event(f" ⚠️ {player.name} context pressure: {context_pressure:.1%}")
+            except Exception as e:
+                print(f"Error calculating context pressure for {player.name}: {e}")
+                context_pressure = 0.0
+
         # Use character traits to determine deliberation approach
         if hasattr(player, 'character') and player.character and hasattr(player.character, 'traits'):
-            # Use character-specific deliberation preferences
+            # Use character-specific deliberation preferences with context pressure
             game_complexity = self._assess_game_complexity(game_state)
-            chosen_turns = player.character.get_preferred_deliberation_turns(game_complexity)
-            self.add_event(f"🎭 {player.name} ({player.character.traits.decision_speed} decision maker) chooses {chosen_turns}-turn deliberation")
+            chosen_turns = player.character.get_preferred_deliberation_turns(game_complexity, context_pressure)
+            
+            pressure_note = ""
+            if context_pressure > 0.85:
+                pressure_note = f" (reduced due to {context_pressure:.1%} context pressure)"
+            self.add_event(f" {player.name} ({player.character.traits.decision_speed} decision maker) chooses {chosen_turns}-turn deliberation{pressure_note}")
         else:
             # Fallback to original choice method for characters without traits
             choice_prompt = self.deliberation_manager.generate_turn_choice_prompt(player, game_state)
             choice_response = self.unified_generate(player, choice_prompt, temperature=0.3, max_tokens=2000)
             chosen_turns = self._parse_deliberation_turns(choice_response)
-            self.add_event(f"🎯 {player.name} chooses {chosen_turns}-turn deliberation approach")
+            
+            # Apply context pressure to fallback method too
+            if context_pressure > 0.95:
+                chosen_turns = 1
+                self.add_event(f" {player.name} chooses {chosen_turns}-turn deliberation (emergency context reduction)")
+            elif context_pressure > 0.85:
+                chosen_turns = min(2, chosen_turns)
+                self.add_event(f" {player.name} chooses {chosen_turns}-turn deliberation (context pressure applied)")
+            else:
+                self.add_event(f" {player.name} chooses {chosen_turns}-turn deliberation approach")
         
         # Log the deliberation choice
         choice_reasoning = choice_response[:200] if 'choice_response' in locals() else f"Character-based: {chosen_turns} turns via {player.character.traits.decision_speed} speed"
@@ -3912,7 +5753,7 @@ RECENT RULE ADDITIONS:
 
         # Run flexible deliberation loop (1-3 turns)
         for deliberation_turn in range(1, chosen_turns + 1):
-            self.add_event(f"💭 {player.name} deliberation turn {deliberation_turn}/{chosen_turns}")
+            self.add_event(f" {player.name} deliberation turn {deliberation_turn}/{chosen_turns}")
 
             # Generate flexible deliberation prompt
             prompt = self.deliberation_manager.generate_flexible_deliberation_prompt(
@@ -3920,7 +5761,17 @@ RECENT RULE ADDITIONS:
             )
 
             # Get deliberation response with much higher token limit
-            response = self.unified_generate(player, prompt, temperature=0.7, max_tokens=2000)
+            response = self.unified_generate(
+                player, prompt, 
+                temperature=0.7, max_tokens=2000,
+                task_type="proposal_deliberation",
+                task_context={
+                    "deliberation_turn": deliberation_turn,
+                    "total_turns": chosen_turns,
+                    "involves_meta_rules": "rule" in prompt.lower() and ("proposal" in prompt.lower() or "voting" in prompt.lower()),
+                    "late_game": self.turn_number >= 15
+                }
+            )
 
             # Log deliberation step
             self.game_logger.log_deliberation_step(player.id, deliberation_turn, prompt, response)
@@ -3931,7 +5782,7 @@ RECENT RULE ADDITIONS:
             # Optional: Extract any insights the model wants to preserve
             if "INSIGHT:" in response:
                 insight = response.split("INSIGHT:")[1].split("\n")[0].strip()
-                self.add_event(f"💡 {player.name} insight: {insight[:60]}...")
+                self.add_event(f" {player.name} insight: {insight[:60]}...")
                 self.game_logger.log_insight(player.id, insight)
             
             # Parse and save scratchpad notes from deliberation
@@ -3939,7 +5790,7 @@ RECENT RULE ADDITIONS:
                 scratchpad_notes = self.deliberation_manager._parse_scratchpad_notes(response)
                 if scratchpad_notes:
                     self.deliberation_manager._save_scratchpad_notes(player.id, scratchpad_notes)
-                    self.add_event(f"📝 {player.name} added {len(scratchpad_notes)} notes to scratchpad")
+                    self.add_event(f" {player.name} added {len(scratchpad_notes)} notes to scratchpad")
             except Exception as e:
                 print(f"Error processing scratchpad notes for {player.name}: {e}")
                 # Continue without breaking the game
@@ -3948,7 +5799,7 @@ RECENT RULE ADDITIONS:
             time.sleep(0.5)
 
         # Now generate final proposal using deliberation insights
-        self.add_event(f"✅ {player.name} deliberation complete, crafting proposal...")
+        self.add_event(f" {player.name} deliberation complete, crafting proposal...")
 
         # Build final proposal prompt with all deliberation context and checkbox system
         final_prompt = self.deliberation_manager.generate_final_proposal_prompt_with_checkboxes(
@@ -3976,7 +5827,7 @@ RECENT RULE ADDITIONS:
 
             # If category is overused, reject and try again
             if self.deliberation_manager.is_category_overused(proposed_category) and attempt < max_attempts - 1:
-                self.add_event(f"🚫 {player.name} proposal rejected for overused category: {proposed_category}")
+                self.add_event(f" {player.name} proposal rejected for overused category: {proposed_category}")
                 continue
 
             # Validate the rule
@@ -4006,7 +5857,7 @@ RECENT RULE ADDITIONS:
                     parsed["rule_text"], parsed["explanation"], parsed["internal_thought"]
                 )
                 if is_random:
-                    self.add_event(f"🚨 Warning: {player.name} showing signs of random behavior")
+                    self.add_event(f" Warning: {player.name} showing signs of random behavior")
                     proposal_data["random_behavior"] = True
 
                 # Analysis scores
@@ -4021,9 +5872,9 @@ RECENT RULE ADDITIONS:
                 )
 
                 self.add_event(
-                    f"📊 {player.name} final analysis: Coherence: {coherence_score:.0f}, Memory: {memory_score:.0f}, Engagement: {engagement_score:.0f}"
+                    f" {player.name} final analysis: Coherence: {coherence_score:.0f}, Memory: {memory_score:.0f}, Engagement: {engagement_score:.0f}"
                 )
-                self.add_event(f"🏷️ {player.name} proposal category: {proposed_category}")
+                self.add_event(f" {player.name} proposal category: {proposed_category}")
 
                 # Update memory
                 memory = self.agent_memory[player.id]
@@ -4036,29 +5887,29 @@ RECENT RULE ADDITIONS:
                 parsed["_performance_data"] = proposal_data
                 parsed["_deliberation_results"] = deliberation_results
 
-                self.add_event(f"📝 {player.name} proposes Rule {self.next_rule_number}: {parsed['rule_text']}")
-                self.add_event(f"💡 Explanation: {parsed['explanation']}")
-                self.add_event(f"🧠 Internal thought: {parsed['internal_thought']}")
+                self.add_event(f" {player.name} proposes Rule {self.next_rule_number}: {parsed['rule_text']}")
+                self.add_event(f" Explanation: {parsed['explanation']}")
+                self.add_event(f" Internal thought: {parsed['internal_thought']}")
 
                 return parsed
 
         # NO MORE STRATEGIC FALLBACKS! Force AI to be creative
-        self.add_event(f"❌ {player.name} failed to generate valid proposal - encouraging creative retry")
+        self.add_event(f" {player.name} failed to generate valid proposal - encouraging creative retry")
         self.game_logger.log_failed_proposal(player.id, "Failed to parse proposal format", 1)
         
         # Try ONE more time with enhanced temporal context prompt
         retry_prompt = f"""
-🚨 PROPOSAL GENERATION RETRY - Your previous attempt failed to parse correctly.
+PROPOSAL GENERATION RETRY - Your previous attempt failed to parse correctly.
 
 {self.deliberation_manager.generate_nomic_context_header(game_state, player)}
 
-⏰ LEARNING FROM FAILURE: Your last proposal attempt couldn't be parsed. This means you need to:
+LEARNING FROM FAILURE: Your last proposal attempt could not be parsed. This means you need to:
 - Follow the EXACT format: INTERNAL_THOUGHT: / RULE_TEXT: / EXPLANATION:
 - Use your scratchpad notes and temporal context
 - Avoid repeating failed proposals from your history
 - Be creative but clear
 
-📝 YOUR RECENT NOTES: Check your scratchpad for patterns of what worked/failed
+YOUR RECENT NOTES: Check your scratchpad for patterns of what worked/failed
 
 SIMPLE SUCCESS TEMPLATE (adapt creatively):
 INTERNAL_THOUGHT: [Your honest strategic thinking about the current game state]
@@ -4072,11 +5923,11 @@ Focus on the current game situation and be creative!
         retry_parsed = self.parse_proposal_response(retry_response)
         
         if retry_parsed:
-            self.add_event(f"✅ {player.name} successful retry with enhanced temporal context")
+            self.add_event(f" {player.name} successful retry with enhanced temporal context")
             return retry_parsed
         
         # If retry also fails, provide minimal fallback but log learning opportunity
-        self.add_event(f"💔 {player.name} complete generation failure - needs better temporal awareness")
+        self.add_event(f" {player.name} complete generation failure - needs better temporal awareness")
         self.game_logger.log_failed_proposal(player.id, "Failed retry - complete generation failure", 2)
         
         # Add this failure to their learning observations for future scratchpad use
@@ -4177,7 +6028,7 @@ Focus on the current game situation and be creative!
         lines = checkbox_text.lower().split("\n")
         for line in lines:
             # Points effects
-            if "[x]" in line or "☑" in line or "yes" in line:
+            if "[x]" in line or "" in line or "yes" in line:
                 if "add" in line and "point" in line:
                     match = re.search(r"(\d+)", line)
                     if match:
@@ -4304,7 +6155,7 @@ Focus on the current game situation and be creative!
 
     def _generate_voting_choice_prompt(self, player, proposal, proposer, my_rank, proposer_rank) -> str:
         """Generate prompt for choosing voting deliberation approach"""
-        return f"""🗳️ VOTING DELIBERATION PLANNING
+        return f"""VOTING DELIBERATION PLANNING
         
 PROPOSAL TO EVALUATE:
 Rule: "{proposal.rule_text}"
@@ -4313,17 +6164,17 @@ Your Position: {player.name} (Rank #{my_rank})
 
 Choose your voting analysis approach:
 
-📋 **1 TURN** - Quick Decision
+**1 TURN** - Quick Decision
 - Use when the impact is obvious
 - Clear benefit/harm to your position
 - Simple rule effects
 
-📋 **2 TURNS** - Thorough Analysis  
+**2 TURNS** - Thorough Analysis  
 - Standard approach for complex rules
 - Need to evaluate multiple factors
 - Strategic impact requires deeper thought
 
-This rule's complexity level and how it affects your victory chances should guide your choice.
+This rule complexity level and how it affects your victory chances should guide your choice.
 
 RESPOND WITH:
 - Your chosen number of turns (1 or 2)
@@ -4332,24 +6183,24 @@ RESPOND WITH:
     def _get_simple_scratchpad_content(self, player) -> str:
         """Get simplified scratchpad content for voting prompts"""
         if not hasattr(self, 'state_tracker'):
-            return "📝 SCRATCHPAD: Not available during voting"
+            return " SCRATCHPAD: Not available during voting"
         
         try:
             state = self.state_tracker.get_player_state(player.id)
             if hasattr(state, 'scratchpad') and state.scratchpad:
                 recent_notes = state.scratchpad[-3:]  # Last 3 notes only
-                scratchpad_text = "📝 YOUR RECENT NOTES:\n"
+                scratchpad_text = " YOUR RECENT NOTES:\n"
                 for i, note in enumerate(recent_notes, 1):
                     scratchpad_text += f"   {i}. {note[:100]}...\n"
                 return scratchpad_text
             else:
-                return "📝 SCRATCHPAD: No recent notes"
+                return " SCRATCHPAD: No recent notes"
         except:
-            return "📝 SCRATCHPAD: Not accessible"
+            return " SCRATCHPAD: Not accessible"
     
     def _get_simple_temporal_reminders(self) -> str:
         """Get simplified temporal reminders for voting"""
-        return "⏰ TEMPORAL CONTEXT: Consider your strategic position and recent game events when voting"
+        return " TEMPORAL CONTEXT: Consider your strategic position and recent game events when voting"
 
     def _generate_voting_turn_prompt(
         self,
@@ -4382,12 +6233,12 @@ RESPOND WITH:
 YOUR EARLIER ANALYSIS:
 {async_analysis}
 
-Now with voting context and other players' votes, finalize your decision:
+Now with voting context and other players votes, finalize your decision:
 """
 
         if turn_num == 1 and total_turns == 1:
             # Single turn comprehensive analysis
-            return f"""🗳️ COMPREHENSIVE VOTING ANALYSIS{" (WITH ASYNC CONTEXT)" if async_analysis else ""}
+            return f""" COMPREHENSIVE VOTING ANALYSIS{" (WITH ASYNC CONTEXT)" if async_analysis else ""}
 {scratchpad_content}
 {temporal_reminders}
 
@@ -4412,7 +6263,7 @@ REASONING: [Your strategic reasoning for this vote]"""
 
         elif turn_num == 1 and total_turns == 2:
             # First turn of two-turn analysis
-            return f"""🗳️ VOTING ANALYSIS TURN 1/2: IMPACT ASSESSMENT
+            return f""" VOTING ANALYSIS TURN 1/2: IMPACT ASSESSMENT
 
 PROPOSAL: "{proposal.rule_text}"
 Proposed by: {proposer.name} (Rank #{proposer_rank}, {proposer.points} points)
@@ -4431,7 +6282,7 @@ No format required - think freely about the strategic implications."""
         else:  # turn_num == 2 and total_turns == 2
             # Second turn of two-turn analysis
             previous_analysis = previous_results.get("turn_1", "")
-            return f"""🗳️ VOTING ANALYSIS TURN 2/2: FINAL DECISION
+            return f""" VOTING ANALYSIS TURN 2/2: FINAL DECISION
 
 PROPOSAL: "{proposal.rule_text}"
 
@@ -4449,19 +6300,19 @@ REASONING: [Your strategic reasoning for this vote]"""
         votes = {}
         proposer = next(p for p in self.players if p.id == proposal.player_id)
 
-        self.add_event("🗳️ Starting flexible voting phase...")
+        self.add_event(" Starting flexible voting phase...")
 
         for player in self.players:
             # CRITICAL: Proposer must always vote AYE for their own proposal
             if player.id == proposal.player_id:
                 votes[player.id] = True
-                self.add_event(f"🗳️ {player.name}: Aye (own proposal)")
+                self.add_event(f" {player.name}: Aye (own proposal)")
                 continue
 
             # Handle human players differently
             if player.is_human:
                 # For human players, skip the AI deliberation and wait for web input
-                self.add_event(f"👤 {player.name}, please vote on the proposal via the web interface.")
+                self.add_event(f" {player.name}, please vote on the proposal via the web interface.")
                 # The vote will be set via the /human/submit-vote route
                 # For now, we continue with other players and check back later
                 continue
@@ -4470,10 +6321,10 @@ REASONING: [Your strategic reasoning for this vote]"""
             has_async_analysis = hasattr(player, "async_deliberation") and proposal.id in player.async_deliberation
 
             if has_async_analysis:
-                self.add_event(f"🧠 {player.name} using pre-computed analysis + current voting context...")
+                self.add_event(f" {player.name} using pre-computed analysis + current voting context...")
                 async_analysis = player.async_deliberation[proposal.id]["initial_analysis"]
             else:
-                self.add_event(f"🤔 {player.name} entering voting deliberation...")
+                self.add_event(f" {player.name} entering voting deliberation...")
                 async_analysis = None
 
             # Get current standings for competitive context
@@ -4487,20 +6338,55 @@ REASONING: [Your strategic reasoning for this vote]"""
                 voted_player = next(p for p in self.players if p.id == voted_player_id)
                 votes_so_far.append(f"{voted_player.name}: {'AYE' if vote_value else 'NAY'}")
 
-            # Let model choose voting deliberation approach (1 or 2 turns)
-            choice_prompt = self._generate_voting_choice_prompt(player, proposal, proposer, my_rank, proposer_rank)
-            choice_response = self.unified_generate(player, choice_prompt, temperature=0.3, max_tokens=2000)
+            # Calculate context pressure for voting deliberation
+            context_pressure = 0.0
+            if hasattr(self, 'context_manager') and self.context_manager:
+                try:
+                    player_model = getattr(player, 'model', 'unknown')
+                    context_status = self.context_manager.get_context_usage(player_model)
+                    context_pressure = context_status.get('usage_percentage', 0.0) / 100.0
+                except Exception as e:
+                    print(f"Error calculating voting context pressure for {player.name}: {e}")
+                    context_pressure = 0.0
 
-            # Parse chosen number of voting turns
-            chosen_turns = self._parse_voting_turns(choice_response)
-            self.add_event(f"🎯 {player.name} chooses {chosen_turns}-turn voting analysis")
+            # Let model choose voting deliberation approach (1 or 2 turns) with context pressure
+            if hasattr(player, 'character') and player.character and hasattr(player.character, 'traits'):
+                # Use character traits for voting turns with context pressure
+                if context_pressure > 0.95:
+                    chosen_turns = 1  # Emergency single-turn voting
+                    pressure_note = " (emergency context reduction)"
+                elif context_pressure > 0.85:
+                    chosen_turns = 1  # High pressure single-turn voting
+                    pressure_note = f" (context pressure: {context_pressure:.1%})"
+                else:
+                    # Normal character-based voting turns (1-2 range)
+                    _, max_turns = player.character.traits.deliberation_range
+                    chosen_turns = min(2, max(1, max_turns - 1))  # Voting is typically shorter
+                    pressure_note = ""
+                
+                self.add_event(f" {player.name} chooses {chosen_turns}-turn voting analysis{pressure_note}")
+            else:
+                # Fallback to original choice method
+                choice_prompt = self._generate_voting_choice_prompt(player, proposal, proposer, my_rank, proposer_rank)
+                choice_response = self.unified_generate(player, choice_prompt, temperature=0.3, max_tokens=2000)
+                chosen_turns = self._parse_voting_turns(choice_response)
+                
+                # Apply context pressure to fallback method
+                if context_pressure > 0.95:
+                    chosen_turns = 1
+                    self.add_event(f" {player.name} chooses {chosen_turns}-turn voting analysis (emergency context reduction)")
+                elif context_pressure > 0.85:
+                    chosen_turns = min(1, chosen_turns)
+                    self.add_event(f" {player.name} chooses {chosen_turns}-turn voting analysis (context pressure applied)")
+                else:
+                    self.add_event(f" {player.name} chooses {chosen_turns}-turn voting analysis")
 
             # Store deliberation results for building final vote
             voting_results = {}
 
             # Run flexible voting deliberation loop (1-2 turns)
             for voting_turn in range(1, chosen_turns + 1):
-                self.add_event(f"📊 {player.name} voting analysis turn {voting_turn}/{chosen_turns}")
+                self.add_event(f" {player.name} voting analysis turn {voting_turn}/{chosen_turns}")
 
                 # Generate flexible voting turn prompt
                 prompt = self._generate_voting_turn_prompt(
@@ -4517,7 +6403,18 @@ REASONING: [Your strategic reasoning for this vote]"""
                 )
 
                 # Get voting analysis with high token limit
-                response = self.unified_generate(player, prompt, temperature=0.6, max_tokens=2000)
+                response = self.unified_generate(
+                    player, prompt, 
+                    temperature=0.6, max_tokens=2000,
+                    task_type="voting_decision",
+                    task_context={
+                        "voting_turn": voting_turn,
+                        "total_turns": chosen_turns,
+                        "affects_player_directly": proposer.id == player.id,
+                        "predicted_vote_margin": 2,  # Will enhance this with actual prediction
+                        "proposal_type": "amendment" if "amend" in proposal.rule_text.lower() else "new_rule"
+                    }
+                )
 
                 # Store free-form voting analysis (no rigid parsing)
                 voting_results[f"turn_{voting_turn}"] = response
@@ -4525,13 +6422,13 @@ REASONING: [Your strategic reasoning for this vote]"""
                 # Optional: Extract any key insights
                 if "INSIGHT:" in response:
                     insight = response.split("INSIGHT:")[1].split("\n")[0].strip()
-                    self.add_event(f"💡 {player.name} voting insight: {insight[:50]}...")
+                    self.add_event(f" {player.name} voting insight: {insight[:50]}...")
 
                 # Small delay between voting turns
                 time.sleep(0.3)
 
             # Final vote decision - simplified and more effective
-            final_vote_prompt = f"""🗳️ VOTING DECISION
+            final_vote_prompt = f""" VOTING DECISION
 
 PROPOSAL: "{proposal.rule_text}"
 BY: {proposer.name} (Rank #{proposer_rank})
@@ -4543,9 +6440,9 @@ QUICK DECISION:
 3. Will this rule hurt your future chances?
 
 VOTE STRATEGY:
-- Vote AYE if you benefit or if it's neutral but helps underdogs
+- Vote AYE if you benefit or if it is neutral but helps underdogs
 - Vote NAY if it primarily helps the proposer or hurts you
-- Remember: You need others' votes for YOUR proposals later
+- Remember: You need others votes for YOUR proposals later
 
 REQUIRED OUTPUT:
 VOTE: [AYE or NAY]
@@ -4598,13 +6495,15 @@ Keep it simple - overthinking leads to poor decisions."""
             
             # Log parsing issues for debugging
             if not vote_parsed:
-                self.add_event(f"⚠️ {player.name} vote parsing failed, response: {final_response[:100]}...")
+                self.add_event(f" {player.name} vote parsing failed, response: {final_response[:100]}...")
 
             # Only set vote if player hasn't voted yet
             if player.id not in votes:
                 votes[player.id] = vote
+                # Trigger vote_cast effects (like Rule 301: gain points for voting)
+                self.execute_rule_effects("vote_cast", voter=player, proposal=proposal)
             else:
-                self.add_event(f"⚠️ {player.name} attempted to vote twice - ignoring")
+                self.add_event(f" {player.name} attempted to vote twice - ignoring")
 
             # Track competitive voting patterns
             competitive_score = 0
@@ -4634,8 +6533,8 @@ Keep it simple - overthinking leads to poor decisions."""
 
             # Log vote with competitive context
             vote_text = "Aye" if vote else "Nay"
-            competitive_indicator = "🎯" if competitive_score > 0 else "🤝" if competitive_score == 0 else "⚠️"
-            self.add_event(f"🗳️ {player.name}: {vote_text} {competitive_indicator} ({chosen_turns}T) - {reasoning}")
+            competitive_indicator = "" if competitive_score > 0 else "" if competitive_score == 0 else ""
+            self.add_event(f" {player.name}: {vote_text} {competitive_indicator} ({chosen_turns}T) - {reasoning}")
 
             # Log vote in game logger
             self.game_logger.log_vote(player.id, vote, reasoning)
@@ -4647,11 +6546,11 @@ Keep it simple - overthinking leads to poor decisions."""
 
         # Check for concerning unanimous patterns
         if ayes == total:
-            self.add_event("⚠️ UNANIMOUS VOTE - Checking for lack of strategic competition...")
+            self.add_event(" UNANIMOUS VOTE - Checking for lack of strategic competition...")
         elif ayes == 1:  # Only proposer voted yes
-            self.add_event("🎯 HIGHLY COMPETITIVE VOTE - Strong strategic opposition detected")
+            self.add_event(" HIGHLY COMPETITIVE VOTE - Strong strategic opposition detected")
 
-        self.add_event(f"📊 VOTE RESULT: {ayes}/{total} Aye - {vote_breakdown}")
+        self.add_event(f" VOTE RESULT: {ayes}/{total} Aye - {vote_breakdown}")
 
         # Store votes in the proposal
         proposal.votes = votes
@@ -4683,23 +6582,92 @@ Keep it simple - overthinking leads to poor decisions."""
                     if self.execute_transmutation(proposal):
                         # Transmutation successful
                         proposer.points += 10
-                        self.add_event(f"💰 {proposer.name} gains 10 points → {proposer.points}")
+                        self.add_event(f" {proposer.name} gains 10 points  {proposer.points}")
+                        
+                        # Index the transmutation in RAG system
+                        if hasattr(self, 'rag_system'):
+                            self.rag_system.index_proposal(
+                                proposal.id, f"Transmute rule {proposal.transmute_target_rule}", 
+                                proposer.id, True, self.turn_number
+                            )
+                        
                         return True
                     else:
                         # Transmutation failed - treat as failed proposal
-                        self.add_event(f"❌ TRANSMUTATION FAILED - Invalid rule number {proposal.transmute_target_rule}")
+                        self.add_event(f" TRANSMUTATION FAILED - Invalid rule number {proposal.transmute_target_rule}")
                         # Execute vote_fail effects
                         self.execute_rule_effects("vote_fail", proposer=proposer)
                         return False
                 
-                # Check if rule needs GM interpretation
+                # Handle amendment proposals second
+                if proposal.is_amendment and proposal.amend_target_rule:
+                    if self.execute_amendment(proposal):
+                        # Amendment successful
+                        proposer.points += 10
+                        self.add_event(f" {proposer.name} gains 10 points  {proposer.points}")
+                        
+                        # Index the amendment in RAG system
+                        if hasattr(self, 'rag_system'):
+                            self.rag_system.index_proposal(
+                                proposal.id, f"Amend rule {proposal.amend_target_rule}: {proposal.rule_text[:60]}...", 
+                                proposer.id, True, self.turn_number
+                            )
+                        
+                        return True
+                    else:
+                        # Amendment failed - treat as failed proposal
+                        self.add_event(f" AMENDMENT FAILED - Rule {proposal.amend_target_rule} cannot be amended")
+                        # Execute vote_fail effects
+                        self.execute_rule_effects("vote_fail", proposer=proposer)
+                        return False
+                
+                # Enhanced rule interpretation with advanced Game Master API
+                if self.gm_api_enabled:
+                    # Validate rule first
+                    validation = self.advanced_gm.validate_rule(proposal.rule_text)
+                    
+                    if not validation['is_valid']:
+                        self.add_event(f" Rule validation failed: {'; '.join(validation['errors'])}")
+                        # Execute vote_fail effects and continue as failed proposal
+                        self.execute_rule_effects("vote_fail", proposer=proposer)
+                        return False
+                    
+                    # Warn about potential issues
+                    if validation['warnings']:
+                        for warning in validation['warnings']:
+                            self.add_event(f" GM Warning: {warning}")
+                    
+                    # Interpret rule into actions
+                    self.add_event(f" Advanced GM interpreting rule (confidence: {validation['confidence']:.2f}, complexity: {validation['complexity']:.2f})")
+                    
+                    game_context = {
+                        'rule_id': self.next_rule_number,
+                        'turn_number': self.turn_number,
+                        'proposer': proposer,
+                        'players': self.players,
+                        'current_rules': len(self.rules["mutable"]) + len(self.rules["immutable"])
+                    }
+                    
+                    actions = self.advanced_gm.interpret_rule(proposal.rule_text, self.next_rule_number, game_context)
+                    
+                    if actions:
+                        execution_result = self.advanced_gm.execute_actions(actions, game_context)
+                        
+                        if execution_result.success:
+                            self.add_event(f" Advanced GM executed {len(execution_result.actions_taken)} actions successfully")
+                            for effect in execution_result.effects_applied:
+                                self.add_event(f" GM Effect: {effect}")
+                        else:
+                            self.add_event(f" GM execution partially failed: {'; '.join(execution_result.errors)}")
+                            
+                # Check if rule needs legacy GM interpretation
                 rule_complexity = self.game_master._assess_complexity(proposal.rule_text)
                 
-                # If complex, use GM system
+                # If complex, use legacy GM system as backup
                 if self.gm_enabled and rule_complexity > 0.3:
-                    self.add_event(f"🧙 Game Master interpreting complex rule (complexity: {rule_complexity:.2f})")
+                    self.add_event(f" Legacy Game Master interpreting complex rule (complexity: {rule_complexity:.2f})")
                     
-                    # Get game context for GM
+                    # Get game context for legacy GM
                     game_context = {
                         'turn_number': self.turn_number,
                         'num_players': self.num_players,
@@ -4707,7 +6675,7 @@ Keep it simple - overthinking leads to poor decisions."""
                         'current_rules': len(self.rules["mutable"]) + len(self.rules["immutable"])
                     }
                     
-                    # GM interprets the rule
+                    # Legacy GM interprets the rule
                     interpretation = self.game_master.interpret_rule(
                         proposal.rule_text,
                         self.next_rule_number,
@@ -4716,9 +6684,9 @@ Keep it simple - overthinking leads to poor decisions."""
                     
                     # Register with dynamic engine
                     if self.dynamic_rule_engine.register_rule(self.next_rule_number, interpretation):
-                        self.add_event(f"✨ Complex rule registered with Game Master")
+                        self.add_event(f" Complex rule registered with Legacy Game Master")
                     else:
-                        self.add_event(f"⚠️ GM registration failed, using traditional parsing")
+                        self.add_event(f" GM registration failed, using traditional parsing")
                 
                 # Create the new rule with parsed effects
                 new_rule = ParsedRule(
@@ -4734,15 +6702,31 @@ Keep it simple - overthinking leads to poor decisions."""
                 # Track successful rules
                 self.agent_memory[proposal.player_id]["successful_rules"].append(proposal.rule_text)
 
-                self.add_event(f"✅ RULE {self.next_rule_number} ADOPTED ({ayes}/{total})")
-                self.add_event(f"📜 New rule: {proposal.rule_text}")
+                self.add_event(f" RULE {self.next_rule_number} ADOPTED ({ayes}/{total})")
+                self.add_event(f" New rule: {proposal.rule_text}")
 
                 # Execute any immediate effects
                 self.execute_rule_effects("rule_adopted", proposer=proposer, rule=new_rule)
 
                 # Standard proposal reward
                 proposer.points += 10
-                self.add_event(f"💰 {proposer.name} gains 10 points → {proposer.points}")
+                self.add_event(f" {proposer.name} gains 10 points  {proposer.points}")
+
+                # Index successful proposal in RAG system
+                if hasattr(self, 'rag_system'):
+                    self.rag_system.index_proposal(
+                        proposal.id, proposal.rule_text, proposer.id, True, self.turn_number
+                    )
+                    # Also index the new rule for future retrieval
+                    self.rag_system.index_rule(
+                        new_rule.id, new_rule.text, 
+                        {"type": "mutable", "author": proposer.id, "turn_created": self.turn_number}
+                    )
+
+                # Increment rules created counter for session tracking
+                if self.session_manager.current_session:
+                    self.session_manager.current_session.rules_created += 1
+                    self.session_manager.save_session_metadata()
 
                 self.next_rule_number += 1
 
@@ -4752,7 +6736,13 @@ Keep it simple - overthinking leads to poor decisions."""
                 # Track failed rules
                 self.agent_memory[proposal.player_id]["failed_rules"].append(proposal.rule_text)
 
-                self.add_event(f"❌ PROPOSAL DEFEATED ({percentage:.0f}% < {self.current_voting_threshold}% required)")
+                self.add_event(f" PROPOSAL DEFEATED ({percentage:.0f}% < {self.current_voting_threshold}% required)")
+
+                # Index failed proposal in RAG system for learning
+                if hasattr(self, 'rag_system'):
+                    self.rag_system.index_proposal(
+                        proposal.id, proposal.rule_text, proposer.id, False, self.turn_number
+                    )
 
                 # Execute vote_fail effects
                 self.execute_rule_effects("vote_fail", proposer=proposer)
@@ -4805,16 +6795,32 @@ Keep it simple - overthinking leads to poor decisions."""
         # Prevent race conditions with turn lock
         with self.turn_lock:
             if self.turn_in_progress:
-                self.add_event(f"⚠️ Turn already in progress, skipping duplicate call")
+                self.add_event(f" Turn already in progress, skipping duplicate call")
                 return
             self.turn_in_progress = True
 
         try:
             current_player = self.get_current_player()
 
+            # Monitor game health and apply any necessary interventions
+            if hasattr(self, 'failure_recovery'):
+                health_report = self.failure_recovery.monitor_game_health({"game": self})
+                if health_report["status"] != "healthy":
+                    self.add_event(f"🏥 HEALTH CHECK: {health_report['status'].upper()}")
+                    
+                    # Log any interventions applied
+                    for intervention in health_report["interventions_applied"]:
+                        self.add_event(f"🚨 AUTO-RECOVERY: {intervention['intervention']}")
+                        for action in intervention["actions"]:
+                            self.add_event(f"   - {action}")
+                    
+                    # Log recommendations
+                    for rec in health_report["recommendations"]:
+                        self.add_event(f"⚠️  RECOMMENDATION: {rec['suggested_action']}")
+
             # Log turn start
             self.game_logger.log_turn_start(self.turn_number, current_player)
-            self.add_event(f"🎯 Turn {self.turn_number} - {current_player.name}'s turn")
+            self.add_event(f" Turn {self.turn_number} - {current_player.name}'s turn")
 
             # Process idle turns for other players (not for humans)
             if not current_player.is_human:
@@ -4825,7 +6831,7 @@ Keep it simple - overthinking leads to poor decisions."""
                 # For human players, wait for them to submit a proposal via web interface
                 if not self.waiting_for_human:
                     self.add_event(
-                        f"👤 {current_player.name}, it's your turn! Please submit a proposal via the web interface."
+                        f" {current_player.name}, it's your turn! Please submit a proposal via the web interface."
                     )
                     self.waiting_for_human = True
                 # The proposal will be set via the /human/propose route
@@ -4895,7 +6901,7 @@ Keep it simple - overthinking leads to poor decisions."""
         if winner:
             self.game_over = True
             self.winner = winner
-            self.add_event(f"🏆 {winner.name} WINS with {winner.points} points!")
+            self.add_event(f" {winner.name} WINS with {winner.points} points!")
 
             # End session
             final_scores = {p.id: p.points for p in self.players}
@@ -4940,13 +6946,16 @@ Keep it simple - overthinking leads to poor decisions."""
 
             # Finalize turn log
             self.game_logger.finalize_turn_log(self.turn_number)
+            
+            # Display cost tracking if using OpenRouter
+            self.display_cost_tracking()
 
             # Check victory
             winner = self.check_victory()
             if winner:
                 self.game_over = True
                 self.winner = winner
-                self.add_event(f"🏆 {winner.name} WINS with {winner.points} points!")
+                self.add_event(f" {winner.name} WINS with {winner.points} points!")
 
                 # End session
                 final_scores = {p.id: p.points for p in self.players}
@@ -5013,10 +7022,10 @@ Keep it simple - overthinking leads to poor decisions."""
                 self.game_logger.log_idle_turn(idle_turn)
                 self.session_manager.save_idle_turn_log(idle_turn)
 
-                self.add_event(f"💭 {player.name} processes idle turn {player_state.idle_turn_count}/3")
+                self.add_event(f" {player.name} processes idle turn {player_state.idle_turn_count}/3")
 
             except Exception as e:
-                self.add_event(f"⚠️ Error processing idle turn for {player.name}: {str(e)}")
+                self.add_event(f" Error processing idle turn for {player.name}: {str(e)}")
 
     def update_states_after_turn(self, current_player: Player, proposal: Proposal, passed: bool):
         """Update player internal states after a turn"""
@@ -5049,7 +7058,7 @@ Keep it simple - overthinking leads to poor decisions."""
         """Advance to next player"""
         # Double-check that game isn't over before advancing
         if self.game_over:
-            self.add_event("⚠️ Cannot advance turn - game is over")
+            self.add_event(" Cannot advance turn - game is over")
             return
             
         self.current_player_idx = (self.current_player_idx + 1) % self.num_players
@@ -5060,11 +7069,11 @@ Keep it simple - overthinking leads to poor decisions."""
         
         # Log the turn advancement for debugging
         next_player = self.get_current_player()
-        self.add_event(f"⏭️ Turn advanced to {next_player.name} (Turn {self.turn_number})")
+        self.add_event(f" Turn advanced to {next_player.name} (Turn {self.turn_number})")
         
         # If next player is AI, immediately trigger their turn
         if not next_player.is_human and not self.game_over:
-            self.add_event(f"🤖 Immediately starting {next_player.name}'s AI turn...")
+            self.add_event(f" Immediately starting {next_player.name}'s AI turn...")
             # Use threading to avoid blocking
             def start_next_turn():
                 time.sleep(1)  # Brief delay to ensure state is clean
@@ -5076,12 +7085,30 @@ Keep it simple - overthinking leads to poor decisions."""
                         self.turn_in_progress = False
             
             threading.Thread(target=start_next_turn, daemon=True).start()
+    
+    def display_cost_tracking(self):
+        """Display cost tracking information for OpenRouter usage"""
+        if hasattr(self.llm_provider, 'get_total_session_cost'):
+            total_cost = self.llm_provider.get_total_session_cost()
+            budget = getattr(self.llm_provider, 'session_budget', 5.0)
+            
+            if total_cost > 0:
+                usage_percent = (total_cost / budget) * 100
+                print(f"\n💰 Session Cost: ${total_cost:.4f} / ${budget:.2f} ({usage_percent:.1f}%)")
+                
+                # Show per-model breakdown
+                costs = self.llm_provider.get_session_costs()
+                if costs:
+                    print("   Model breakdown:")
+                    for model, model_costs in costs.items():
+                        model_name = model.split('/')[-1]  # Get just the model name
+                        print(f"     {model_name}: ${model_costs['total_cost']:.4f} ({model_costs['input_tokens']:,} in, {model_costs['output_tokens']:,} out)")
 
     def start_async_deliberation(self, proposal):
         """Start background deliberation for all non-proposing players immediately when proposal is made"""
         proposer_id = proposal.player_id
         self.add_event(
-            f"🧠 Starting async deliberation for all players on proposal by {next(p.name for p in self.players if p.id == proposer_id)}"
+            f" Starting async deliberation for all players on proposal by {next(p.name for p in self.players if p.id == proposer_id)}"
         )
 
         for player in self.players:
@@ -5089,7 +7116,7 @@ Keep it simple - overthinking leads to poor decisions."""
             if player.id == proposer_id or player.is_human:
                 continue
 
-            self.add_event(f"💭 {player.name} begins thinking about the proposal...")
+            self.add_event(f" {player.name} begins thinking about the proposal...")
 
             # Start first turn of deliberation immediately
             try:
@@ -5099,7 +7126,7 @@ Keep it simple - overthinking leads to poor decisions."""
                 proposer = next(p for p in self.players if p.id == proposer_id)
                 proposer_rank = next(i for i, p in enumerate(sorted_players, 1) if p.id == proposer_id)
 
-                initial_prompt = f"""🧠 ASYNC DELIBERATION - INITIAL ANALYSIS
+                initial_prompt = f"""ASYNC DELIBERATION - INITIAL ANALYSIS
                 
 PROPOSAL JUST MADE: "{proposal.rule_text}"
 Explanation: {proposal.explanation}
@@ -5109,11 +7136,11 @@ Your Position: {player.name} (Rank #{my_rank}, {player.points} points)
 You have time to think before voting begins. Start your strategic analysis:
 
 1. How does this rule affect YOUR path to 100 points?
-2. What are the proposer's likely motivations?
+2. What are the proposer likely motivations?
 3. How might other players react to this?
 4. What are the immediate vs long-term implications?
 
-This is just your initial thinking - you'll get more information before final vote.
+This is just your initial thinking - you will get more information before final vote.
 No format required, just think strategically about the implications."""
 
                 # Generate initial deliberation
@@ -5128,10 +7155,10 @@ No format required, just think strategically about the implications."""
                     "timestamp": datetime.now(),
                 }
 
-                self.add_event(f"✅ {player.name} completed initial analysis")
+                self.add_event(f" {player.name} completed initial analysis")
 
             except Exception as e:
-                self.add_event(f"⚠️ Error in async deliberation for {player.name}: {str(e)}")
+                self.add_event(f" Error in async deliberation for {player.name}: {str(e)}")
 
     def finalize_game_metrics(self):
         """Update final game statistics for all players"""
@@ -5181,7 +7208,7 @@ No format required, just think strategically about the implications."""
         )
 
         # Log final statistics
-        self.add_event("📈 Final Model Performance Summary:")
+        self.add_event(" Final Model Performance Summary:")
         for player in self.players:
             if player.assigned_model_metrics:
                 overall_score = player.assigned_model_metrics.calculate_overall_score()
@@ -5189,14 +7216,14 @@ No format required, just think strategically about the implications."""
 
         # Get model statistics for display
         model_stats = self.performance_manager.get_model_statistics()
-        self.add_event("🎯 Cross-Game Model Rankings:")
+        self.add_event(" Cross-Game Model Rankings:")
         sorted_models = sorted(model_stats.items(), key=lambda x: x[1]["overall_score"], reverse=True)
         for i, (model, stats) in enumerate(sorted_models[:3], 1):
             self.add_event(f"  #{i} {model}: {stats['overall_score']:.1f} points ({stats['games_played']} games)")
 
     def update_character_stats_and_reflections(self):
         """Update character statistics and get reflections for next game"""
-        self.add_event("🎭 Updating character memories and gathering reflections...")
+        self.add_event(" Updating character memories and gathering reflections...")
         
         for player in self.players:
             if not player.character or player.is_human:
@@ -5209,13 +7236,13 @@ No format required, just think strategically about the implications."""
             character.update_after_game(player.points, won, "")
             
             # Generate reflection for next game
-            reflection_prompt = f"""🎭 END-GAME REFLECTION for {character.name}
+            reflection_prompt = f""" END-GAME REFLECTION for {character.name}
 
 GAME SUMMARY:
-• Final Result: {"🏆 WON" if won else "❌ Lost"} 
-• Final Points: {player.points}/100
-• Your Strategy: {character.strategy}
-• Games Played: {character.games_played} (Win Rate: {character.get_win_rate()*100:.1f}%)
+Final Result: {" WON" if won else " Lost"} 
+- Final Points: {player.points}/100
+- Your Strategy: {character.strategy}
+- Games Played: {character.games_played} (Win Rate: {character.get_win_rate()} percent)
 
 REFLECTION TASK:
 What is ONE key insight or lesson you want to remember for your next Nomic game? 
@@ -5237,7 +7264,7 @@ PERSISTENT_THOUGHT: [Your key insight for next game]"""
                 if "PERSISTENT_THOUGHT:" in reflection_response:
                     thought = reflection_response.split("PERSISTENT_THOUGHT:")[1].strip()
                     character.set_persistent_thought(thought)
-                    self.add_event(f"💭 {character.name}: \"{thought[:100]}{'...' if len(thought) > 100 else ''}\"")
+                    self.add_event(f" {character.name}: \"{thought[:100]}{'...' if len(thought) > 100 else ''}\"")
                 else:
                     # Fallback thought
                     fallback = f"Game {character.games_played}: {'Won' if won else 'Lost'} with {player.points} points"
@@ -5245,13 +7272,13 @@ PERSISTENT_THOUGHT: [Your key insight for next game]"""
                     
             except Exception as e:
                 # Error generating reflection
-                self.add_event(f"⚠️ Could not generate reflection for {character.name}: {e}")
+                self.add_event(f"WARNING: Could not generate reflection for {character.name}: {e}")
                 fallback = f"Game {character.games_played}: Experience gained"
                 character.set_persistent_thought(fallback)
         
         # Save updated character data
         self.character_manager.save_characters()
-        self.add_event("💾 Character memories saved for future games")
+        self.add_event(" Character memories saved for future games")
 
     def add_event(self, message):
         """Add game event"""
@@ -5282,9 +7309,26 @@ PERSISTENT_THOUGHT: [Your key insight for next game]"""
         thread.start()
 
 
-# Flask App
-app = Flask(__name__)
-game = None  # Will be initialized in main block
+# Flask App Factory for Port-Specific Instances
+def create_app():
+    """Create Flask app instance for port-specific game isolation"""
+    port_app = Flask(__name__)
+    port_app.config['game'] = None  # Will be set when game is created
+    
+    # Import all route functions and register them with this app instance
+    register_routes(port_app)
+    
+    return port_app
+
+def register_routes(app_instance):
+    """Register all routes with the given Flask app instance"""
+    # Copy all routes from the global app to this app instance
+    # This is done automatically by Flask when using the same function references
+    # The key fix is that each route now uses current_app.config['game'] instead of global game
+    pass
+
+# Default app instance (will be replaced with port-specific instances)
+app = create_app()
 
 
 @app.route("/")
@@ -5296,31 +7340,183 @@ def index():
 <head>
     <title>Proper Nomic Game</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        /* Light mode (default) */
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #f5f5f5; 
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
         .container { max-width: 1600px; margin: 0 auto; }
-        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .card { 
+            background: white; 
+            padding: 20px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .player { padding: 10px; margin: 5px 0; border-radius: 5px; border: 2px solid #ddd; }
+        .player { 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 5px; 
+            border: 2px solid #ddd;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
         .player.current { border-color: #007bff; background: #e3f2fd; }
-        .event { padding: 5px 10px; margin: 3px 0; border-radius: 3px; background: #f8f9fa; font-size: 14px; }
-        .rule { padding: 8px; margin: 3px 0; border-radius: 4px; font-size: 13px; }
+        .event { 
+            padding: 5px 10px; 
+            margin: 3px 0; 
+            border-radius: 3px; 
+            background: #f8f9fa; 
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .rule { 
+            padding: 8px; 
+            margin: 3px 0; 
+            border-radius: 4px; 
+            font-size: 13px;
+            transition: background-color 0.3s ease;
+        }
         .immutable { background: #ffebee; border-left: 4px solid #f44336; }
         .mutable { background: #e8f5e9; border-left: 4px solid #4caf50; }
         .new-rule { background: #fff3e0; border-left: 4px solid #ff9800; font-weight: bold; }
-        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button { 
+            padding: 10px 20px; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
         button:hover { background: #0056b3; }
-        h1, h2, h3 { color: #333; }
+        h1, h2, h3 { 
+            color: #333;
+            transition: color 0.3s ease;
+        }
         .winner { background: #fff3cd; border: 2px solid #ffc107; padding: 15px; text-align: center; font-size: 18px; font-weight: bold; }
-        .proposal-details { background: #f0f7ff; padding: 15px; border-radius: 5px; margin: 10px 0; }
-        .internal-thought { background: #f5f5f5; padding: 10px; border-radius: 3px; font-style: italic; margin: 5px 0; }
-        .explanation { background: #e8f5e9; padding: 10px; border-radius: 3px; margin: 5px 0; }
-        .port-info { font-size: 12px; color: #666; }
+        .proposal-details { 
+            background: #f0f7ff; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        .internal-thought { 
+            background: #f5f5f5; 
+            padding: 10px; 
+            border-radius: 3px; 
+            font-style: italic; 
+            margin: 5px 0;
+            transition: background-color 0.3s ease;
+        }
+        .explanation { 
+            background: #e8f5e9; 
+            padding: 10px; 
+            border-radius: 3px; 
+            margin: 5px 0;
+            transition: background-color 0.3s ease;
+        }
+        .port-info { 
+            font-size: 12px; 
+            color: #666;
+            transition: color 0.3s ease;
+        }
         .vote-aye { color: #4caf50; font-weight: bold; background: #e8f5e9; padding: 3px 8px; border-radius: 3px; }
         .vote-nay { color: #f44336; font-weight: bold; background: #ffebee; padding: 3px 8px; border-radius: 3px; }
         .event.important { background: #fff3e0; border-left: 4px solid #ff9800; font-weight: bold; }
         .event.proposal { background: #e3f2fd; border-left: 4px solid #2196f3; }
         .event.vote-result { background: #f3e5f5; border-left: 4px solid #9c27b0; font-weight: bold; }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body { 
+                background: #1a1a1a; 
+                color: #e0e0e0;
+            }
+            .card { 
+                background: #2d2d2d; 
+                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+            .player { 
+                border-color: #444;
+                background: #2a2a2a;
+            }
+            .player.current { 
+                border-color: #4a9eff; 
+                background: #1e3a5f;
+            }
+            .event { 
+                background: #333;
+                color: #e0e0e0;
+            }
+            .immutable { 
+                background: #4a1a1a; 
+                border-left: 4px solid #f44336; 
+            }
+            .mutable { 
+                background: #1a3d1a; 
+                border-left: 4px solid #4caf50; 
+            }
+            .new-rule { 
+                background: #3d2a1a; 
+                border-left: 4px solid #ff9800; 
+                font-weight: bold; 
+            }
+            button { 
+                background: #4a9eff; 
+            }
+            button:hover { 
+                background: #357abd; 
+            }
+            h1, h2, h3 { 
+                color: #e0e0e0;
+            }
+            .winner { 
+                background: #4a3d1a; 
+                border: 2px solid #ffc107; 
+                color: #ffc107;
+            }
+            .proposal-details { 
+                background: #1a2a3d;
+                color: #e0e0e0;
+            }
+            .internal-thought { 
+                background: #333;
+                color: #e0e0e0;
+            }
+            .explanation { 
+                background: #1a3d1a;
+                color: #e0e0e0;
+            }
+            .port-info { 
+                color: #999;
+            }
+            .vote-aye { 
+                background: #1a3d1a; 
+            }
+            .vote-nay { 
+                background: #4a1a1a; 
+            }
+            .event.important { 
+                background: #3d2a1a; 
+                color: #ffcc80;
+            }
+            .event.proposal { 
+                background: #1a2a3d; 
+                color: #bbdefb;
+            }
+            .event.vote-result { 
+                background: #2a1a3d; 
+                color: #e1bee7;
+            }
+        }
     </style>
     <script>
         function startGame() {
@@ -5376,17 +7572,17 @@ def index():
                             // Human needs to vote
                             document.getElementById('human-action').innerHTML = 
                                 `<div class="card" style="background: #fff3cd; border: 2px solid #ffc107;">
-                                    <h3>🗳️ Your Turn to Vote!</h3>
+                                    <h3> Your Turn to Vote!</h3>
                                     <div style="background: #fff3e0; padding: 15px; border-radius: 5px; margin: 10px 0;">
                                         <strong>Proposal:</strong> "${data.current_proposal.rule_text}"<br>
                                         <strong>Explanation:</strong> ${data.current_proposal.explanation}
                                     </div>
                                     <div style="text-align: center; margin: 20px 0;">
                                         <button onclick="submitHumanVote(true)" style="background: #28a745; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-size: 16px; margin: 10px;">
-                                            ✅ Vote AYE (Yes)
+                                             Vote AYE (Yes)
                                         </button>
                                         <button onclick="submitHumanVote(false)" style="background: #dc3545; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-size: 16px; margin: 10px;">
-                                            ❌ Vote NAY (No)
+                                             Vote NAY (No)
                                         </button>
                                     </div>
                                 </div>`;
@@ -5414,7 +7610,7 @@ def index():
                             // Human needs to propose
                             document.getElementById('human-action').innerHTML = 
                                 `<div class="card" style="background: #d1ecf1; border: 2px solid #17a2b8;">
-                                    <h3>📝 Your Turn to Propose!</h3>
+                                    <h3> Your Turn to Propose!</h3>
                                     <div style="margin: 15px 0;">
                                         <label style="display: block; margin-bottom: 5px; font-weight: bold;">Rule Type:</label>
                                         <select id="human-rule-type" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
@@ -5434,7 +7630,7 @@ def index():
                                         <div style="margin: 15px 0;">
                                             <label style="display: block; margin-bottom: 5px; font-weight: bold;">Rule Number to Transmute:</label>
                                             <input type="number" id="human-transmute-number" placeholder="e.g., 301" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-                                            <small>Enter the number of an existing rule to change from immutable ↔ mutable</small>
+                                            <small>Enter the number of an existing rule to change from immutable  mutable</small>
                                         </div>
                                     </div>
 
@@ -5445,7 +7641,7 @@ def index():
 
                                     <div style="text-align: center; margin: 20px 0;">
                                         <button onclick="submitHumanProposal()" style="background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 4px; font-size: 16px;">
-                                            📝 Submit Proposal
+                                             Submit Proposal
                                         </button>
                                     </div>
                                 </div>`;
@@ -5520,7 +7716,7 @@ def index():
                     // Update players
                     const playersHtml = data.players.map(p => 
                         `<div class="player ${p.current ? 'current' : ''}">
-                            <strong>${p.name}${p.is_human ? ' 👤' : ''}</strong> (${p.role.split(' - ')[0]})<br>
+                            <strong>${p.name}${p.is_human ? ' ' : ''}</strong> (${p.role.split(' - ')[0]})<br>
                             Points: ${p.points} | Model: ${p.model}
                             ${!p.is_human ? `<div class="port-info">Port: ${p.port}</div>` : ''}
                         </div>`
@@ -5537,7 +7733,7 @@ def index():
                         if (rule.effects && rule.effects.length > 0) {
                             effectsHtml = '<div style="margin-top: 5px; font-size: 12px; color: #666;">' + 
                                 rule.effects.map(e => 
-                                    `<div style="margin-left: 20px;">⚙️ ${e.description} (${e.trigger})</div>`
+                                    `<div style="margin-left: 20px;"> ${e.description} (${e.trigger})</div>`
                                 ).join('') + '</div>';
                         }
                         return `<div class="rule ${isNew ? 'new-rule' : 'mutable'}">Rule ${rule.id}: ${rule.text}${effectsHtml}</div>`;
@@ -5597,11 +7793,11 @@ def index():
                     // Update events with proper styling
                     const eventsHtml = data.events.slice(-15).map(e => {
                         let eventClass = 'event';
-                        if (e.message.includes('proposes Rule') || e.message.includes('📝')) {
+                        if (e.message.includes('proposes Rule') || e.message.includes('')) {
                             eventClass += ' proposal';
-                        } else if (e.message.includes('VOTE RESULT') || e.message.includes('📊')) {
+                        } else if (e.message.includes('VOTE RESULT') || e.message.includes('')) {
                             eventClass += ' vote-result';
-                        } else if (e.message.includes('ADOPTED') || e.message.includes('DEFEATED') || e.message.includes('✅') || e.message.includes('❌')) {
+                        } else if (e.message.includes('ADOPTED') || e.message.includes('DEFEATED') || e.message.includes('') || e.message.includes('')) {
                             eventClass += ' important';
                         }
                         return `<div class="${eventClass}">[${e.timestamp}] ${e.message}</div>`;
@@ -5611,7 +7807,7 @@ def index():
                     // Check winner
                     if (data.winner) {
                         document.getElementById('winner').innerHTML = 
-                            `<div class="winner">🏆 ${data.winner} WINS! 🏆</div>`;
+                            `<div class="winner"> ${data.winner} WINS! </div>`;
                     }
                 });
         }
@@ -5652,7 +7848,7 @@ def index():
             .then(result => {
                 if (result.success) {
                     alert('Proposal submitted! Proceeding to voting...');
-                    document.getElementById('human-action').innerHTML = '<div class="card"><h3>✅ Proposal Submitted!</h3><p>Waiting for voting phase...</p></div>';
+                    document.getElementById('human-action').innerHTML = '<div class="card"><h3> Proposal Submitted!</h3><p>Waiting for voting phase...</p></div>';
                 } else {
                     alert('Error: ' + result.error);
                 }
@@ -5672,7 +7868,7 @@ def index():
             .then(result => {
                 if (result.success) {
                     alert(vote ? 'Voted AYE!' : 'Voted NAY!');
-                    document.getElementById('human-action').innerHTML = '<div class="card"><h3>✅ Vote Submitted!</h3><p>Waiting for other players...</p></div>';
+                    document.getElementById('human-action').innerHTML = '<div class="card"><h3> Vote Submitted!</h3><p>Waiting for other players...</p></div>';
                 } else {
                     alert('Error: ' + result.error);
                 }
@@ -5683,8 +7879,8 @@ def index():
 <body>
     <div class="container">
         <div class="card">
-            <h1>🎮 Proper Nomic Game</h1>
-            <p><strong>Multi-Instance Ollama • Validated Rules • Structured Proposals</strong></p>
+            <h1> Proper Nomic Game</h1>
+            <p><strong>Multi-Instance Ollama - Validated Rules - Structured Proposals</strong></p>
             <button onclick="startGame()">Start New Game</button>
             <div id="status">Ready to start</div>
             <p><strong>Turn:</strong> <span id="turn">0</span> | <strong>Current Player:</strong> <span id="current">-</span></p>
@@ -5695,39 +7891,39 @@ def index():
         <div id="human-action"></div>
         
         <div id="proposal-section" style="display: none;" class="card">
-            <h2>📝 Current Proposal</h2>
+            <h2> Current Proposal</h2>
             <div id="current-proposal"></div>
         </div>
         
         <div class="grid">
             <div class="card">
-                <h2>👥 Players</h2>
+                <h2> Players</h2>
                 <div id="players">No game started</div>
             </div>
             
             <div class="card">
-                <h2>💬 Game Events</h2>
+                <h2> Game Events</h2>
                 <div id="events" style="height: 400px; overflow-y: auto;">No events yet</div>
             </div>
         </div>
         
         <div class="triple">
             <div class="card">
-                <h3>🔒 Immutable Rules</h3>
+                <h3> Immutable Rules</h3>
                 <div id="immutable-rules" style="max-height: 500px; overflow-y: auto; font-size: 14px; line-height: 1.4;">No rules loaded</div>
             </div>
             <div class="card">
-                <h3>📝 Mutable Rules</h3>
+                <h3> Mutable Rules</h3>
                 <div id="mutable-rules" style="max-height: 500px; overflow-y: auto; font-size: 14px; line-height: 1.4;">No rules loaded</div>
             </div>
             <div class="card">
-                <h3>❌ Failed Proposals</h3>
+                <h3> Failed Proposals</h3>
                 <div id="failed-proposals" style="max-height: 500px; overflow-y: auto; font-size: 14px; line-height: 1.4;">No failed proposals yet</div>
             </div>
         </div>
         
         <div class="card">
-            <h3>⚙️ System Info</h3>
+            <h3> System Info</h3>
                 <div style="font-size: 13px;">
                     <p><strong>Validator:</strong> llama3:8b on port 11435</p>
                     <p><strong>Player Instances:</strong> Ports 11436-11441</p>
@@ -5739,14 +7935,14 @@ def index():
         </div>
         
         <div class="card" style="text-align: center; margin-top: 20px;">
-            <h3>📊 Enhanced Analysis & Logs</h3>
+            <h3> Enhanced Analysis & Logs</h3>
             <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <a href="/stats" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">📈 Model Performance Stats</a>
-                <a href="/player-states" style="background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">🧠 Player States & Scratchpads</a>
-                <a href="/game-logs" style="background: linear-gradient(45deg, #1e3c72, #2a5298); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">📋 Detailed Game Logs</a>
-                <a href="/sessions" style="background: linear-gradient(45deg, #8e44ad, #3498db); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">📚 Session History</a>
-                <a href="/analytics" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">🔍 Deep Analytics</a>
-                <a href="/api/enhanced-logs" style="background: linear-gradient(45deg, #00b894, #00a085); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;">🔧 Enhanced Logs API</a>
+                <a href="/stats" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Model Performance Stats</a>
+                <a href="/player-states" style="background: linear-gradient(45deg, #2c3e50, #34495e); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Player States & Scratchpads</a>
+                <a href="/game-logs" style="background: linear-gradient(45deg, #1e3c72, #2a5298); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Detailed Game Logs</a>
+                <a href="/sessions" style="background: linear-gradient(45deg, #8e44ad, #3498db); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Session History</a>
+                <a href="/analytics" style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Deep Analytics</a>
+                <a href="/api/enhanced-logs" style="background: linear-gradient(45deg, #00b894, #00a085); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; display: inline-block;"> Enhanced Logs API</a>
             </div>
         </div>
     </div>
@@ -5759,6 +7955,8 @@ def index():
 @app.route("/start", methods=["POST"])
 def start_game():
     # The game instance is already created in main block with correct provider
+    from flask import current_app
+    game = current_app.config.get('game')
     if game:
         game.start_game_thread()
         return jsonify({"status": "started"})
@@ -5766,8 +7964,40 @@ def start_game():
         return jsonify({"error": "No game instance available"})
 
 
+@app.route("/new-game", methods=["POST"])
+def new_game():
+    """Create a brand new game instance"""
+    from flask import current_app
+    try:
+        # Get provider from current game if available
+        provider = None
+        current_game = current_app.config.get('game')
+        if current_game and hasattr(current_game, 'llm_provider'):
+            provider = current_game.llm_provider
+        
+        # Create new game instance
+        new_game_instance = ProperNomicGame(
+            num_players=4,  # Default to 4 players
+            provider=provider, 
+            include_human=False
+        )
+        
+        # Store in app context instead of global
+        current_app.config['game'] = new_game_instance
+        
+        return jsonify({
+            "status": "new_game_created",
+            "session_id": new_game_instance.session_id,
+            "message": "New game created successfully! You can now start it."
+        })
+    except Exception as e:
+        return jsonify({"error": f"Failed to create new game: {str(e)}"})
+
+
 @app.route("/status")
 def get_status():
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -6050,7 +8280,7 @@ def stats_page():
                 .then(data => {
                     if (data.error) {
                         document.getElementById('main-content').innerHTML = 
-                            '<div class="card"><h2>⚠️ No Game Running</h2><p>Start a game to view statistics.</p></div>';
+                            '<div class="card"><h2> No Game Running</h2><p>Start a game to view statistics.</p></div>';
                         return;
                     }
                     
@@ -6173,9 +8403,9 @@ def stats_page():
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎮 Nomic Model Performance Analytics</h1>
+            <h1> Nomic Model Performance Analytics</h1>
             <p>Comprehensive AI model evaluation and competitive analysis</p>
-            <button class="refresh-btn" onclick="refreshStats()">🔄 Refresh Data</button>
+            <button class="refresh-btn" onclick="refreshStats()"> Refresh Data</button>
         </div>
         
         <div id="main-content">
@@ -6200,53 +8430,53 @@ def stats_page():
             
             <div class="stats-grid">
                 <div class="card">
-                    <h2>🎯 Current Game Players</h2>
+                    <h2> Current Game Players</h2>
                     <div id="current-game">Loading...</div>
                 </div>
                 
                 <div class="card">
-                    <h2>🏆 Cross-Game Rankings</h2>
+                    <h2> Cross-Game Rankings</h2>
                     <div id="cross-game-rankings">Loading...</div>
                 </div>
             </div>
             
             <div class="card">
-                <h2>📊 Performance Leaders</h2>
+                <h2> Performance Leaders</h2>
                 <div class="stats-grid">
                     <div>
-                        <strong>🥇 Best Model:</strong> <span id="best-model">-</span>
+                        <strong> Best Model:</strong> <span id="best-model">-</span>
                     </div>
                     <div>
-                        <strong>🥉 Worst Model:</strong> <span id="worst-model">-</span>
+                        <strong> Worst Model:</strong> <span id="worst-model">-</span>
                     </div>
                 </div>
             </div>
             
             <div class="triple-grid">
                 <div class="card">
-                    <h3>🌟 Elite Tier (75+ Score)</h3>
+                    <h3> Elite Tier (75+ Score)</h3>
                     <div id="elite">Loading...</div>
                 </div>
                 
                 <div class="card">
-                    <h3>✅ Competent Tier (50-74 Score)</h3>
+                    <h3> Competent Tier (50-74 Score)</h3>
                     <div id="competent">Loading...</div>
                 </div>
                 
                 <div class="card">
-                    <h3>⚠️ Problematic Tier (25-49 Score)</h3>
+                    <h3> Problematic Tier (25-49 Score)</h3>
                     <div id="problematic">Loading...</div>
                 </div>
             </div>
             
             <div class="card">
-                <h3>❌ Elimination Candidates (<25 Score)</h3>
+                <h3> Elimination Candidates (<25 Score)</h3>
                 <div id="elimination">Loading...</div>
             </div>
         </div>
         
         <div class="footer">
-            <p>🤖 Automated model performance tracking and competitive analysis for Nomic AI gameplay</p>
+            <p> Automated model performance tracking and competitive analysis for Nomic AI gameplay</p>
         </div>
     </div>
 </body>
@@ -6258,6 +8488,8 @@ def stats_page():
 @app.route("/api/stats")
 def get_statistics_api():
     """API endpoint for statistics data"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -6502,7 +8734,7 @@ def player_states_page():
                 .then(data => {
                     if (data.error) {
                         document.getElementById('main-content').innerHTML = 
-                            '<div class="player-card"><h2>⚠️ No Game Running</h2><p>Start a game to view player states.</p></div>';
+                            '<div class="player-card"><h2> No Game Running</h2><p>Start a game to view player states.</p></div>';
                         return;
                     }
                     
@@ -6534,17 +8766,17 @@ def player_states_page():
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">🎯 Strategic Focus</div>
+                        <div class="state-title"> Strategic Focus</div>
                         <div class="state-content">${player.state.strategic_focus || 'Not set'}</div>
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">🏆 Victory Path</div>
+                        <div class="state-title"> Victory Path</div>
                         <div class="state-content">${player.state.victory_path || 'Not defined'}</div>
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">⚠️ Threat Assessments</div>
+                        <div class="state-title"> Threat Assessments</div>
                         <div class="state-content">
                             ${Object.entries(player.state.threat_assessments).length > 0 ? 
                                 '<ul class="threat-list">' +
@@ -6557,7 +8789,7 @@ def player_states_page():
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">🤝 Alliance Considerations</div>
+                        <div class="state-title"> Alliance Considerations</div>
                         <div class="state-content">
                             ${Object.entries(player.state.alliance_considerations).length > 0 ? 
                                 '<ul class="alliance-list">' +
@@ -6570,7 +8802,7 @@ def player_states_page():
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">📝 Planned Proposals</div>
+                        <div class="state-title"> Planned Proposals</div>
                         <div class="planned-proposals">
                             ${player.state.planned_proposals.length > 0 ? 
                                 player.state.planned_proposals.map(proposal => 
@@ -6582,7 +8814,7 @@ def player_states_page():
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">🧠 Learning Observations</div>
+                        <div class="state-title"> Learning Observations</div>
                         <div class="learning-observations">
                             ${player.state.learning_observations.length > 0 ? 
                                 player.state.learning_observations.slice(-5).map(obs => 
@@ -6594,7 +8826,7 @@ def player_states_page():
                     </div>
                     
                     <div class="state-section">
-                        <div class="state-title">📝 Scratchpad Notes</div>
+                        <div class="state-title"> Scratchpad Notes</div>
                         <div class="scratchpad-notes">
                             ${player.state.scratchpad && player.state.scratchpad.length > 0 ? 
                                 player.state.scratchpad.slice(-8).map(note => 
@@ -6623,10 +8855,10 @@ def player_states_page():
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 Nomic Player Internal States</h1>
+            <h1> Nomic Player Internal States</h1>
             <p>Real-time strategic thinking and planning of AI players</p>
             <div id="game-info" style="margin-top: 10px; font-size: 0.9em;">Loading...</div>
-            <button class="refresh-btn" onclick="refreshStates()">🔄 Refresh States</button>
+            <button class="refresh-btn" onclick="refreshStates()"> Refresh States</button>
         </div>
         
         <div id="main-content">
@@ -6644,6 +8876,8 @@ def player_states_page():
 @app.route("/api/player-states")
 def get_player_states_api():
     """API endpoint for player internal states"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -6791,7 +9025,7 @@ def game_logs_page():
                 .then(data => {
                     if (data.error) {
                         document.getElementById('logs-container').innerHTML = 
-                            '<div class="log-entry"><h3>⚠️ No Game Running</h3></div>';
+                            '<div class="log-entry"><h3> No Game Running</h3></div>';
                         return;
                     }
                     allLogs = data.logs;
@@ -6916,10 +9150,10 @@ def game_logs_page():
 <body>
     <div class="container">
         <div class="header">
-            <h1>📜 Nomic Game Logs</h1>
+            <h1> Nomic Game Logs</h1>
             <p>Comprehensive turn-by-turn game event logging</p>
-            <button class="refresh-btn" onclick="loadLogs()">🔄 Refresh</button>
-            <button class="export-btn" onclick="exportLogs()">📥 Export JSON</button>
+            <button class="refresh-btn" onclick="loadLogs()"> Refresh</button>
+            <button class="export-btn" onclick="exportLogs()"> Export JSON</button>
         </div>
         
         <div class="filters">
@@ -6961,6 +9195,8 @@ def game_logs_page():
 @app.route("/api/game-logs")
 def get_game_logs_api():
     """API endpoint for game logs"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -7080,7 +9316,7 @@ def sessions_page():
                 .then(data => {
                     if (data.error) {
                         document.getElementById('sessions-container').innerHTML = 
-                            '<div class="session-card"><h3>⚠️ No Sessions Found</h3></div>';
+                            '<div class="session-card"><h3> No Sessions Found</h3></div>';
                         return;
                     }
                     displaySessions(data.sessions);
@@ -7134,7 +9370,7 @@ def sessions_page():
                         
                         ${winner ? `
                             <div class="winner-highlight">
-                                🏆 Winner: ${winner.name} with ${session.final_scores[winner.id]} points
+                                 Winner: ${winner.name} with ${session.final_scores[winner.id]} points
                             </div>
                         ` : ''}
                         
@@ -7158,7 +9394,7 @@ def sessions_page():
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Nomic Session History</h1>
+            <h1> Nomic Session History</h1>
             <p>Complete archive of all game sessions and outcomes</p>
         </div>
         
@@ -7175,6 +9411,8 @@ def sessions_page():
 @app.route("/api/sessions")
 def get_sessions_api():
     """API endpoint for session history"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -7212,23 +9450,23 @@ def costs_dashboard():
 <body>
     <div class="container">
         <div class="card">
-            <h1>💰 Cost Tracking Dashboard</h1>
-            <button class="refresh-btn" onclick="updateCosts()">🔄 Refresh Costs</button>
-            <a href="/" style="margin-left: 20px;">🏠 Back to Game</a>
+            <h1> Cost Tracking Dashboard</h1>
+            <button class="refresh-btn" onclick="updateCosts()"> Refresh Costs</button>
+            <a href="/" style="margin-left: 20px;"> Back to Game</a>
         </div>
         
         <div class="card">
-            <h2>📊 Provider Information</h2>
+            <h2> Provider Information</h2>
             <div class="provider-info" id="provider-info">Loading...</div>
         </div>
         
         <div class="card">
-            <h2>💵 Total Session Cost</h2>
+            <h2> Total Session Cost</h2>
             <div class="total-cost" id="total-cost">$0.0000</div>
         </div>
         
         <div class="card">
-            <h2>📈 Token Usage</h2>
+            <h2> Token Usage</h2>
             <div class="token-stats">
                 <div class="stat">
                     <h3>Input Tokens</h3>
@@ -7242,12 +9480,12 @@ def costs_dashboard():
         </div>
         
         <div class="card">
-            <h2>🤖 Cost by Model</h2>
+            <h2> Cost by Model</h2>
             <div id="model-costs">No data available</div>
         </div>
         
         <div class="card">
-            <h2>📊 Cost Breakdown Chart</h2>
+            <h2> Cost Breakdown Chart</h2>
             <canvas id="costChart" width="400" height="200"></canvas>
         </div>
     </div>
@@ -7261,9 +9499,9 @@ def costs_dashboard():
                 .then(data => {
                     // Update provider info
                     const providerTypes = {
-                        'openrouter': '🌐 OpenRouter API',
-                        'ollama_new': '🏠 Local Ollama (New)',
-                        'ollama_legacy': '🏠 Local Ollama (Legacy)'
+                        'openrouter': ' OpenRouter API',
+                        'ollama_new': ' Local Ollama (New)',
+                        'ollama_legacy': ' Local Ollama (Legacy)'
                     };
                     document.getElementById('provider-info').innerHTML = 
                         providerTypes[data.provider_type] || data.provider_type;
@@ -7477,15 +9715,15 @@ def analytics():
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 Model Performance Analytics</h1>
+            <h1> Model Performance Analytics</h1>
             <p>Comprehensive analysis of AI model behavior in Nomic gameplay</p>
         </div>
         
-        <button class="refresh-btn" onclick="refreshAnalytics()">🔄 Refresh Analytics</button>
+        <button class="refresh-btn" onclick="refreshAnalytics()"> Refresh Analytics</button>
         
         <div class="analytics-grid">
             <div class="analytics-card">
-                <h2>📊 Overall Performance Metrics</h2>
+                <h2> Overall Performance Metrics</h2>
                 <div id="overall-metrics">Loading...</div>
                 <div class="chart-container">
                     <canvas id="performance-chart"></canvas>
@@ -7493,7 +9731,7 @@ def analytics():
             </div>
             
             <div class="analytics-card">
-                <h2>🎯 Strategic Behavior Analysis</h2>
+                <h2> Strategic Behavior Analysis</h2>
                 <div id="strategic-analysis">Loading...</div>
                 <div class="chart-container">
                     <canvas id="strategy-chart"></canvas>
@@ -7501,12 +9739,12 @@ def analytics():
             </div>
             
             <div class="analytics-card model-comparison">
-                <h2>🏆 Model Comparison Matrix</h2>
+                <h2> Model Comparison Matrix</h2>
                 <div id="model-comparison">Loading...</div>
             </div>
             
             <div class="analytics-card strategy-insights">
-                <h2>💡 Strategic Insights & Patterns</h2>
+                <h2> Strategic Insights & Patterns</h2>
                 <div id="strategy-insights">Loading...</div>
             </div>
         </div>
@@ -7768,7 +10006,7 @@ def gm_rules_page():
 </head>
 <body>
     <div class="container">
-        <h1>🧙 Game Master Rules</h1>
+        <h1> Game Master Rules</h1>
         
         {% if gm_interpretations %}
             {% for rule in gm_interpretations %}
@@ -7796,8 +10034,8 @@ def gm_rules_page():
                 </div>
                 
                 <div class="stats">
-                    <span class="stat-item">📊 Executed: {{ rule.execution_count }} times</span>
-                    <span class="stat-item">⚠️ Errors: {{ rule.error_count }}</span>
+                    <span class="stat-item"> Executed: {{ rule.execution_count }} times</span>
+                    <span class="stat-item"> Errors: {{ rule.error_count }}</span>
                 </div>
             </div>
             {% endfor %}
@@ -7809,7 +10047,7 @@ def gm_rules_page():
         {% endif %}
         
         <div style="margin-top: 30px; text-align: center;">
-            <a href="/" style="text-decoration: none; color: #007bff;">← Back to Game</a>
+            <a href="/" style="text-decoration: none; color: #007bff;"> Back to Game</a>
         </div>
     </div>
 </body>
@@ -7820,6 +10058,8 @@ def gm_rules_page():
 @app.route("/api/analytics")
 def get_analytics_api():
     """API endpoint for comprehensive analytics data"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game"})
 
@@ -7862,25 +10102,29 @@ def get_analytics_api():
     # Generate insights
     insights = generate_strategic_insights(model_stats, game)
 
+    # Get real analytics data from session files
+    sessions_data = aggregate_session_data()
+    real_metrics = calculate_real_analytics_metrics(sessions_data)
+
     # Chart data
     chart_data = {
         "performance": generate_performance_chart_data(model_stats),
-        "strategy_distribution": [25, 25, 25, 25],  # Placeholder for strategy distribution
+        "strategy_distribution": real_metrics["strategy_distribution"],
     }
 
     return jsonify(
         {
             "overall": {
                 "total_games": total_games,
-                "avg_game_length": 8,  # Placeholder
+                "avg_game_length": real_metrics["avg_game_length"],
                 "top_model": top_model,
                 "avg_success_rate": round(avg_success_rate, 1),
             },
             "strategic": {
-                "dominant_strategy": "Competitive",  # Placeholder
+                "dominant_strategy": real_metrics["dominant_strategy"],
                 "avg_strategic_depth": round(avg_strategic_depth, 1),
-                "coalition_rate": 15,  # Placeholder
-                "innovation_score": 75,  # Placeholder
+                "coalition_rate": real_metrics["coalition_rate"],
+                "innovation_score": real_metrics["innovation_score"],
             },
             "comparison": comparison_data,
             "insights": insights,
@@ -7892,6 +10136,8 @@ def get_analytics_api():
 @app.route("/api/enhanced-logs")
 def get_enhanced_logs_api():
     """API endpoint for enhanced logging data including scratchpad and deliberation details"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game running"})
     
@@ -8022,6 +10268,274 @@ def get_context_analytics():
     return jsonify(analytics)
 
 
+@app.route("/api/hybrid-stats")
+def get_hybrid_stats():
+    """API endpoint for hybrid model selection statistics"""
+    from flask import current_app
+    game = current_app.config.get('game')
+    if not game:
+        return jsonify({"error": "No game running"})
+    
+    if not game.hybrid_selector:
+        return jsonify({"error": "Hybrid mode not enabled"})
+    
+    stats = game.hybrid_selector.get_escalation_stats()
+    
+    # Add cost savings calculation
+    total_decisions = stats.get("total_decisions", 0)
+    escalations = stats.get("escalations", 0)
+    small_model_usage = stats.get("small_model_usage", 0)
+    
+    estimated_savings = 0
+    if total_decisions > 0:
+        # Rough calculation: assume 15x average cost difference
+        normal_cost = total_decisions * 1.0  # Baseline cost unit
+        hybrid_cost = (escalations * 1.0) + (small_model_usage * 0.067)  # ~15x difference
+        estimated_savings = ((normal_cost - hybrid_cost) / normal_cost) * 100 if normal_cost > 0 else 0
+    
+    return jsonify({
+        "hybrid_enabled": True,
+        "escalation_stats": stats,
+        "estimated_cost_savings_percent": round(estimated_savings, 1),
+        "model_families": game.llm_provider.model_families if hasattr(game.llm_provider, 'model_families') else {}
+    })
+
+
+@app.route("/api/context-degradation")
+def get_context_degradation_status():
+    """API endpoint for context degradation tracking and intervention history"""
+    from flask import current_app
+    game = current_app.config.get('game')
+    if not game:
+        return jsonify({"error": "No game running"})
+    
+    # Get degradation summary from context manager
+    degradation_summary = game.context_manager.get_degradation_summary()
+    
+    # Get intervention statistics from context restoration manager
+    intervention_stats = {}
+    if hasattr(game, 'context_restoration_manager'):
+        intervention_stats = game.context_restoration_manager.get_intervention_statistics()
+    
+    # Add per-player detailed status
+    detailed_status = {}
+    for player in game.players:
+        if hasattr(game.context_manager, 'player_degradation_status') and player.id in game.context_manager.player_degradation_status:
+            player_status = game.context_manager.player_degradation_status[player.id]
+            detailed_status[player.id] = {
+                "player_name": getattr(player, 'name', f'Player {player.id}'),
+                "model": getattr(player, 'model', 'unknown'),
+                "consecutive_high_usage": player_status.get("consecutive_high_usage", 0),
+                "total_degradation_events": player_status.get("total_degradation_events", 0),
+                "last_intervention": player_status.get("last_intervention"),
+                "recent_usage_history": [
+                    {
+                        "timestamp": h.get("timestamp", "").isoformat() if hasattr(h.get("timestamp", ""), "isoformat") else str(h.get("timestamp", "")),
+                        "usage_percentage": h.get("usage_percentage", 0),
+                        "is_degraded": h.get("is_degraded", False)
+                    }
+                    for h in player_status.get("degradation_history", [])[-5:]  # Last 5 events
+                ],
+                "interventions_this_game": game.context_manager.emergency_resets_per_game.get(player.id, 0)
+            }
+    
+    # Get current context status for all active models
+    current_context_status = {}
+    for player in game.players:
+        if hasattr(player, 'model'):
+            current_context_status[player.model] = game.context_manager.get_context_usage(player.model)
+    
+    response_data = {
+        "degradation_summary": degradation_summary,
+        "intervention_statistics": intervention_stats,
+        "detailed_player_status": detailed_status,
+        "current_context_status": current_context_status,
+        "degradation_settings": {
+            "threshold_percentage": game.context_manager.degradation_threshold * 100,
+            "trigger_window_size": game.context_manager.degradation_window,
+            "intervention_cooldown_minutes": 30,
+            "total_players_tracked": len(game.context_manager.player_degradation_status)
+        },
+        "system_health": {
+            "total_interventions": intervention_stats.get("total_interventions", 0),
+            "players_needing_help": len(degradation_summary.get("players_needing_intervention", [])),
+            "players_at_risk": len(degradation_summary.get("players_at_risk", [])),
+            "system_status": "healthy" if len(degradation_summary.get("players_needing_intervention", [])) == 0 else "monitoring"
+        }
+    }
+    
+    return jsonify(response_data)
+
+
+# Analytics Data Aggregation Functions
+# Cache for analytics data to avoid re-reading files constantly
+_analytics_cache = {"data": None, "timestamp": 0, "cache_duration": 300}  # 5 minute cache
+
+def aggregate_session_data():
+    """Aggregate data from all completed game sessions"""
+    global _analytics_cache
+    
+    # Check cache first
+    current_time = time.time()
+    if (_analytics_cache["data"] is not None and 
+        current_time - _analytics_cache["timestamp"] < _analytics_cache["cache_duration"]):
+        return _analytics_cache["data"]
+    
+    sessions_dir = "game_sessions"
+    
+    if not os.path.exists(sessions_dir):
+        return {"sessions": [], "error": "No sessions directory found"}
+    
+    sessions_data = []
+    
+    # Get all session directories
+    for session_name in os.listdir(sessions_dir):
+        session_path = os.path.join(sessions_dir, session_name)
+        
+        if not os.path.isdir(session_path):
+            continue
+        
+        # Load session metadata
+        metadata_path = os.path.join(session_path, 'game_metadata.json')
+        if not os.path.exists(metadata_path):
+            continue
+            
+        try:
+            with open(metadata_path, 'r') as f:
+                metadata = json.load(f)
+            
+            # Only include completed sessions
+            if not metadata.get('end_time'):
+                continue
+                
+            # Load turn logs for detailed analysis
+            turn_logs_path = os.path.join(session_path, 'turn_logs.json')
+            turn_logs = []
+            if os.path.exists(turn_logs_path):
+                with open(turn_logs_path, 'r') as f:
+                    turn_logs = json.load(f)
+            
+            session_data = {
+                "session_id": metadata.get("session_id"),
+                "players": metadata.get("players", []),
+                "final_scores": metadata.get("final_scores", {}),
+                "winner_id": metadata.get("winner_id"),
+                "total_turns": metadata.get("total_turns", 0),
+                "rules_created": metadata.get("rules_created", 0),
+                "turn_logs": turn_logs
+            }
+            
+            sessions_data.append(session_data)
+            
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error loading session {session_name}: {e}")
+            continue
+    
+    # Cache the result
+    result = {"sessions": sessions_data, "total_sessions": len(sessions_data)}
+    _analytics_cache["data"] = result
+    _analytics_cache["timestamp"] = current_time
+    
+    return result
+
+
+def calculate_real_analytics_metrics(sessions_data):
+    """Calculate real analytics metrics from session data"""
+    if not sessions_data["sessions"]:
+        return {
+            "avg_game_length": 0,
+            "dominant_strategy": "No data",
+            "coalition_rate": 0,
+            "innovation_score": 0,
+            "strategy_distribution": [0, 0, 0, 0]
+        }
+    
+    sessions = sessions_data["sessions"]
+    
+    # Calculate average game length
+    total_turns = sum(session.get("total_turns", 0) for session in sessions)
+    avg_game_length = round(total_turns / len(sessions), 1) if sessions else 0
+    
+    # Analyze character roles and their success rates
+    role_stats = {}
+    role_wins = {}
+    
+    for session in sessions:
+        players = session.get("players", [])
+        winner_id = session.get("winner_id")
+        
+        for player in players:
+            role = player.get("role", "Unknown")
+            # Extract role type from full description (e.g. "Bold Risk-Taker" from longer text)
+            role_type = role.split(" - ")[0] if " - " in role else role
+            
+            if role_type not in role_stats:
+                role_stats[role_type] = 0
+                role_wins[role_type] = 0
+            
+            role_stats[role_type] += 1
+            
+            if winner_id and int(player.get("id", 0)) == winner_id:
+                role_wins[role_type] += 1
+    
+    # Find dominant strategy (role with highest win rate)
+    dominant_strategy = "Balanced"
+    best_win_rate = 0
+    
+    for role, total_games in role_stats.items():
+        if total_games > 0:
+            win_rate = role_wins.get(role, 0) / total_games
+            if win_rate > best_win_rate:
+                best_win_rate = win_rate
+                dominant_strategy = role
+    
+    # Calculate coalition rate (analyze voting patterns from turn logs)
+    total_votes = 0
+    unanimous_votes = 0
+    
+    for session in sessions:
+        turn_logs = session.get("turn_logs", [])
+        
+        for event in turn_logs:
+            if event.get("type") == "rule_execution" and event.get("trigger") == "rule_adopted":
+                total_votes += 1
+                # In Nomic, rules require unanimous voting, so all adopted rules are unanimous
+                unanimous_votes += 1
+    
+    coalition_rate = round((unanimous_votes / total_votes * 100), 1) if total_votes > 0 else 100
+    
+    # Calculate innovation score (based on rules created and variety)
+    total_rules = sum(session.get("rules_created", 0) for session in sessions)
+    total_possible_rules = len(sessions) * 3  # Assume ~3 rules per game is baseline
+    innovation_score = min(round((total_rules / total_possible_rules * 100), 1), 100) if total_possible_rules > 0 else 50
+    
+    # Calculate strategy distribution (percentage of each major role type)
+    total_players = sum(len(session.get("players", [])) for session in sessions)
+    
+    major_roles = ["Bold Risk-Taker", "System Builder", "Creative Disruptor", "Unpredictable Maverick"]
+    strategy_distribution = []
+    
+    for role in major_roles:
+        role_count = role_stats.get(role, 0)
+        percentage = round((role_count / total_players * 100), 1) if total_players > 0 else 25
+        strategy_distribution.append(percentage)
+    
+    # Normalize to ensure total is close to 100%
+    total_percentage = sum(strategy_distribution)
+    if total_percentage > 0:
+        strategy_distribution = [round(p / total_percentage * 100, 1) for p in strategy_distribution]
+    else:
+        strategy_distribution = [25, 25, 25, 25]  # Default equal distribution
+    
+    return {
+        "avg_game_length": avg_game_length,
+        "dominant_strategy": dominant_strategy,
+        "coalition_rate": coalition_rate,
+        "innovation_score": innovation_score,
+        "strategy_distribution": strategy_distribution
+    }
+
+
 def classify_model_performance(score):
     """Classify model performance based on overall score"""
     if score >= 80:
@@ -8045,30 +10559,30 @@ def generate_strategic_insights(model_stats, game_instance):
     best_model = max(model_stats.items(), key=lambda x: x[1]["overall_score"])
     worst_model = min(model_stats.items(), key=lambda x: x[1]["overall_score"])
 
-    insights.append(f"🏆 Top performer: {best_model[0]} with {best_model[1]['overall_score']:.1f}/100 overall score")
+    insights.append(f" Top performer: {best_model[0]} with {best_model[1]['overall_score']:.1f}/100 overall score")
     insights.append(
-        f"📈 Best success rate: {max(model_stats.values(), key=lambda x: x['success_rate'])['success_rate']:.1f}% proposal acceptance"
+        f" Best success rate: {max(model_stats.values(), key=lambda x: x['success_rate'])['success_rate']:.1f}% proposal acceptance"
     )
 
     # Coherence analysis
     coherence_scores = [stats["coherence"] for stats in model_stats.values()]
     avg_coherence = sum(coherence_scores) / len(coherence_scores)
-    insights.append(f"🧠 Average coherence score: {avg_coherence:.1f}/100 across all models")
+    insights.append(f" Average coherence score: {avg_coherence:.1f}/100 across all models")
 
     # Strategic depth analysis
     strategic_scores = [stats.get("strategic_engagement", 0) for stats in model_stats.values()]
     if strategic_scores:
         max_strategic = max(strategic_scores)
-        insights.append(f"🎯 Highest strategic engagement: {max_strategic:.1f}/100 shows sophisticated gameplay")
+        insights.append(f" Highest strategic engagement: {max_strategic:.1f}/100 shows sophisticated gameplay")
 
     # Performance spread
     score_range = best_model[1]["overall_score"] - worst_model[1]["overall_score"]
     if score_range > 30:
         insights.append(
-            f"⚡ High performance variance: {score_range:.1f} point spread indicates diverse model capabilities"
+            f" High performance variance: {score_range:.1f} point spread indicates diverse model capabilities"
         )
     else:
-        insights.append(f"🤝 Consistent performance: {score_range:.1f} point spread shows similar model capabilities")
+        insights.append(f" Consistent performance: {score_range:.1f} point spread shows similar model capabilities")
 
     return insights
 
@@ -8133,10 +10647,10 @@ def human_turn():
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Your Turn - Turn {{ game.turn_number }}</h1>
+        <h1> Your Turn - Turn {{ game.turn_number }}</h1>
         
         <div class="current-state">
-            <h3>📊 Current Game State</h3>
+            <h3> Current Game State</h3>
             <p><strong>Your Points:</strong> {{ current_player.points }}/100</p>
             <p><strong>Current Standings:</strong></p>
             <ul>
@@ -8147,12 +10661,13 @@ def human_turn():
         </div>
 
         <div class="card">
-            <h3>📝 Propose a New Rule</h3>
+            <h3> Propose a New Rule</h3>
             <form id="proposal-form">
                 <div class="form-group">
                     <label>Rule Type:</label>
-                    <select id="rule-type" onchange="toggleTransmutation()">
+                    <select id="rule-type" onchange="toggleRuleType()">
                         <option value="new">New Rule</option>
+                        <option value="amendment">Amend Existing Mutable Rule</option>
                         <option value="transmute">Transmute Existing Rule</option>
                     </select>
                 </div>
@@ -8164,11 +10679,31 @@ def human_turn():
                     </div>
                 </div>
                 
+                <div id="amendment-section" style="display: none;">
+                    <div class="form-group">
+                        <label>Rule Number to Amend:</label>
+                        <input type="number" id="amend-number" placeholder="e.g., 301" onchange="loadRuleText()" onblur="loadRuleText()">
+                        <button type="button" onclick="loadRuleText()" style="margin-left: 10px;">Load Rule Text</button>
+                        <small>Enter the number of an existing MUTABLE rule to modify</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Rule Text:</label>
+                        <div id="current-rule-display" style="background: #f5f5f5; padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; min-height: 40px;">
+                            <em>Enter a rule number above to load its current text</em>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>New Rule Text:</label>
+                        <textarea id="amended-text" placeholder="Edit the rule text above, then copy your changes here..."></textarea>
+                        <small>Note: This will completely replace the existing rule text</small>
+                    </div>
+                </div>
+                
                 <div id="transmute-section" style="display: none;">
                     <div class="form-group">
                         <label>Rule Number to Transmute:</label>
                         <input type="number" id="transmute-number" placeholder="e.g., 301">
-                        <small>Enter the number of an existing rule to change from immutable ↔ mutable</small>
+                        <small>Enter the number of an existing rule to change from immutable to mutable</small>
                     </div>
                 </div>
 
@@ -8177,7 +10712,7 @@ def human_turn():
                     <textarea id="explanation" placeholder="Explain why this rule is good for the game..."></textarea>
                 </div>
 
-                <h4>🔲 Rule Effects Checklist (Help the engine understand your rule)</h4>
+                <h4> Rule Effects Checklist (Help the engine understand your rule)</h4>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <strong>Points System:</strong><br>
@@ -8211,28 +10746,103 @@ def human_turn():
     </div>
 
     <script>
-        function toggleTransmutation() {
+        // Parse URL parameters on page load
+        function parseURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Check for amend parameter
+            if (urlParams.has('amend')) {
+                const ruleNumber = urlParams.get('amend');
+                document.getElementById('rule-type').value = 'amendment';
+                document.getElementById('amend-number').value = ruleNumber;
+                toggleRuleType(); // Show amendment section
+                loadRuleText(); // Load the rule text automatically
+            }
+            
+            // Check for transmute parameter
+            if (urlParams.has('transmute')) {
+                const ruleNumber = urlParams.get('transmute');
+                document.getElementById('rule-type').value = 'transmute';
+                document.getElementById('transmute-number').value = ruleNumber;
+                toggleRuleType(); // Show transmute section
+            }
+        }
+
+        function toggleRuleType() {
             const ruleType = document.getElementById('rule-type').value;
             const newSection = document.getElementById('new-rule-section');
+            const amendmentSection = document.getElementById('amendment-section');
             const transmuteSection = document.getElementById('transmute-section');
             
-            if (ruleType === 'transmute') {
-                newSection.style.display = 'none';
-                transmuteSection.style.display = 'block';
-            } else {
+            // Hide all sections first
+            newSection.style.display = 'none';
+            amendmentSection.style.display = 'none';
+            transmuteSection.style.display = 'none';
+            
+            // Show the appropriate section
+            if (ruleType === 'new') {
                 newSection.style.display = 'block';
-                transmuteSection.style.display = 'none';
+            } else if (ruleType === 'amendment') {
+                amendmentSection.style.display = 'block';
+            } else if (ruleType === 'transmute') {
+                transmuteSection.style.display = 'block';
             }
+        }
+
+        // Initialize page on load
+        window.addEventListener('load', function() {
+            parseURLParams();
+        });
+
+        function loadRuleText() {
+            const ruleNumber = document.getElementById('amend-number').value;
+            const displayDiv = document.getElementById('current-rule-display');
+            const amendedTextArea = document.getElementById('amended-text');
+            
+            if (!ruleNumber) {
+                displayDiv.innerHTML = '<em>Enter a rule number above to load its current text</em>';
+                amendedTextArea.value = '';
+                return;
+            }
+            
+            displayDiv.innerHTML = '<em>Loading rule text...</em>';
+            
+            fetch(`/api/rule/${ruleNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (data.mutable) {
+                            displayDiv.innerHTML = `<strong>Rule ${ruleNumber} (MUTABLE):</strong><br>${data.text}`;
+                            amendedTextArea.value = data.text; // Pre-populate with current text
+                        } else {
+                            displayDiv.innerHTML = `<strong style="color: red;">Rule ${ruleNumber} is IMMUTABLE and cannot be amended!</strong><br>${data.text}<br><em>Use "Transmute" to make it mutable first.</em>`;
+                            amendedTextArea.value = '';
+                        }
+                    } else {
+                        displayDiv.innerHTML = `<em style="color: red;">Rule ${ruleNumber} not found</em>`;
+                        amendedTextArea.value = '';
+                    }
+                })
+                .catch(error => {
+                    displayDiv.innerHTML = '<em style="color: red;">Error loading rule text</em>';
+                    amendedTextArea.value = '';
+                });
         }
 
         function submitProposal() {
             const ruleType = document.getElementById('rule-type').value;
             const ruleText = document.getElementById('rule-text').value;
+            const amendNumber = document.getElementById('amend-number').value;
+            const amendedText = document.getElementById('amended-text').value;
             const transmuteNumber = document.getElementById('transmute-number').value;
             const explanation = document.getElementById('explanation').value;
             
             if (ruleType === 'new' && !ruleText.trim()) {
                 alert('Please enter rule text');
+                return;
+            }
+            if (ruleType === 'amendment' && (!amendNumber || !amendedText.trim())) {
+                alert('Please enter both the rule number to amend and the new rule text');
                 return;
             }
             if (ruleType === 'transmute' && !transmuteNumber) {
@@ -8262,10 +10872,22 @@ def human_turn():
                 win_conditions: document.getElementById('win-conditions').checked
             };
 
+            // Handle different rule types
+            let finalRuleText = ruleText;
+            if (ruleType === 'transmute') {
+                finalRuleText = `Transmute rule ${transmuteNumber}`;
+            } else if (ruleType === 'amendment') {
+                const amendNumber = document.getElementById('amend-number').value;
+                const amendedText = document.getElementById('amended-text').value;
+                finalRuleText = amendedText; // The amended text becomes the new rule text
+            }
+
             const data = {
                 rule_type: ruleType,
-                rule_text: ruleType === 'new' ? ruleText : `Transmute rule ${transmuteNumber}`,
+                rule_text: finalRuleText,
                 transmute_number: ruleType === 'transmute' ? parseInt(transmuteNumber) : null,
+                amend_number: ruleType === 'amendment' ? parseInt(document.getElementById('amend-number').value) : null,
+                original_rule_text: ruleType === 'amendment' ? document.getElementById('current-rule-display').textContent : null,
                 explanation: explanation,
                 effects: effects
             };
@@ -8323,9 +10945,13 @@ def human_propose():
     if not total_validation["valid"]:
         return jsonify({"success": False, "error": total_validation["error"]})
 
-    # Handle transmutation data
-    is_transmutation = data.get("rule_type") == "transmute"
+    # Handle different rule types
+    rule_type = data.get("rule_type", "new")
+    is_transmutation = rule_type == "transmute"
+    is_amendment = rule_type == "amendment"
     transmute_target = data.get("transmute_number") if is_transmutation else None
+    amend_target = data.get("amend_number") if is_amendment else None
+    original_rule_text = data.get("original_rule_text") if is_amendment else None
     
     # Create proposal from sanitized human input
     proposal = Proposal(
@@ -8333,10 +10959,13 @@ def human_propose():
         player_id=current_player.id,
         rule_text=rule_sanitization["sanitized"],
         explanation=explanation_sanitization["sanitized"],
-        internal_thoughts=f"Human player proposal - {data.get('rule_type', 'new')} rule (sanitized: {rule_sanitization['final_length']}/{rule_sanitization['original_length']} chars)",
+        internal_thoughts=f"Human player proposal - {rule_type} rule (sanitized: {rule_sanitization['final_length']}/{rule_sanitization['original_length']} chars)",
         turn=game.turn_number,
         is_transmutation=is_transmutation,
         transmute_target_rule=transmute_target,
+        is_amendment=is_amendment,
+        amend_target_rule=amend_target,
+        original_rule_text=original_rule_text,
     )
 
     # Parse effects with enhanced parsing using sanitized text
@@ -8349,8 +10978,8 @@ def human_propose():
 
     # Log the proposal
     game.game_logger.log_proposal(current_player.id, proposal)
-    game.add_event(f"📝 {current_player.name} proposes Rule {game.next_rule_number}: {proposal.rule_text}")
-    game.add_event(f"💡 Explanation: {proposal.explanation}")
+    game.add_event(f" {current_player.name} proposes Rule {game.next_rule_number}: {proposal.rule_text}")
+    game.add_event(f" Explanation: {proposal.explanation}")
 
     # Start async deliberation immediately for all AI players
     game.start_async_deliberation(proposal)
@@ -8363,6 +10992,240 @@ def human_propose():
     game.continue_turn_after_human_proposal()
 
     return jsonify({"success": True})
+
+
+@app.route("/api/rule/<int:rule_id>")
+def get_rule_details(rule_id):
+    """Get details of a specific rule for amendment purposes"""
+    if not game:
+        return jsonify({"success": False, "error": "No game running"})
+    
+    # Search in both mutable and immutable rules
+    for rule in game.rules["mutable"]:
+        if rule.id == rule_id:
+            return jsonify({
+                "success": True,
+                "rule_id": rule.id,
+                "text": rule.text,
+                "mutable": True,
+                "can_amend": True
+            })
+    
+    for rule in game.rules["immutable"]:
+        if rule.id == rule_id:
+            return jsonify({
+                "success": True,
+                "rule_id": rule.id,
+                "text": rule.text,
+                "mutable": False,
+                "can_amend": False
+            })
+    
+    return jsonify({"success": False, "error": f"Rule {rule_id} not found"})
+
+
+@app.route("/api/rules")
+def get_all_rules():
+    """Get all current rules for browsing"""
+    if not game:
+        return jsonify({"success": False, "error": "No game running"})
+    
+    rules_data = {
+        "success": True,
+        "mutable_rules": [],
+        "immutable_rules": []
+    }
+    
+    # Add mutable rules
+    for rule in game.rules["mutable"]:
+        rules_data["mutable_rules"].append({
+            "id": rule.id,
+            "text": rule.text,
+            "author": getattr(rule, 'author', None),
+            "turn_added": getattr(rule, 'turn_added', None)
+        })
+    
+    # Add immutable rules
+    for rule in game.rules["immutable"]:
+        rules_data["immutable_rules"].append({
+            "id": rule.id,
+            "text": rule.text,
+            "author": getattr(rule, 'author', None),
+            "turn_added": getattr(rule, 'turn_added', None)
+        })
+    
+    return jsonify(rules_data)
+
+
+@app.route("/human/rules")
+def human_rules_browser():
+    """Rule browsing interface for human players"""
+    if not game:
+        return "No game running", 400
+    
+    return render_template_string("""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rule Browser - Nomic Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .nav { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        .nav a { margin: 0 15px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; }
+        .nav a:hover { background: #0056b3; }
+        .rules-section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .rule-item { border: 1px solid #ddd; margin: 10px 0; padding: 15px; border-radius: 4px; }
+        .rule-mutable { border-left: 4px solid #28a745; background: #f8fff9; }
+        .rule-immutable { border-left: 4px solid #dc3545; background: #fff8f8; }
+        .rule-header { font-weight: bold; margin-bottom: 10px; }
+        .rule-text { line-height: 1.5; }
+        .rule-meta { font-size: 0.9em; color: #666; margin-top: 10px; }
+        .search-box { width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; }
+        .quick-actions { background: #e9ecef; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .quick-actions button { margin: 5px; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-amend { background: #ffc107; color: black; }
+        .btn-transmute { background: #17a2b8; color: white; }
+        .btn-amend:hover { background: #e0a800; }
+        .btn-transmute:hover { background: #138496; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <a href="/">← Back to Game</a>
+            <a href="/human/propose">Create New Rule</a>
+            <a href="#" onclick="location.reload()">🔄 Refresh Rules</a>
+        </div>
+        
+        <h1>📜 Rule Browser</h1>
+        
+        <input type="text" id="search-box" class="search-box" placeholder="🔍 Search rules by text, number, or author..." onkeyup="filterRules()">
+        
+        <div id="rules-container" class="loading">
+            Loading rules...
+        </div>
+    </div>
+
+    <script>
+        let allRules = [];
+        
+        function loadRules() {
+            fetch('/api/rules')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        allRules = [...data.mutable_rules.map(r => ({...r, mutable: true})), 
+                                   ...data.immutable_rules.map(r => ({...r, mutable: false}))];
+                        displayRules(allRules);
+                    } else {
+                        document.getElementById('rules-container').innerHTML = '<p>Error loading rules: ' + data.error + '</p>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('rules-container').innerHTML = '<p>Error loading rules</p>';
+                });
+        }
+        
+        function displayRules(rules) {
+            const container = document.getElementById('rules-container');
+            
+            if (rules.length === 0) {
+                container.innerHTML = '<p>No rules found.</p>';
+                return;
+            }
+            
+            // Sort rules by ID
+            rules.sort((a, b) => a.id - b.id);
+            
+            // Group by mutable/immutable
+            const mutableRules = rules.filter(r => r.mutable);
+            const immutableRules = rules.filter(r => !r.mutable);
+            
+            let html = '';
+            
+            if (mutableRules.length > 0) {
+                html += '<div class="rules-section"><h2>📝 Mutable Rules (Can be amended)</h2>';
+                mutableRules.forEach(rule => {
+                    html += generateRuleHTML(rule);
+                });
+                html += '</div>';
+            }
+            
+            if (immutableRules.length > 0) {
+                html += '<div class="rules-section"><h2>🔒 Immutable Rules (Permanent unless transmuted)</h2>';
+                immutableRules.forEach(rule => {
+                    html += generateRuleHTML(rule);
+                });
+                html += '</div>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function generateRuleHTML(rule) {
+            const ruleClass = rule.mutable ? 'rule-mutable' : 'rule-immutable';
+            const statusBadge = rule.mutable ? '<span style="background: #28a745; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">MUTABLE</span>' 
+                                            : '<span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">IMMUTABLE</span>';
+            
+            let actions = '';
+            if (rule.mutable) {
+                actions = `<div class="quick-actions">
+                    <button class="btn-amend" onclick="amendRule(${rule.id})">✏️ Amend This Rule</button>
+                    <button class="btn-transmute" onclick="transmuteRule(${rule.id})">🔄 Make Immutable</button>
+                </div>`;
+            } else {
+                actions = `<div class="quick-actions">
+                    <button class="btn-transmute" onclick="transmuteRule(${rule.id})">🔄 Make Mutable (then amend)</button>
+                </div>`;
+            }
+            
+            return `
+                <div class="rule-item ${ruleClass}" data-rule-id="${rule.id}" data-rule-text="${rule.text.toLowerCase()}">
+                    <div class="rule-header">
+                        Rule ${rule.id} ${statusBadge}
+                    </div>
+                    <div class="rule-text">${rule.text}</div>
+                    <div class="rule-meta">
+                        ${rule.author ? `Added by Player ${rule.author}` : 'System rule'} 
+                        ${rule.turn_added ? ` • Turn ${rule.turn_added}` : ''}
+                    </div>
+                    ${actions}
+                </div>
+            `;
+        }
+        
+        function filterRules() {
+            const searchTerm = document.getElementById('search-box').value.toLowerCase();
+            if (!searchTerm) {
+                displayRules(allRules);
+                return;
+            }
+            
+            const filteredRules = allRules.filter(rule => 
+                rule.text.toLowerCase().includes(searchTerm) ||
+                rule.id.toString().includes(searchTerm) ||
+                (rule.author && rule.author.toString().includes(searchTerm))
+            );
+            
+            displayRules(filteredRules);
+        }
+        
+        function amendRule(ruleId) {
+            window.location.href = `/human/propose?amend=${ruleId}`;
+        }
+        
+        function transmuteRule(ruleId) {
+            window.location.href = `/human/propose?transmute=${ruleId}`;
+        }
+        
+        // Load rules on page load
+        loadRules();
+    </script>
+</body>
+</html>
+    """)
 
 
 @app.route("/human/vote")
@@ -8398,22 +11261,22 @@ def human_vote():
 </head>
 <body>
     <div class="container">
-        <h1>🗳️ Vote on Proposal</h1>
+        <h1> Vote on Proposal</h1>
         
         <div class="current-state">
-            <h3>📊 Your Position</h3>
+            <h3> Your Position</h3>
             <p><strong>Your Points:</strong> {{ current_player.points }}/100</p>
             <p><strong>Your Ranking:</strong> {{ ranking }} out of {{ game.players|length }}</p>
         </div>
 
         <div class="proposal">
-            <h3>📝 Proposal by {{ proposer.name }}</h3>
+            <h3> Proposal by {{ proposer.name }}</h3>
             <p><strong>Rule:</strong> {{ proposal.rule_text }}</p>
             <p><strong>Explanation:</strong> {{ proposal.explanation }}</p>
         </div>
 
         <div class="card">
-            <h3>🤔 Consider This Proposal</h3>
+            <h3> Consider This Proposal</h3>
             <p>Think about:</p>
             <ul>
                 <li>How does this rule help or hurt YOUR chances of winning?</li>
@@ -8423,8 +11286,8 @@ def human_vote():
             </ul>
             
             <div style="text-align: center; margin-top: 30px;">
-                <button class="vote-aye" onclick="submitVote(true)">✅ Vote AYE (Yes)</button>
-                <button class="vote-nay" onclick="submitVote(false)">❌ Vote NAY (No)</button>
+                <button class="vote-aye" onclick="submitVote(true)"> Vote AYE (Yes)</button>
+                <button class="vote-nay" onclick="submitVote(false)"> Vote NAY (No)</button>
             </div>
         </div>
     </div>
@@ -8490,7 +11353,7 @@ def human_submit_vote():
     # Log the vote
     game.game_logger.log_vote(current_player.id, vote, reasoning)
     vote_text = "Aye" if vote else "Nay"
-    game.add_event(f"🗳️ {current_player.name}: {vote_text} - {reasoning}")
+    game.add_event(f" {current_player.name}: {vote_text} - {reasoning}")
 
     # Check if all votes are now complete and continue game if so
     game.check_voting_complete_and_continue()
@@ -8507,16 +11370,117 @@ if __name__ == "__main__":
     parser.add_argument(
         "--openrouter-key", type=str, help="OpenRouter API key (can also use OPENROUTER_API_KEY environment variable)"
     )
+    parser.add_argument(
+        "--big", action="store_true", help="Use premium SOTA models (Sonnet 3.5, GPT-4o, Grok 3, Gemini 2.5 Pro) - requires OpenRouter"
+    )
+    parser.add_argument(
+        "--hybrid", action="store_true", help="Use hybrid big/small model system for cost optimization (70-75% savings) - requires OpenRouter"
+    )
+    parser.add_argument(
+        "--budget", type=float, default=5.0, help="Session budget limit in USD (default: $5.00)"
+    )
+    parser.add_argument(
+        "--port", type=int, default=8080, help="Flask web interface port (default: 8080)"
+    )
+    parser.add_argument(
+        "--auto-port", action="store_true", help="Automatically find available port if default is busy"
+    )
+    parser.add_argument(
+        "--ollama-base-port", type=int, default=11435, help="Base port for Ollama validator (default: 11435)"
+    )
     parser.add_argument("--players", type=int, default=6, help="Number of players (default: 6)")
     parser.add_argument("--human", action="store_true", help="Include a human player in the game")
+    parser.add_argument("--resume", action="store_true", help="Resume the most recent in-progress game session")
 
     args = parser.parse_args()
+
+    # Port conflict detection and auto-assignment
+    def check_port_available(port):
+        """Check if a port is available"""
+        import socket
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind(('127.0.0.1', port))
+                return True
+        except OSError:
+            return False
+
+    def find_available_port_range(start_port, num_ports):
+        """Find a range of available ports starting from start_port"""
+        for base in range(start_port, start_port + 100):  # Try 100 different starting points
+            if all(check_port_available(base + i) for i in range(num_ports)):
+                return base
+        return None
+
+    # Check and adjust Flask port
+    original_port = args.port
+    if not check_port_available(args.port):
+        if args.auto_port:
+            new_port = find_available_port_range(args.port + 1, 1)
+            if new_port:
+                print(f"🔄 Port {args.port} busy, using available port {new_port}")
+                args.port = new_port
+            else:
+                print(f"❌ Could not find available port near {args.port}")
+                exit(1)
+        else:
+            print(f"❌ Port {args.port} is already in use!")
+            print(f"   Current process using port {args.port}:")
+            import subprocess
+            try:
+                result = subprocess.run(['lsof', '-i', f':{args.port}'], capture_output=True, text=True)
+                print(f"   {result.stdout}")
+            except:
+                pass
+            print("   Use --auto-port to automatically find available port")
+            exit(1)
+
+    # Check and adjust Ollama ports (only if using Ollama)
+    if not (args.openrouter or args.big):
+        # Calculate required Ollama ports: validator + players
+        ollama_ports_needed = args.players + 1  # validator + player ports
+        
+        if not check_port_available(args.ollama_base_port):
+            print(f"⚠️  Ollama validator port {args.ollama_base_port} is busy")
+            if args.auto_port:
+                new_base = find_available_port_range(args.ollama_base_port + 1, ollama_ports_needed)
+                if new_base:
+                    print(f"🔄 Using Ollama port range {new_base}-{new_base + ollama_ports_needed - 1}")
+                    args.ollama_base_port = new_base
+                else:
+                    print(f"❌ Could not find {ollama_ports_needed} consecutive Ollama ports")
+                    exit(1)
+            else:
+                print("   Use --auto-port to automatically find available Ollama ports")
+                exit(1)
+        else:
+            # Check if we have enough consecutive ports
+            for i in range(ollama_ports_needed):
+                if not check_port_available(args.ollama_base_port + i):
+                    print(f"⚠️  Ollama port {args.ollama_base_port + i} is busy")
+                    if args.auto_port:
+                        new_base = find_available_port_range(args.ollama_base_port + i + 1, ollama_ports_needed)
+                        if new_base:
+                            print(f"🔄 Using Ollama port range {new_base}-{new_base + ollama_ports_needed - 1}")
+                            args.ollama_base_port = new_base
+                            break
+                        else:
+                            print(f"❌ Could not find {ollama_ports_needed} consecutive Ollama ports")
+                            exit(1)
+                    else:
+                        print("   Use --auto-port to automatically find available Ollama ports")
+                        exit(1)
 
     # Initialize LLM provider based on arguments
     llm_provider = None
     provider_info = ""
 
-    if args.openrouter:
+    if args.openrouter or args.big:
+        # Big models require OpenRouter
+        if args.big and not args.openrouter:
+            args.openrouter = True
+            print("🚀 --big flag detected: automatically enabling OpenRouter for premium models")
+        
         # Get API key from argument or environment variable
         api_key = args.openrouter_key or os.getenv("OPENROUTER_API_KEY")
 
@@ -8527,73 +11491,161 @@ if __name__ == "__main__":
             exit(1)
 
         try:
-            llm_provider = OpenRouterClient(api_key)
-            provider_info = f"🌐 OpenRouter API (Models: {', '.join(llm_provider.available_models)})"
+            # Initialize with big models and/or hybrid mode if requested
+            llm_provider = OpenRouterClient(api_key, use_big_models=args.big, use_hybrid=args.hybrid)
+            
+            # Set session budget
+            llm_provider.session_budget = args.budget
+            
+            if args.big:
+                print(f"🎯 Big Models Mode: Using premium SOTA models")
+                print(f"💰 Session Budget: ${args.budget:.2f}")
+                print("⚡ Models: Claude 3.5 Sonnet, GPT-4o, Grok 3, Gemini 2.5 Pro")
+                
+                # Verify model availability
+                verification_results = llm_provider.verify_api_models()
+                available_models = [model for model, result in verification_results.items() if result["available"]]
+                
+                if len(available_models) == 0:
+                    print("❌ No big models available! Check API key and credits.")
+                    exit(1)
+                elif len(available_models) < len(llm_provider.big_models):
+                    print(f"⚠️  Only {len(available_models)}/{len(llm_provider.big_models)} big models available")
+                    llm_provider.available_models = available_models
+                
+                provider_info = f"🚀 OpenRouter Big Models (Available: {', '.join(available_models)})"
+            else:
+                provider_info = f"🌐 OpenRouter API (Models: {', '.join(llm_provider.available_models)})"
+                
             print("✅ OpenRouter client initialized successfully")
         except Exception as e:
             print(f"❌ Error initializing OpenRouter client: {e}")
             exit(1)
     else:
-        # Use default Ollama manager
-        provider_info = "🏠 Local Ollama (Default models: llama3.2:3b, gemma2:2b, qwen2.5:1.5b, etc.)"
+        # Use Ollama with configurable ports
+        llm_provider = OllamaClient(base_port=args.ollama_base_port)
+        provider_info = f"🔧 Local Ollama (Validator: {args.ollama_base_port}, Players: {args.ollama_base_port + 1}+)"
 
-    print("🎮 Starting Advanced Strategic Nomic Game with Comprehensive Logging & State Tracking")
+    print(" Starting Advanced Strategic Nomic Game with Comprehensive Logging & State Tracking")
     print("=" * 80)
-    print(f"🤖 LLM Provider: {provider_info}")
-    print("📱 Web Interfaces:")
-    print("   • Main Game: http://127.0.0.1:8080")
-    print("   • Model Statistics: http://127.0.0.1:8080/stats")
-    print("   • Model Performance Analytics: http://127.0.0.1:8080/analytics")
-    print("   • Player Internal States: http://127.0.0.1:8080/player-states")
-    print("   • Game Logs Viewer: http://127.0.0.1:8080/game-logs")
-    print("   • Session History: http://127.0.0.1:8080/sessions")
-    if args.openrouter:
-        print("   • Cost Tracking Dashboard: http://127.0.0.1:8080/costs")
+    print(f" LLM Provider: {provider_info}")
+    print(f" Web Interfaces (Port {args.port}):")
+    print(f"   - Main Game: http://127.0.0.1:{args.port}")
+    print(f"   - Model Statistics: http://127.0.0.1:{args.port}/stats")
+    print(f"   - Model Performance Analytics: http://127.0.0.1:{args.port}/analytics")
+    print(f"   - Player Internal States: http://127.0.0.1:{args.port}/player-states")
+    print(f"   - Game Logs Viewer: http://127.0.0.1:{args.port}/game-logs")
+    print(f"   - Session History: http://127.0.0.1:{args.port}/sessions")
+    if args.openrouter or args.big:
+        print(f"   - Cost Tracking Dashboard: http://127.0.0.1:{args.port}/costs")
     print()
-    print("🚀 Enhanced Features:")
-    print("   • 5-turn proposal deliberation loops for strategic thinking")
-    print("   • 2-turn competitive voting deliberation with impact analysis")
-    print("   • 1-3 idle turns for background strategy refinement")
-    print("   • Comprehensive player internal state tracking")
-    print("   • Persistent game session storage and logging")
-    print("   • 8 distinct proposal categories with diversity enforcement")
-    print("   • Multi-instance Ollama with performance-based model assignment")
-    print("   • Cross-game model performance metrics and quality classification")
-    print("   • Real-time strategic thinking and threat assessment visualization")
-    print("   • Complete turn-by-turn logging with export capabilities")
+    print(" Enhanced Features:")
+    print("   - 5-turn proposal deliberation loops for strategic thinking")
+    print("   - 2-turn competitive voting deliberation with impact analysis")
+    print("   - 1-3 idle turns for background strategy refinement")
+    print("   - Comprehensive player internal state tracking")
+    print("   - Persistent game session storage and logging")
+    print("   - 8 distinct proposal categories with diversity enforcement")
+    print("   - Multi-instance Ollama with performance-based model assignment")
+    print("   - Cross-game model performance metrics and quality classification")
+    print("   - Real-time strategic thinking and threat assessment visualization")
+    print("   - Complete turn-by-turn logging with export capabilities")
     print()
-    print("🧠 New Systems:")
-    print("   • GameSessionManager: Persistent storage of all game data")
-    print("   • InternalStateTracker: Comprehensive player mental state tracking")
-    print("   • IdleTurnProcessor: Background strategic thinking during other turns")
-    print("   • GameLogger: Structured logging of all events and decisions")
+    print(" New Systems:")
+    print("   - GameSessionManager: Persistent storage of all game data")
+    print("   - InternalStateTracker: Comprehensive player mental state tracking")
+    print("   - IdleTurnProcessor: Background strategic thinking during other turns")
+    print("   - GameLogger: Structured logging of all events and decisions")
     print()
-    print("🎯 Player Internal State Tracking:")
-    print("   • Strategic focus and victory path planning")
-    print("   • Threat assessments and alliance considerations")
-    print("   • Planned proposals and voting strategies")
-    print("   • Learning observations and rule effectiveness notes")
-    print("   • Idle turn strategic analysis and refinement")
+    print(" Player Internal State Tracking:")
+    print("   - Strategic focus and victory path planning")
+    print("   - Threat assessments and alliance considerations")
+    print("   - Planned proposals and voting strategies")
+    print("   - Learning observations and rule effectiveness notes")
+    print("   - Idle turn strategic analysis and refinement")
     print()
-    print("📊 Data Persistence:")
-    print("   • Complete game session archives in game_sessions/ directory")
-    print("   • Turn-by-turn logs with player reasoning and decisions")
-    print("   • Player internal state snapshots")
-    print("   • Idle turn deliberation logs")
-    print("   • Cross-game model performance tracking")
+    print(" Data Persistence:")
+    print("   - Complete game session archives in port-specific directories")
+    print("   - Turn-by-turn logs with player reasoning and decisions")
+    print("   - Player internal state snapshots")
+    print("   - Idle turn deliberation logs")
+    print("   - Cross-game model performance tracking")
 
-    if args.openrouter:
+    if args.openrouter or args.big or args.hybrid:
         print()
-        print("💰 OpenRouter Features:")
-        print("   • SOTA models: Gemini 2.0 Flash, GPT-4o Mini, Claude 3.5 Haiku")
-        print("   • Real-time cost tracking and usage analytics")
-        print("   • No local hardware limitations")
-        print("   • Access to models not available locally")
+        if args.hybrid:
+            print("⚡ Hybrid Cost Optimization Mode Features:")
+            print("   - Intelligent big/small model pairing per family")
+            print("   - 70-75% cost reduction with preserved strategic quality")
+            print("   - Automatic escalation for critical decisions")
+            print("   - Budget-aware threshold adjustment")
+            print("   - Real-time complexity detection and model selection")
+            print(f"   - Session budget: ${args.budget:.2f}")
+        elif args.big:
+            print("🚀 Big Models Mode Features:")
+            print("   - Premium SOTA models: Claude 3.5 Sonnet, GPT-4o, Grok 3, Gemini 2.5 Pro")
+            print("   - Enhanced context windows (up to 1.05M tokens)")
+            print("   - Superior reasoning and strategic depth")
+            print("   - Real-time cost tracking with budget controls")
+            print(f"   - Session budget: ${args.budget:.2f}")
+        else:
+            print(" OpenRouter Features:")
+            print("   - Standard models: Gemini 2.0 Flash, GPT-4o Mini, Claude 3.5 Haiku")
+            print("   - Real-time cost tracking and usage analytics")
+            print("   - No local hardware limitations")
+            print("   - Access to models not available locally")
 
+    # Create port-specific session directory for isolation
+    session_dir = f"game_sessions_port{args.port}"
+    
+    # Show port configuration summary
+    if not (args.openrouter or args.big):
+        print()
+        print(f"🔧 Port Configuration:")
+        print(f"   - Flask Web Interface: {args.port}")
+        print(f"   - Ollama Validator: {args.ollama_base_port}")
+        print(f"   - Ollama Players: {args.ollama_base_port + 1}-{args.ollama_base_port + args.players}")
+        print(f"   - Session Storage: {session_dir}/")
+    else:
+        print()
+        print(f"🌐 Configuration:")
+        print(f"   - Flask Web Interface: {args.port}")
+        print(f"   - Session Storage: {session_dir}/")
+        print(f"   - Models: Cloud-based via OpenRouter API")
+    
     print()
-    print("⏹️  Press Ctrl+C to stop")
+    print("  Press Ctrl+C to stop")
+    
+    # Create game instance with the selected provider
+    if args.resume:
+        print()
+        print("🔄 Attempting to resume most recent in-progress game...")
+        game_instance = ProperNomicGame.resume_last_game(provider=llm_provider, session_dir=session_dir)
+        if game_instance is None:
+            print("❌ Resume failed. Starting new game instead...")
+            game_instance = ProperNomicGame(num_players=args.players, provider=llm_provider, include_human=args.human, session_dir=session_dir)
+    else:
+        game_instance = ProperNomicGame(num_players=args.players, provider=llm_provider, include_human=args.human, session_dir=session_dir)
 
-    # Create global game instance with the selected provider
-    game = ProperNomicGame(num_players=args.players, provider=llm_provider, include_human=args.human)
+    # Create a NEW Flask app instance for this specific port
+    # This completely isolates the game instance from other ports
+    port_app = Flask(__name__)
+    port_app.config['game'] = game_instance
+    
+    # Copy all route functions to the new app instance
+    # This is the key fix: each port gets its own app with its own game instance
+    for rule in app.url_map.iter_rules():
+        port_app.add_url_rule(
+            rule.rule,
+            endpoint=rule.endpoint, 
+            view_func=app.view_functions[rule.endpoint],
+            methods=rule.methods
+        )
+    
+    # Add logging validation
+    print(f"✅ Game instance created for port {args.port}")
+    print(f"✅ Session ID: {game_instance.session_id}")
+    print(f"✅ Logging pipeline: {'Active' if game_instance.game_logger else 'Inactive'}")
+    print(f"✅ Session directory: {game_instance.session_manager.sessions_dir}")
 
-    app.run(host="127.0.0.1", port=8080, debug=False)
+    port_app.run(host="127.0.0.1", port=args.port, debug=False)
