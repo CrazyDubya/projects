@@ -1,0 +1,33 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+header {
+  background-color: #282c34;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-section {
+  flex: 2;
+  padding: 1rem;
+  border-right: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-section {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}

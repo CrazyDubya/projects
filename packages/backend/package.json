@@ -1,0 +1,26 @@
+{
+  "name": "@ai-todo-bot/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "dev": "nodemon src/index.ts",
+    "build": "npx tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "@types/node-fetch": "^2.6.13",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
