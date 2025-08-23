@@ -1,0 +1,38 @@
+<!doctype html>
+<title>Submit a Conversation - ShareConvo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <a href="{{ url_for('index') }}">Home</a> |
+  <a href="{{ url_for('submit') }}">Submit a Conversation</a>
+</nav>
+<h1>Submit a New Conversation</h1>
+<form method="post" id="submit-form">
+  <div class="form-group">
+    <label for="title">Title</label>
+    <input name="title" id="title" required>
+  </div>
+  <div class="form-group">
+    <label for="blurb">Blurb / Hook</label>
+    <textarea name="blurb" id="blurb" required></textarea>
+  </div>
+  <div class="form-group">
+    <label for="full_text">Full Conversation Text</label>
+    <textarea name="full_text" id="full_text" rows="10" required></textarea>
+  </div>
+  <div class="form-group">
+    <label>
+      <input type="checkbox" id="certify-checkbox" name="certify">
+      I certify that I have the right to share this conversation.
+    </label>
+  </div>
+  <button type="submit" id="submit-btn" disabled>Submit</button>
+</form>
+
+<script>
+  const certifyCheckbox = document.getElementById('certify-checkbox');
+  const submitBtn = document.getElementById('submit-btn');
+
+  certifyCheckbox.addEventListener('change', () => {
+    submitBtn.disabled = !certifyCheckbox.checked;
+  });
+</script>
