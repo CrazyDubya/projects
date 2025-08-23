@@ -7,6 +7,20 @@
 /packages/backend/dist
 /packages/frontend/dist
 
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
 # Logs
 logs
 *.log
@@ -23,3 +37,4 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+.DS_Store
