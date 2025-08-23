@@ -1,3 +1,21 @@
+# Directory Analysis Report - Without Text Content
+# Generated: 2025-08-23 19:59:13
+# Directory: /home/runner/work/projects/projects/allseeingeye
+
+## Tree Structure ##
+/home/runner/work/projects/projects/allseeingeye
+├── README.md
+├── allseeingeye.py
+└── output
+    └── _directory_tree.txt
+
+2 directories, 3 files
+
+## Detailed Analysis ##
++-- README.md
+/home/runner/work/projects/projects/allseeingeye/README.md
++-- allseeingeye.py
+## allseeingeye.py ##
 #!/usr/bin/env python3
 """
 AllSeeingEye - Directory Analysis Tool
@@ -268,3 +286,12 @@ if __name__ == "__main__":
     CONFIG.set('timestamp', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     
     main()
+
+
++-- output/
+    +-- _directory_tree.txt
+/home/runner/work/projects/projects/allseeingeye/output/_directory_tree.txt
+    +-- directory_structure_and_files.txt
+/home/runner/work/projects/projects/allseeingeye/output/directory_structure_and_files.txt
+    +-- directory_structure_and_files_no_text.txt
+/home/runner/work/projects/projects/allseeingeye/output/directory_structure_and_files_no_text.txt

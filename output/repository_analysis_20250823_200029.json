@@ -1,0 +1,1918 @@
+{
+  "analysis_metadata": {
+    "timestamp": "2025-08-23T20:00:29.481545",
+    "analyzer_version": "1.0.0",
+    "repository_path": "/home/runner/work/projects/projects"
+  },
+  "structure_analysis": {
+    "timestamp": "2025-08-23T20:00:29.458610",
+    "repo_path": "/home/runner/work/projects/projects",
+    "directories": [
+      {
+        "path": "MakeMarkdown",
+        "name": "MakeMarkdown",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "inner_monologue",
+        "name": "inner_monologue",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "xmlmerge",
+        "name": "xmlmerge",
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "noder",
+        "name": "noder",
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "jsonreader",
+        "name": "jsonreader",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "4x",
+        "name": "4x",
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "Quantum_Chess",
+        "name": "Quantum_Chess",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "iPhone toss to Mac",
+        "name": "iPhone toss to Mac",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "output",
+        "name": "output",
+        "modified": "2025-08-23T19:59:12.696332"
+      },
+      {
+        "path": "llmchatroom",
+        "name": "llmchatroom",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "chatter",
+        "name": "chatter",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "__pycache__",
+        "name": "__pycache__",
+        "modified": "2025-08-23T19:59:11.939330"
+      },
+      {
+        "path": "instance",
+        "name": "instance",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "bluetooth",
+        "name": "bluetooth",
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "tests",
+        "name": "tests",
+        "modified": "2025-08-23T19:57:48.981170"
+      },
+      {
+        "path": "allseeingeye",
+        "name": "allseeingeye",
+        "modified": "2025-08-23T19:59:13.470333"
+      },
+      {
+        "path": "brainstorm",
+        "name": "brainstorm",
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "ant",
+        "name": "ant",
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker",
+        "name": "bookmaker",
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "MDtoHTML",
+        "name": "MDtoHTML",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "hive-mind",
+        "name": "hive-mind",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "nomic",
+        "name": "nomic",
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "HeaderPy",
+        "name": "HeaderPy",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive",
+        "name": "ChatGPTArchive",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "chatroom",
+        "name": "chatroom",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": ".github",
+        "name": ".github",
+        "modified": "2025-08-23T19:52:09.795796"
+      },
+      {
+        "path": "mover",
+        "name": "mover",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "shareconvo",
+        "name": "shareconvo",
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": ".git",
+        "name": ".git",
+        "modified": "2025-08-23T19:54:06.938841"
+      },
+      {
+        "path": "movelog",
+        "name": "movelog",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "pi",
+        "name": "pi",
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "iPhone toss to Mac/old",
+        "name": "old",
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "allseeingeye/output",
+        "name": "output",
+        "modified": "2025-08-23T19:59:13.508333"
+      },
+      {
+        "path": "hive-mind/hive-mind-2",
+        "name": "hive-mind-2",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/Z",
+        "name": "Z",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/hive-mind",
+        "name": "hive-mind",
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "ChatGPTArchive/StatsplusClaude",
+        "name": "StatsplusClaude",
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": ".github/workflows",
+        "name": "workflows",
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "shareconvo/__pycache__",
+        "name": "__pycache__",
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/templates",
+        "name": "templates",
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/static",
+        "name": "static",
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": ".git/hooks",
+        "name": "hooks",
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": ".git/logs",
+        "name": "logs",
+        "modified": "2025-08-23T19:52:09.793796"
+      },
+      {
+        "path": ".git/refs",
+        "name": "refs",
+        "modified": "2025-08-23T19:54:07.350842"
+      },
+      {
+        "path": ".git/objects",
+        "name": "objects",
+        "modified": "2025-08-23T19:52:09.182796"
+      },
+      {
+        "path": ".git/info",
+        "name": "info",
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": "pi/python",
+        "name": "python",
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/templates/auth",
+        "name": "auth",
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": ".git/logs/refs",
+        "name": "refs",
+        "modified": "2025-08-23T19:52:09.793796"
+      },
+      {
+        "path": ".git/refs/heads",
+        "name": "heads",
+        "modified": "2025-08-23T19:52:09.793796"
+      },
+      {
+        "path": ".git/refs/remotes",
+        "name": "remotes",
+        "modified": "2025-08-23T19:54:07.351842"
+      },
+      {
+        "path": ".git/refs/tags",
+        "name": "tags",
+        "modified": "2025-08-23T19:52:09.562796"
+      },
+      {
+        "path": ".git/objects/pack",
+        "name": "pack",
+        "modified": "2025-08-23T19:52:09.795796"
+      },
+      {
+        "path": ".git/objects/info",
+        "name": "info",
+        "modified": "2025-08-23T19:52:09.182796"
+      },
+      {
+        "path": ".git/logs/refs/heads",
+        "name": "heads",
+        "modified": "2025-08-23T19:52:09.794796"
+      },
+      {
+        "path": ".git/logs/refs/heads/copilot",
+        "name": "copilot",
+        "modified": "2025-08-23T19:52:09.794796"
+      },
+      {
+        "path": ".git/refs/heads/copilot",
+        "name": "copilot",
+        "modified": "2025-08-23T19:52:09.794796"
+      }
+    ],
+    "files": [
+      {
+        "path": "wrangler.toml",
+        "name": "wrangler.toml",
+        "extension": ".toml",
+        "size": 1101,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "cookies.txt",
+        "name": "cookies.txt",
+        "extension": ".txt",
+        "size": 387,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "requirements.txt",
+        "name": "requirements.txt",
+        "extension": ".txt",
+        "size": 1145,
+        "modified": "2025-08-23T19:55:31.093956"
+      },
+      {
+        "path": "README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1075,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "DEVELOPMENT_GUIDE.md",
+        "name": "DEVELOPMENT_GUIDE.md",
+        "extension": ".md",
+        "size": 8616,
+        "modified": "2025-08-23T19:57:10.859105"
+      },
+      {
+        "path": "integration_example.py",
+        "name": "integration_example.py",
+        "extension": ".py",
+        "size": 16974,
+        "modified": "2025-08-23T20:00:22.894469"
+      },
+      {
+        "path": "DEPLOY_INSTRUCTIONS.md",
+        "name": "DEPLOY_INSTRUCTIONS.md",
+        "extension": ".md",
+        "size": 3236,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "PROJECT_INDEX.md",
+        "name": "PROJECT_INDEX.md",
+        "extension": ".md",
+        "size": 15425,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "TECHNICAL_EVALUATION.md",
+        "name": "TECHNICAL_EVALUATION.md",
+        "extension": ".md",
+        "size": 7382,
+        "modified": "2025-08-23T19:54:58.639902"
+      },
+      {
+        "path": "_worker.py",
+        "name": "_worker.py",
+        "extension": ".py",
+        "size": 2846,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "INDEX.md",
+        "name": "INDEX.md",
+        "extension": ".md",
+        "size": 8156,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "shared_utils.py",
+        "name": "shared_utils.py",
+        "extension": ".py",
+        "size": 8695,
+        "modified": "2025-08-23T19:56:28.157030"
+      },
+      {
+        "path": "LICENSE",
+        "name": "LICENSE",
+        "extension": "",
+        "size": 1068,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "pyproject.toml",
+        "name": "pyproject.toml",
+        "extension": ".toml",
+        "size": 1721,
+        "modified": "2025-08-23T19:55:44.644965"
+      },
+      {
+        "path": ".flake8",
+        "name": ".flake8",
+        "extension": "",
+        "size": 629,
+        "modified": "2025-08-23T19:55:54.499976"
+      },
+      {
+        "path": "MakeMarkdown/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1833,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "MakeMarkdown/txttomd.py",
+        "name": "txttomd.py",
+        "extension": ".py",
+        "size": 1400,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "MakeMarkdown/obsidian_note_generator",
+        "name": "obsidian_note_generator",
+        "extension": "",
+        "size": 1821,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "inner_monologue/inn_mono_gui.py",
+        "name": "inn_mono_gui.py",
+        "extension": ".py",
+        "size": 5368,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "inner_monologue/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2559,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "inner_monologue/inner_monologue.py",
+        "name": "inner_monologue.py",
+        "extension": ".py",
+        "size": 10227,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "xmlmerge/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2677,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "xmlmerge/xmlmerger.py",
+        "name": "xmlmerger.py",
+        "extension": ".py",
+        "size": 1630,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "noder/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2269,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "noder/noder.py",
+        "name": "noder.py",
+        "extension": ".py",
+        "size": 6262,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "jsonreader/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3242,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "jsonreader/jsonreader.py",
+        "name": "jsonreader.py",
+        "extension": ".py",
+        "size": 1635,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "jsonreader/jsonreader2.py",
+        "name": "jsonreader2.py",
+        "extension": ".py",
+        "size": 2417,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "4x/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3280,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/colony_management.py",
+        "name": "colony_management.py",
+        "extension": ".py",
+        "size": 8407,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/gal_event_man.py",
+        "name": "gal_event_man.py",
+        "extension": ".py",
+        "size": 4380,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/tech_tree.py",
+        "name": "tech_tree.py",
+        "extension": ".py",
+        "size": 5588,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/star_generte.py",
+        "name": "star_generte.py",
+        "extension": ".py",
+        "size": 7944,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/d",
+        "name": "d",
+        "extension": "",
+        "size": 3,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/ship_design.py",
+        "name": "ship_design.py",
+        "extension": ".py",
+        "size": 4693,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/civ_dip.py",
+        "name": "civ_dip.py",
+        "extension": ".py",
+        "size": 3558,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "4x/rss_mgmt_sys.py",
+        "name": "rss_mgmt_sys.py",
+        "extension": ".py",
+        "size": 4867,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "Quantum_Chess/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3440,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "Quantum_Chess/QC.py",
+        "name": "QC.py",
+        "extension": ".py",
+        "size": 13859,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "Quantum_Chess/QC_prompts_instruct.txt",
+        "name": "QC_prompts_instruct.txt",
+        "extension": ".txt",
+        "size": 2651,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "iPhone toss to Mac/mover.py",
+        "name": "mover.py",
+        "extension": ".py",
+        "size": 584,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "iPhone toss to Mac/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2328,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "iPhone toss to Mac/scriptrunner.py",
+        "name": "scriptrunner.py",
+        "extension": ".py",
+        "size": 400,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "iPhone toss to Mac/WatchCharm.py",
+        "name": "WatchCharm.py",
+        "extension": ".py",
+        "size": 3107,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "iPhone toss to Mac/autopy.py",
+        "name": "autopy.py",
+        "extension": ".py",
+        "size": 1902,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "llmchatroom/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1873,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "llmchatroom/llmchatroom.py",
+        "name": "llmchatroom.py",
+        "extension": ".py",
+        "size": 4813,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "chatter/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2848,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "chatter/chatter-user.py",
+        "name": "chatter-user.py",
+        "extension": ".py",
+        "size": 4772,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "__pycache__/shared_utils.cpython-312.pyc",
+        "name": "shared_utils.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 12804,
+        "modified": "2025-08-23T19:59:11.939330"
+      },
+      {
+        "path": "instance/shareconvo.db",
+        "name": "shareconvo.db",
+        "extension": ".db",
+        "size": 28672,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "bluetooth/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 5175,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bluetooth/bluetooth.py",
+        "name": "bluetooth.py",
+        "extension": ".py",
+        "size": 185,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bluetooth/printtobluetoothcharac.py",
+        "name": "printtobluetoothcharac.py",
+        "extension": ".py",
+        "size": 917,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bluetooth/buetoothprintfind.py",
+        "name": "buetoothprintfind.py",
+        "extension": ".py",
+        "size": 1135,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bluetooth/fe",
+        "name": "fe",
+        "extension": "",
+        "size": 3,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bluetooth/bluetoothprint.py",
+        "name": "bluetoothprint.py",
+        "extension": ".py",
+        "size": 1399,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "tests/test_shared_utils.py",
+        "name": "test_shared_utils.py",
+        "extension": ".py",
+        "size": 9296,
+        "modified": "2025-08-23T19:57:48.982170"
+      },
+      {
+        "path": "allseeingeye/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2434,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "allseeingeye/allseeingeye.py",
+        "name": "allseeingeye.py",
+        "extension": ".py",
+        "size": 9988,
+        "modified": "2025-08-23T19:59:02.298311"
+      },
+      {
+        "path": "brainstorm/df",
+        "name": "df",
+        "extension": "",
+        "size": 1,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "brainstorm/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2328,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "brainstorm/brainstorm.py",
+        "name": "brainstorm.py",
+        "extension": ".py",
+        "size": 6954,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "brainstorm/harmonized_api_wrappers.py",
+        "name": "harmonized_api_wrappers.py",
+        "extension": ".py",
+        "size": 4927,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "ant/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3016,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "ant/ant.py",
+        "name": "ant.py",
+        "extension": ".py",
+        "size": 3013,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker/df",
+        "name": "df",
+        "extension": "",
+        "size": 6,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2328,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker/harmonized_api_wrappers.py",
+        "name": "harmonized_api_wrappers.py",
+        "extension": ".py",
+        "size": 4927,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker/bookmaker.py",
+        "name": "bookmaker.py",
+        "extension": ".py",
+        "size": 7231,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "bookmaker/config.json",
+        "name": "config.json",
+        "extension": ".json",
+        "size": 1081,
+        "modified": "2025-08-23T19:52:09.798796"
+      },
+      {
+        "path": "MDtoHTML/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1900,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "MDtoHTML/formatter.py",
+        "name": "formatter.py",
+        "extension": ".py",
+        "size": 1171,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "hive-mind/er",
+        "name": "er",
+        "extension": "",
+        "size": 3,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "nomic/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2850,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "nomic/nomic.py",
+        "name": "nomic.py",
+        "extension": ".py",
+        "size": 16433,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "HeaderPy/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1890,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "HeaderPy/header.py",
+        "name": "header.py",
+        "extension": ".py",
+        "size": 1157,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2945,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "ChatGPTArchive/gptwordcloud-2.py",
+        "name": "gptwordcloud-2.py",
+        "extension": ".py",
+        "size": 2351,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive/chatgptreader.py",
+        "name": "chatgptreader.py",
+        "extension": ".py",
+        "size": 2373,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive/chatgptarchive.py",
+        "name": "chatgptarchive.py",
+        "extension": ".py",
+        "size": 3532,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "chatroom/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2374,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "chatroom/chatroom.py",
+        "name": "chatroom.py",
+        "extension": ".py",
+        "size": 8309,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "mover/mover.py",
+        "name": "mover.py",
+        "extension": ".py",
+        "size": 701,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "mover/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1731,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "shareconvo/database.py",
+        "name": "database.py",
+        "extension": ".py",
+        "size": 59,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/cli.py",
+        "name": "cli.py",
+        "extension": ".py",
+        "size": 1455,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/schema.sql",
+        "name": "schema.sql",
+        "extension": ".sql",
+        "size": 1512,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/models.py",
+        "name": "models.py",
+        "extension": ".py",
+        "size": 2980,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/auth.py",
+        "name": "auth.py",
+        "extension": ".py",
+        "size": 1992,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/__init__.py",
+        "name": "__init__.py",
+        "extension": ".py",
+        "size": 5851,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": ".git/config",
+        "name": "config",
+        "extension": "",
+        "size": 680,
+        "modified": "2025-08-23T19:52:09.863796"
+      },
+      {
+        "path": ".git/shallow",
+        "name": "shallow",
+        "extension": "",
+        "size": 41,
+        "modified": "2025-08-23T19:52:09.702796"
+      },
+      {
+        "path": ".git/packed-refs",
+        "name": "packed-refs",
+        "extension": "",
+        "size": 156,
+        "modified": "2025-08-23T19:52:09.793796"
+      },
+      {
+        "path": ".git/description",
+        "name": "description",
+        "extension": "",
+        "size": 73,
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": ".git/HEAD",
+        "name": "HEAD",
+        "extension": "",
+        "size": 65,
+        "modified": "2025-08-23T19:54:06.932841"
+      },
+      {
+        "path": ".git/index",
+        "name": "index",
+        "extension": "",
+        "size": 11618,
+        "modified": "2025-08-23T19:54:06.931841"
+      },
+      {
+        "path": "movelog/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 1511,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "movelog/movelog.py",
+        "name": "movelog.py",
+        "extension": ".py",
+        "size": 1153,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "iPhone toss to Mac/old/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2929,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "iPhone toss to Mac/old/inefficientwatcher.py",
+        "name": "inefficientwatcher.py",
+        "extension": ".py",
+        "size": 3447,
+        "modified": "2025-08-23T19:52:09.800796"
+      },
+      {
+        "path": "allseeingeye/output/directory_structure_and_files.txt",
+        "name": "directory_structure_and_files.txt",
+        "extension": ".txt",
+        "size": 21186,
+        "modified": "2025-08-23T19:59:13.505333"
+      },
+      {
+        "path": "allseeingeye/output/directory_structure_and_files_no_text.txt",
+        "name": "directory_structure_and_files_no_text.txt",
+        "extension": ".txt",
+        "size": 10864,
+        "modified": "2025-08-23T19:59:13.508333"
+      },
+      {
+        "path": "hive-mind/hive-mind-2/hivemind2.py",
+        "name": "hivemind2.py",
+        "extension": ".py",
+        "size": 27843,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/hive-mind-2/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2356,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/Z/zhive-mind.py",
+        "name": "zhive-mind.py",
+        "extension": ".py",
+        "size": 15609,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/hive-mind/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 2361,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/hive-mind/hive-mind.py",
+        "name": "hive-mind.py",
+        "extension": ".py",
+        "size": 28003,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "hive-mind/hive-mind/ds",
+        "name": "ds",
+        "extension": "",
+        "size": 4,
+        "modified": "2025-08-23T19:52:09.799796"
+      },
+      {
+        "path": "ChatGPTArchive/StatsplusClaude/requirements.txt",
+        "name": "requirements.txt",
+        "extension": ".txt",
+        "size": 228,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive/StatsplusClaude/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3555,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": "ChatGPTArchive/StatsplusClaude/Claude-chat-gptarchive-public.py",
+        "name": "Claude-chat-gptarchive-public.py",
+        "extension": ".py",
+        "size": 21431,
+        "modified": "2025-08-23T19:52:09.797796"
+      },
+      {
+        "path": ".github/workflows/python-app.yml",
+        "name": "python-app.yml",
+        "extension": ".yml",
+        "size": 1186,
+        "modified": "2025-08-23T19:52:09.796796"
+      },
+      {
+        "path": "shareconvo/__pycache__/app.cpython-312.pyc",
+        "name": "app.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 1329,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/__pycache__/auth.cpython-312.pyc",
+        "name": "auth.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 3218,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/__pycache__/database.cpython-312.pyc",
+        "name": "database.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 203,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/__pycache__/__init__.cpython-312.pyc",
+        "name": "__init__.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 8515,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/__pycache__/cli.cpython-312.pyc",
+        "name": "cli.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 2528,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "shareconvo/__pycache__/models.cpython-312.pyc",
+        "name": "models.cpython-312.pyc",
+        "extension": ".pyc",
+        "size": 5805,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/templates/conversation.html",
+        "name": "conversation.html",
+        "extension": ".html",
+        "size": 296,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/templates/index.html",
+        "name": "index.html",
+        "extension": ".html",
+        "size": 2917,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/templates/submit.html",
+        "name": "submit.html",
+        "extension": ".html",
+        "size": 1293,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/static/style.css",
+        "name": "style.css",
+        "extension": ".css",
+        "size": 981,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/static/main.js",
+        "name": "main.js",
+        "extension": ".js",
+        "size": 5134,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/templates/auth/register.html",
+        "name": "register.html",
+        "extension": ".html",
+        "size": 942,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": "shareconvo/templates/auth/login.html",
+        "name": "login.html",
+        "extension": ".html",
+        "size": 811,
+        "modified": "2025-08-23T19:52:09.802796"
+      },
+      {
+        "path": ".git/hooks/push-to-checkout.sample",
+        "name": "push-to-checkout.sample",
+        "extension": ".sample",
+        "size": 2783,
+        "modified": "2025-08-23T19:52:09.177795"
+      },
+      {
+        "path": ".git/hooks/post-update.sample",
+        "name": "post-update.sample",
+        "extension": ".sample",
+        "size": 189,
+        "modified": "2025-08-23T19:52:09.177795"
+      },
+      {
+        "path": ".git/hooks/prepare-commit-msg.sample",
+        "name": "prepare-commit-msg.sample",
+        "extension": ".sample",
+        "size": 1492,
+        "modified": "2025-08-23T19:52:09.177795"
+      },
+      {
+        "path": ".git/hooks/update.sample",
+        "name": "update.sample",
+        "extension": ".sample",
+        "size": 3650,
+        "modified": "2025-08-23T19:52:09.177795"
+      },
+      {
+        "path": ".git/hooks/pre-receive.sample",
+        "name": "pre-receive.sample",
+        "extension": ".sample",
+        "size": 544,
+        "modified": "2025-08-23T19:52:09.178795"
+      },
+      {
+        "path": ".git/hooks/sendemail-validate.sample",
+        "name": "sendemail-validate.sample",
+        "extension": ".sample",
+        "size": 2308,
+        "modified": "2025-08-23T19:52:09.178795"
+      },
+      {
+        "path": ".git/hooks/pre-commit.sample",
+        "name": "pre-commit.sample",
+        "extension": ".sample",
+        "size": 1649,
+        "modified": "2025-08-23T19:52:09.178795"
+      },
+      {
+        "path": ".git/hooks/commit-msg.sample",
+        "name": "commit-msg.sample",
+        "extension": ".sample",
+        "size": 896,
+        "modified": "2025-08-23T19:52:09.178795"
+      },
+      {
+        "path": ".git/hooks/pre-applypatch.sample",
+        "name": "pre-applypatch.sample",
+        "extension": ".sample",
+        "size": 424,
+        "modified": "2025-08-23T19:52:09.179796"
+      },
+      {
+        "path": ".git/hooks/pre-rebase.sample",
+        "name": "pre-rebase.sample",
+        "extension": ".sample",
+        "size": 4898,
+        "modified": "2025-08-23T19:52:09.179796"
+      },
+      {
+        "path": ".git/hooks/pre-push.sample",
+        "name": "pre-push.sample",
+        "extension": ".sample",
+        "size": 1374,
+        "modified": "2025-08-23T19:52:09.179796"
+      },
+      {
+        "path": ".git/hooks/applypatch-msg.sample",
+        "name": "applypatch-msg.sample",
+        "extension": ".sample",
+        "size": 478,
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": ".git/hooks/pre-merge-commit.sample",
+        "name": "pre-merge-commit.sample",
+        "extension": ".sample",
+        "size": 416,
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": ".git/hooks/fsmonitor-watchman.sample",
+        "name": "fsmonitor-watchman.sample",
+        "extension": ".sample",
+        "size": 4726,
+        "modified": "2025-08-23T19:52:09.180795"
+      },
+      {
+        "path": ".git/logs/HEAD",
+        "name": "HEAD",
+        "extension": "",
+        "size": 508,
+        "modified": "2025-08-23T19:54:06.932841"
+      },
+      {
+        "path": ".git/info/exclude",
+        "name": "exclude",
+        "extension": "",
+        "size": 240,
+        "modified": "2025-08-23T19:52:09.181795"
+      },
+      {
+        "path": ".git/logs/refs/heads/copilot/fix-8d467aee-f4d0-4e3c-979c-8bdb07e399b7",
+        "name": "fix-8d467aee-f4d0-4e3c-979c-8bdb07e399b7",
+        "extension": "",
+        "size": 218,
+        "modified": "2025-08-23T19:52:09.794796"
+      },
+      {
+        "path": ".git/refs/heads/copilot/fix-8d467aee-f4d0-4e3c-979c-8bdb07e399b7",
+        "name": "fix-8d467aee-f4d0-4e3c-979c-8bdb07e399b7",
+        "extension": "",
+        "size": 41,
+        "modified": "2025-08-23T19:52:09.793796"
+      },
+      {
+        "path": ".git/objects/pack/pack-5b6809140e81c2881c7711e82fbefc51ea51d498.idx",
+        "name": "pack-5b6809140e81c2881c7711e82fbefc51ea51d498.idx",
+        "extension": ".idx",
+        "size": 5300,
+        "modified": "2025-08-23T19:52:09.783796"
+      },
+      {
+        "path": ".git/objects/pack/pack-5b6809140e81c2881c7711e82fbefc51ea51d498.rev",
+        "name": "pack-5b6809140e81c2881c7711e82fbefc51ea51d498.rev",
+        "extension": ".rev",
+        "size": 656,
+        "modified": "2025-08-23T19:52:09.785796"
+      },
+      {
+        "path": ".git/objects/pack/pack-5b6809140e81c2881c7711e82fbefc51ea51d498.pack",
+        "name": "pack-5b6809140e81c2881c7711e82fbefc51ea51d498.pack",
+        "extension": ".pack",
+        "size": 168909,
+        "modified": "2025-08-23T19:52:09.783796"
+      },
+      {
+        "path": "pi/python/README.md",
+        "name": "README.md",
+        "extension": ".md",
+        "size": 3167,
+        "modified": "2025-08-23T19:52:09.801796"
+      },
+      {
+        "path": "pi/python/pi_digit_variations.png",
+        "name": "pi_digit_variations.png",
+        "extension": ".png",
+        "size": 43964,
+        "modified": "2025-08-23T19:52:09.801796"
+      }
+    ],
+    "file_types": {
+      ".toml": 2,
+      ".txt": 6,
+      ".md": 33,
+      ".py": 54,
+      "no_extension": 19,
+      ".pyc": 7,
+      ".db": 1,
+      ".json": 1,
+      ".sql": 1,
+      ".yml": 1,
+      ".html": 5,
+      ".css": 1,
+      ".js": 1,
+      ".sample": 14,
+      ".idx": 1,
+      ".rev": 1,
+      ".pack": 1,
+      ".png": 1
+    },
+    "total_size": 817583,
+    "summary": {
+      "total_files": 150,
+      "total_directories": 57,
+      "total_size_mb": 0.78,
+      "most_common_file_type": ".py"
+    }
+  },
+  "project_analysis": {
+    "timestamp": "2025-08-23T20:00:29.472777",
+    "projects": [
+      {
+        "name": "MakeMarkdown",
+        "path": "MakeMarkdown",
+        "python_files": [
+          {
+            "name": "txttomd.py",
+            "lines": 30
+          }
+        ],
+        "lines_of_code": 30,
+        "technologies": [],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 1833
+      },
+      {
+        "name": "inner_monologue",
+        "path": "inner_monologue",
+        "python_files": [
+          {
+            "name": "inn_mono_gui.py",
+            "lines": 136
+          },
+          {
+            "name": "inner_monologue.py",
+            "lines": 223
+          }
+        ],
+        "lines_of_code": 359,
+        "technologies": [
+          "gui",
+          "web"
+        ],
+        "category": "web",
+        "has_readme": true,
+        "readme_length": 2559
+      },
+      {
+        "name": "xmlmerge",
+        "path": "xmlmerge",
+        "python_files": [
+          {
+            "name": "xmlmerger.py",
+            "lines": 45
+          }
+        ],
+        "lines_of_code": 45,
+        "technologies": [],
+        "category": "file_processing",
+        "has_readme": true,
+        "readme_length": 2677
+      },
+      {
+        "name": "noder",
+        "path": "noder",
+        "python_files": [
+          {
+            "name": "noder.py",
+            "lines": 151
+          }
+        ],
+        "lines_of_code": 151,
+        "technologies": [
+          "anthropic"
+        ],
+        "category": "ai_llm",
+        "has_readme": true,
+        "readme_length": 2269
+      },
+      {
+        "name": "jsonreader",
+        "path": "jsonreader",
+        "python_files": [
+          {
+            "name": "jsonreader.py",
+            "lines": 46
+          },
+          {
+            "name": "jsonreader2.py",
+            "lines": 58
+          }
+        ],
+        "lines_of_code": 104,
+        "technologies": [],
+        "category": "file_processing",
+        "has_readme": true,
+        "readme_length": 3242
+      },
+      {
+        "name": "4x",
+        "path": "4x",
+        "python_files": [
+          {
+            "name": "colony_management.py",
+            "lines": 223
+          },
+          {
+            "name": "gal_event_man.py",
+            "lines": 122
+          },
+          {
+            "name": "tech_tree.py",
+            "lines": 131
+          },
+          {
+            "name": "star_generte.py",
+            "lines": 196
+          },
+          {
+            "name": "ship_design.py",
+            "lines": 119
+          },
+          {
+            "name": "civ_dip.py",
+            "lines": 103
+          },
+          {
+            "name": "rss_mgmt_sys.py",
+            "lines": 146
+          }
+        ],
+        "lines_of_code": 1040,
+        "technologies": [],
+        "category": "game",
+        "has_readme": true,
+        "readme_length": 3280
+      },
+      {
+        "name": "Quantum_Chess",
+        "path": "Quantum_Chess",
+        "python_files": [
+          {
+            "name": "QC.py",
+            "lines": 339
+          }
+        ],
+        "lines_of_code": 339,
+        "technologies": [],
+        "category": "game",
+        "has_readme": true,
+        "readme_length": 3440
+      },
+      {
+        "name": "iPhone toss to Mac",
+        "path": "iPhone toss to Mac",
+        "python_files": [
+          {
+            "name": "mover.py",
+            "lines": 19
+          },
+          {
+            "name": "scriptrunner.py",
+            "lines": 17
+          },
+          {
+            "name": "WatchCharm.py",
+            "lines": 71
+          },
+          {
+            "name": "autopy.py",
+            "lines": 54
+          }
+        ],
+        "lines_of_code": 161,
+        "technologies": [],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 2328
+      },
+      {
+        "name": "llmchatroom",
+        "path": "llmchatroom",
+        "python_files": [
+          {
+            "name": "llmchatroom.py",
+            "lines": 107
+          }
+        ],
+        "lines_of_code": 107,
+        "technologies": [
+          "web"
+        ],
+        "category": "web",
+        "has_readme": true,
+        "readme_length": 1873
+      },
+      {
+        "name": "chatter",
+        "path": "chatter",
+        "python_files": [
+          {
+            "name": "chatter-user.py",
+            "lines": 111
+          }
+        ],
+        "lines_of_code": 111,
+        "technologies": [
+          "web"
+        ],
+        "category": "web",
+        "has_readme": true,
+        "readme_length": 2848
+      },
+      {
+        "name": "bluetooth",
+        "path": "bluetooth",
+        "python_files": [
+          {
+            "name": "bluetooth.py",
+            "lines": 9
+          },
+          {
+            "name": "printtobluetoothcharac.py",
+            "lines": 24
+          },
+          {
+            "name": "buetoothprintfind.py",
+            "lines": 26
+          },
+          {
+            "name": "bluetoothprint.py",
+            "lines": 37
+          }
+        ],
+        "lines_of_code": 96,
+        "technologies": [
+          "bluetooth"
+        ],
+        "category": "automation",
+        "has_readme": true,
+        "readme_length": 5175
+      },
+      {
+        "name": "tests",
+        "path": "tests",
+        "python_files": [
+          {
+            "name": "test_shared_utils.py",
+            "lines": 278
+          }
+        ],
+        "lines_of_code": 278,
+        "technologies": [
+          "web"
+        ],
+        "category": "web",
+        "has_readme": false
+      },
+      {
+        "name": "allseeingeye",
+        "path": "allseeingeye",
+        "python_files": [
+          {
+            "name": "allseeingeye.py",
+            "lines": 270
+          }
+        ],
+        "lines_of_code": 270,
+        "technologies": [],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 2434
+      },
+      {
+        "name": "brainstorm",
+        "path": "brainstorm",
+        "python_files": [
+          {
+            "name": "brainstorm.py",
+            "lines": 148
+          },
+          {
+            "name": "harmonized_api_wrappers.py",
+            "lines": 121
+          }
+        ],
+        "lines_of_code": 269,
+        "technologies": [
+          "anthropic",
+          "openai"
+        ],
+        "category": "ai_llm",
+        "has_readme": true,
+        "readme_length": 2328
+      },
+      {
+        "name": "ant",
+        "path": "ant",
+        "python_files": [
+          {
+            "name": "ant.py",
+            "lines": 78
+          }
+        ],
+        "lines_of_code": 78,
+        "technologies": [
+          "anthropic",
+          "rich"
+        ],
+        "category": "ai_llm",
+        "has_readme": true,
+        "readme_length": 3016
+      },
+      {
+        "name": "bookmaker",
+        "path": "bookmaker",
+        "python_files": [
+          {
+            "name": "harmonized_api_wrappers.py",
+            "lines": 121
+          },
+          {
+            "name": "bookmaker.py",
+            "lines": 151
+          }
+        ],
+        "lines_of_code": 272,
+        "technologies": [
+          "anthropic",
+          "openai"
+        ],
+        "category": "ai_llm",
+        "has_readme": true,
+        "readme_length": 2328
+      },
+      {
+        "name": "MDtoHTML",
+        "path": "MDtoHTML",
+        "python_files": [
+          {
+            "name": "formatter.py",
+            "lines": 31
+          }
+        ],
+        "lines_of_code": 31,
+        "technologies": [
+          "gui"
+        ],
+        "category": "gui",
+        "has_readme": true,
+        "readme_length": 1900
+      },
+      {
+        "name": "nomic",
+        "path": "nomic",
+        "python_files": [
+          {
+            "name": "nomic.py",
+            "lines": 358
+          }
+        ],
+        "lines_of_code": 358,
+        "technologies": [
+          "anthropic",
+          "pytorch",
+          "transformers",
+          "data"
+        ],
+        "category": "ai_llm",
+        "has_readme": true,
+        "readme_length": 2850
+      },
+      {
+        "name": "HeaderPy",
+        "path": "HeaderPy",
+        "python_files": [
+          {
+            "name": "header.py",
+            "lines": 37
+          }
+        ],
+        "lines_of_code": 37,
+        "technologies": [],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 1890
+      },
+      {
+        "name": "ChatGPTArchive",
+        "path": "ChatGPTArchive",
+        "python_files": [
+          {
+            "name": "gptwordcloud-2.py",
+            "lines": 72
+          },
+          {
+            "name": "chatgptreader.py",
+            "lines": 74
+          },
+          {
+            "name": "chatgptarchive.py",
+            "lines": 107
+          }
+        ],
+        "lines_of_code": 253,
+        "technologies": [
+          "nltk"
+        ],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 2945
+      },
+      {
+        "name": "chatroom",
+        "path": "chatroom",
+        "python_files": [
+          {
+            "name": "chatroom.py",
+            "lines": 165
+          }
+        ],
+        "lines_of_code": 165,
+        "technologies": [
+          "gui",
+          "web",
+          "monitoring"
+        ],
+        "category": "web",
+        "has_readme": true,
+        "readme_length": 2374
+      },
+      {
+        "name": "mover",
+        "path": "mover",
+        "python_files": [
+          {
+            "name": "mover.py",
+            "lines": 19
+          }
+        ],
+        "lines_of_code": 19,
+        "technologies": [],
+        "category": "automation",
+        "has_readme": true,
+        "readme_length": 1731
+      },
+      {
+        "name": "shareconvo",
+        "path": "shareconvo",
+        "python_files": [
+          {
+            "name": "database.py",
+            "lines": 3
+          },
+          {
+            "name": "cli.py",
+            "lines": 46
+          },
+          {
+            "name": "models.py",
+            "lines": 59
+          },
+          {
+            "name": "auth.py",
+            "lines": 62
+          },
+          {
+            "name": "__init__.py",
+            "lines": 170
+          }
+        ],
+        "lines_of_code": 340,
+        "technologies": [
+          "flask"
+        ],
+        "category": "web",
+        "has_readme": false
+      },
+      {
+        "name": "movelog",
+        "path": "movelog",
+        "python_files": [
+          {
+            "name": "movelog.py",
+            "lines": 33
+          }
+        ],
+        "lines_of_code": 33,
+        "technologies": [],
+        "category": "utility",
+        "has_readme": true,
+        "readme_length": 1511
+      }
+    ],
+    "categories": {
+      "utility": 6,
+      "web": 6,
+      "file_processing": 2,
+      "ai_llm": 5,
+      "game": 2,
+      "automation": 2,
+      "gui": 1
+    },
+    "technologies": [
+      "openai",
+      "gui",
+      "anthropic",
+      "web",
+      "pytorch",
+      "bluetooth",
+      "rich",
+      "nltk",
+      "transformers",
+      "data",
+      "monitoring",
+      "flask"
+    ],
+    "total_loc": 4946
+  },
+  "summary": {
+    "total_projects": 24,
+    "total_files": 150,
+    "total_size_mb": 0.78,
+    "total_lines_of_code": 4946,
+    "technologies_used": [
+      "openai",
+      "gui",
+      "anthropic",
+      "web",
+      "pytorch",
+      "bluetooth",
+      "rich",
+      "nltk",
+      "transformers",
+      "data",
+      "monitoring",
+      "flask"
+    ],
+    "project_categories": {
+      "utility": 6,
+      "web": 6,
+      "file_processing": 2,
+      "ai_llm": 5,
+      "game": 2,
+      "automation": 2,
+      "gui": 1
+    }
+  }
+}

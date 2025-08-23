@@ -1,4 +1,68 @@
-Flask
-Flask-SQLAlchemy
-Flask-Login
-bcrypt
+# Core Dependencies for Projects Repository
+# This file contains all external dependencies used across 24 projects
+
+# Web Framework (Flask-based projects)
+Flask>=2.3.0
+Flask-SQLAlchemy>=3.0.0
+Flask-Login>=0.6.0
+bcrypt>=4.0.0
+
+# AI/ML Libraries
+anthropic>=0.7.0
+openai>=1.0.0
+torch>=2.0.0
+transformers>=4.30.0
+monsterapi>=1.0.0
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+nltk>=3.8.0
+textblob>=0.17.0
+textstat>=0.7.0
+
+# Visualization
+matplotlib>=3.7.0
+wordcloud>=1.9.0
+
+# Rich Text and Console
+rich>=13.0.0
+pyfiglet>=0.8.0
+termcolor>=2.3.0
+
+# File Processing
+lxml>=4.9.0
+markdown2>=2.4.0
+
+# GUI (optional - may require system packages)
+PyQt5>=5.15.0; platform_system != "Linux" or platform_machine != "armv7l"
+
+# Bluetooth and Hardware
+bleak>=0.20.0
+
+# Monitoring and Metrics
+prometheus-client>=0.17.0
+
+# File System Monitoring
+watchdog>=3.0.0
+
+# Network and Graph Libraries
+networkx>=3.1.0
+
+# CLI Tools
+click>=8.1.0
+
+# Development and Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.7.0
+flake8>=6.0.0
+mypy>=1.5.0
+
+# Documentation
+sphinx>=7.1.0
+sphinx-rtd-theme>=1.3.0
+
+# Optional: Jupyter for data analysis
+jupyter>=1.0.0
+ipykernel>=6.25.0
