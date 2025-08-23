@@ -88,8 +88,73 @@ def calculate_priorities(tech_tree: TechnologyTree, strategic_goals: Dict[str, f
 # Technology Effects
 def apply_technology_effects(tech_id: str, game_state: dict):
     # Apply the effects of the unlocked technology to the game state
-    # This function would need to be implemented based on the specific game mechanics
-    pass
+    # This function implements specific game mechanics for different technologies
+    
+    if not game_state:
+        game_state = {}
+    
+    # Initialize game state components if they don't exist
+    if "civilizations" not in game_state:
+        game_state["civilizations"] = []
+    if "global_modifiers" not in game_state:
+        game_state["global_modifiers"] = {}
+    if "available_actions" not in game_state:
+        game_state["available_actions"] = set()
+    
+    # Technology effects based on tech_id
+    if tech_id == "energy_weapons":
+        # Increases military effectiveness and unlocks new weapon systems
+        game_state["global_modifiers"]["weapon_damage_multiplier"] = \
+            game_state["global_modifiers"].get("weapon_damage_multiplier", 1.0) * 1.2
+        game_state["available_actions"].add("build_energy_weapons")
+        
+    elif tech_id == "laser_weapons":
+        # Advanced energy weapons with higher accuracy
+        game_state["global_modifiers"]["weapon_accuracy_bonus"] = \
+            game_state["global_modifiers"].get("weapon_accuracy_bonus", 0.0) + 0.15
+        game_state["available_actions"].add("build_laser_turrets")
+        
+    elif tech_id == "plasma_weapons":
+        # Most advanced weapons technology
+        game_state["global_modifiers"]["weapon_damage_multiplier"] = \
+            game_state["global_modifiers"].get("weapon_damage_multiplier", 1.0) * 1.5
+        game_state["global_modifiers"]["armor_penetration"] = \
+            game_state["global_modifiers"].get("armor_penetration", 0.0) + 0.3
+        game_state["available_actions"].add("build_plasma_cannons")
+        
+    elif tech_id == "advanced_propulsion":
+        # Improves ship movement and exploration
+        game_state["global_modifiers"]["movement_speed_multiplier"] = \
+            game_state["global_modifiers"].get("movement_speed_multiplier", 1.0) * 1.3
+        game_state["global_modifiers"]["exploration_range_bonus"] = \
+            game_state["global_modifiers"].get("exploration_range_bonus", 0.0) + 2
+        game_state["available_actions"].add("build_advanced_engines")
+        
+    elif tech_id == "warp_drive":
+        # Enables long-distance travel and colonization
+        game_state["global_modifiers"]["movement_speed_multiplier"] = \
+            game_state["global_modifiers"].get("movement_speed_multiplier", 1.0) * 2.0
+        game_state["global_modifiers"]["colonization_range_unlimited"] = True
+        game_state["available_actions"].add("build_warp_ships")
+        game_state["available_actions"].add("establish_distant_colonies")
+        
+    # Generic technology effects for unknown technologies
+    else:
+        # Default effect: small research bonus and potential new action
+        game_state["global_modifiers"]["research_efficiency"] = \
+            game_state["global_modifiers"].get("research_efficiency", 1.0) * 1.05
+        game_state["available_actions"].add(f"utilize_{tech_id}")
+    
+    # Log the technology application
+    if "technology_log" not in game_state:
+        game_state["technology_log"] = []
+    game_state["technology_log"].append({
+        "tech_id": tech_id,
+        "effects_applied": True,
+        "timestamp": len(game_state["technology_log"])  # Simple counter
+    })
+    
+    return game_state
 
 # Documentation and usage examples
 """
@@ -125,7 +190,15 @@ strategic_goals = {
 resources = 300
 allocated_resources = optimize_research(tech_tree, resources, strategic_goals)
 
+# Initialize game state for technology effects
+game_state = {
+    "civilizations": [],
+    "global_modifiers": {},
+    "available_actions": set(),
+    "technology_log": []
+}
+
 # Apply technology effects
 for tech_id, cost in allocated_resources.items():
     tech_tree.unlock_technology(tech_id)
-    apply_technology_effects(tech_id, game_state)
+    game_state = apply_technology_effects(tech_id, game_state)
