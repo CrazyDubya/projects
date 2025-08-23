@@ -5,7 +5,7 @@
 ## Executive Summary
 
 - **Total Projects Analyzed**: 22
-- **Average Overall Score**: 86.7/100
+- **Average Overall Score**: 87.0/100
 - **Report Generated**: EVALUATION_REPORT.md
 
 ### Top Performing Projects
@@ -78,7 +78,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: Thread, Queue, Model, queue
+- External Libraries: queue, Queue, Model, Thread
 - Dependency Health: Moderate
 
 
@@ -144,7 +144,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: simpledialog, webbrowser, tempfile, markdown2, the
+- External Libraries: simpledialog, the, markdown2, tempfile, webbrowser
 - Dependency Health: Moderate
 
 
@@ -188,7 +188,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: APIWrapper, random, prometheus_client, start_http_server, harmonized_api_wrappers
+- External Libraries: prometheus_client, harmonized_api_wrappers, random, APIWrapper, start_http_server
 - Dependency Health: Moderate
 
 
@@ -238,6 +238,28 @@
 
 ---
 
+### iPhone toss to Mac
+
+**Basic Information:**
+- Files: 4 Python files
+- Lines of Code: 165
+- Average File Size: 41.2 lines
+- Has README: ✅
+
+**Quality Scores:**
+- Overall: 91.2/100
+- Code Quality: 100.0/100
+- Documentation: 80.0/100
+- Maintainability: 85.0/100
+- Security: 100.0/100
+
+**Dependencies:**
+- External Libraries: Path, watchdog, shutil, Observer, FileSystemEventHandler
+- Dependency Health: Moderate
+
+
+---
+
 ### ant
 
 **Basic Information:**
@@ -254,7 +276,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: rich, Panel, print, anthropic
+- External Libraries: print, Panel, rich, anthropic
 - Dependency Health: Moderate
 
 
@@ -276,7 +298,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: PyQt5, QApplication, csv, APIWrapper, random, InnerMonologue, harmonized_api_wrappers
+- External Libraries: PyQt5, QApplication, csv, harmonized_api_wrappers, random, APIWrapper, InnerMonologue
 - Dependency Health: Concerning
 
 - 🔧 High complexity detected
@@ -299,7 +321,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: xml, figlet_format, pyfiglet, termcolor, colored, pickle, user
+- External Libraries: xml, colored, termcolor, pickle, user, figlet_format, pyfiglet
 - Dependency Health: Concerning
 
 
@@ -327,30 +349,6 @@
 
 ---
 
-### iPhone toss to Mac
-
-**Basic Information:**
-- Files: 4 Python files
-- Lines of Code: 165
-- Average File Size: 41.2 lines
-- Has README: ✅
-
-**Quality Scores:**
-- Overall: 83.8/100
-- Code Quality: 70.0/100
-- Documentation: 80.0/100
-- Maintainability: 85.0/100
-- Security: 100.0/100
-
-**Dependencies:**
-- External Libraries: Observer, watchdog, shutil, FileSystemEventHandler, Path
-- Dependency Health: Moderate
-
-**Issues Found:**
-- ⚠️ Syntax error in /home/runner/work/projects/projects/iPhone toss to Mac/autopy.py: unterminated string literal (detected at line 44) (<unknown>, line 44)
-
----
-
 ### bluetooth
 
 **Basic Information:**
@@ -367,7 +365,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: bleak, asyncio, BleakClient, BleakScanner, the
+- External Libraries: BleakScanner, bleak, BleakClient, the, asyncio
 - Dependency Health: Moderate
 
 
@@ -389,7 +387,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: client, monsterapi, anthropic, APIWrapper, GenerativeModel, openai, OpenAI, google
+- External Libraries: GenerativeModel, google, anthropic, openai, client, APIWrapper, OpenAI, monsterapi
 - Dependency Health: Concerning
 
 
@@ -411,7 +409,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: client, monsterapi, anthropic, APIWrapper, GenerativeModel, openai, OpenAI, google
+- External Libraries: GenerativeModel, google, anthropic, openai, client, APIWrapper, OpenAI, monsterapi
 - Dependency Health: Concerning
 
 
@@ -433,7 +431,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: TextBlob, a, matplotlib, the, WordCloud, Counter, stopwords, wordcloud, nltk, textblob
+- External Libraries: matplotlib, wordcloud, WordCloud, a, the, stopwords, TextBlob, Counter, textblob, nltk
 - Dependency Health: Concerning
 
 
@@ -455,7 +453,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: a, random, transformers, BertTokenizer, torch, the
+- External Libraries: transformers, a, random, BertTokenizer, torch, the
 - Dependency Health: Moderate
 
 - 🔧 High complexity detected
@@ -502,7 +500,7 @@
 - Security: 100.0/100
 
 **Dependencies:**
-- External Libraries: Tuple, Dict, random, List, typing, Enum, hostile, heapq, defaultdict, resource, namedtuple, enum, math
+- External Libraries: List, Enum, math, typing, namedtuple, hostile, random, Dict, Tuple, resource, defaultdict, enum, heapq
 - Dependency Health: Concerning
 
 - 🔧 High complexity detected
