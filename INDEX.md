@@ -50,7 +50,7 @@ This repository contains a diverse collection of Python-based projects ranging f
 ### 📊 Data & Analytics
 | Project | Size | Description | Key Capabilities |
 |---------|------|-------------|------------------|
-| **pi** | 56KB | Mathematical computation tools | Pi calculations, digit analysis, visualization |
+| **pi** | 56KB | Mathematical computation tools | Pi calculations (Chudnovsky, Gauss-Legendre), parallel processing, digit analysis |
 | **movelog** | 12KB | Movement tracking and logging | Data recording, pattern analysis, log management |
 
 ## Matrix Scoring System
@@ -67,7 +67,7 @@ This repository contains a diverse collection of Python-based projects ranging f
 | **hive-mind** | 4 | 4 | 5 | 4 | 3 | 20/25 |
 | **4x** | 5 | 3 | 5 | 4 | 2 | 19/25 |
 | **ChatGPTArchive** | 5 | 5 | 3 | 3 | 4 | 20/25 |
-| **pi** | 4 | 3 | 4 | 2 | 5 | 18/25 |
+| **pi** | 4 | 3 | 4 | 2 | 4 | 17/25 |
 | **iPhone toss to Mac** | 4 | 4 | 3 | 3 | 3 | 17/25 |
 | **bookmaker** | 4 | 4 | 3 | 4 | 3 | 18/25 |
 | **bluetooth** | 3 | 4 | 4 | 3 | 4 | 18/25 |
@@ -141,13 +141,19 @@ This repository contains a diverse collection of Python-based projects ranging f
 - **Platform Support**: Cross-platform (primarily Unix/Linux optimized)
 
 ## Installation and Setup
-Most projects are standalone Python scripts requiring minimal dependencies:
+Most projects are standalone Python scripts with managed dependencies:
 ```bash
-# Basic setup for most projects
+# Install all project dependencies
+pip install -r requirements.txt
+
+# For minimal setup (core utilities only)
 pip install requests rich lxml
 
-# For AI projects
-pip install anthropic torch transformers
+# For AI projects specifically
+pip install anthropic openai
+
+# For mathematical computation projects (pi)
+pip install mpmath sympy numpy
 
 # For specific projects, see individual README files
 ```
@@ -166,3 +172,4 @@ All projects in this repository are licensed under the MIT License.
 *Last Updated: 2024*
 *Total Projects: 24*
 *Combined Codebase Size: ~1.2MB*
+*Dependencies: Unified requirements.txt with 25+ packages*
