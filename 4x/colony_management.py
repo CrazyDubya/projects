@@ -31,16 +31,17 @@ class Colony:
 # Resource distribution
 def distribute_resources(colonies, resources):
     colony_needs = []
-    for colony in colonies:
+    for i, colony in enumerate(colonies):
         needs = {}
         for resource, amount in resources.items():
             deficit = max(0, colony.population * 10 - colony.resources.get(resource, 0))
             if deficit > 0:
                 needs[resource] = deficit
-        heapq.heappush(colony_needs, (sum(needs.values()), needs, colony))
+        # Add unique index to avoid comparison issues with dicts
+        heapq.heappush(colony_needs, (sum(needs.values()), i, needs, colony))
 
     while resources and colony_needs:
-        _, needs, colony = heapq.heappop(colony_needs)
+        _, _, needs, colony = heapq.heappop(colony_needs)
         for resource, need in needs.items():
             if resource in resources:
                 amount = min(need, resources[resource])
@@ -55,7 +56,13 @@ class DefenseSystem:
         self.shields = 0
 
     def update(self, time_step):
-        # Defend against threats
+        # Simulate defense system monitoring and response
+        # Check for potential threats in the area
+        threats = []  # Initialize empty threats list
+        
+        # In a real implementation, this might check nearby hostile entities
+        # For now, we'll just do basic maintenance
+        
         for threat in threats:
             if self.engage(threat):
                 print(f"Colony {self.colony.name} defended against {threat}")
@@ -101,6 +108,15 @@ class ResourceProcessor:
         colony.resources[self.output_resource] += amount * self.conversion_rate
 
 # Advanced Infrastructure
+class Infrastructure:
+    """Base class for infrastructure components"""
+    def __init__(self):
+        pass
+    
+    def update(self, colony):
+        """Override in subclasses to implement specific infrastructure behavior"""
+        pass
+
 class PowerPlant(Infrastructure):
     def __init__(self, level):
         self.level = level
@@ -120,6 +136,15 @@ class ResearchLab(Infrastructure):
             colony.resources["power"] -= 50
 
 # Colonist Specializations
+class Colonist:
+    """Base class for colonist types"""
+    def __init__(self, name="Colonist"):
+        self.name = name
+    
+    def work(self, colony):
+        """Override in subclasses to implement specific work behavior"""
+        pass
+
 class Worker(Colonist):
     def work(self, colony):
         colony.resources["labor"] += 1
@@ -142,6 +167,16 @@ class Technology:
         pass
 
 # Environmental Hazards and Disasters
+class EnvironmentalHazard:
+    """Base class for environmental hazards"""
+    def __init__(self, name, severity=1.0):
+        self.name = name
+        self.severity = severity
+    
+    def affect_colony(self, colony):
+        """Override in subclasses to implement specific hazard effects"""
+        pass
+
 class Storm(EnvironmentalHazard):
     def __init__(self, severity):
         self.severity = severity
