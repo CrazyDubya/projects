@@ -1,0 +1,54 @@
+# Comprehensive Requirements for Projects Repository
+# Generated from automated dependency analysis
+
+# Core Python libraries (usually included)
+# json, os, sys, pathlib, re, collections, subprocess, typing, datetime, time
+# random, math, itertools, functools, ast, csv, xml, html, urllib, http
+# hashlib, base64, uuid, logging, argparse, io, tempfile, shutil, glob
+
+# AI/ML Libraries
+anthropic>=0.3.0
+openai>=1.0.0
+transformers>=4.20.0
+torch>=1.12.0
+sklearn>=1.1.0
+nltk>=3.7
+
+# GUI Libraries
+# tkinter (included with Python)
+PyQt5>=5.15.0
+
+# Data Processing
+lxml>=4.9.0
+numpy>=1.21.0
+matplotlib>=3.5.0
+wordcloud>=1.9.0
+textstat>=0.7.0
+textblob>=0.17.0
+networkx>=2.8.0
+
+# Web and API
+requests>=2.28.0
+markdown2>=2.4.0
+
+# Specialized Tools
+bleak>=0.19.0        # Bluetooth communication
+watchdog>=2.1.0      # File system monitoring
+prometheus_client>=0.14.0  # Metrics collection
+rich>=12.0.0         # Enhanced console output
+termcolor>=1.1.0     # Terminal colors
+pyfiglet>=0.8.0      # ASCII art text
+
+# Development and Testing (optional)
+black>=22.0.0        # Code formatting
+flake8>=5.0.0        # Linting
+pytest>=7.0.0        # Testing
+mypy>=0.971          # Type checking
+
+# Additional dependencies for specific projects
+# monsterapi - may need specific installation
+# google - for Gemini API integration
+# harmonized_api_wrappers - internal dependency
+
+# Note: Some dependencies may be project-specific or internal modules
+# Install only what you need for your specific use case

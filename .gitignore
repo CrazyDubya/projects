@@ -1,0 +1,60 @@
+# Analysis and temporary files - exclude from commits
+repository_analysis.json
+integration_analysis.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# API Keys and secrets
+.env
+*.key
+secrets.json
+
+# Project specific
+gptlogs-*/
+output/
+logs/
+temp/
+tmp/
+
+# Documentation builds
+docs/_build/
