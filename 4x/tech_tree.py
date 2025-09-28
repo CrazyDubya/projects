@@ -90,8 +90,8 @@ def apply_technology_effects(tech_id: str, game_state: dict):
     # Apply the effects of the unlocked technology to the game state
     # This function implements specific game mechanics for different technologies
     
-    if not game_state:
-        game_state = {}
+    if game_state is None or not isinstance(game_state, dict):
+        raise TypeError("game_state must be a dictionary, not None")
     
     # Initialize game state components if they don't exist
     if "civilizations" not in game_state:
