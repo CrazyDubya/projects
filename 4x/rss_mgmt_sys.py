@@ -105,7 +105,7 @@ class ResourceManager:
                     if demand > 0:
                         # Calculate distance-based priority (closer = higher priority)
                         distance = ((node.location[0] - colony.location[0])**2 + 
-                                   (node.location[1] - colony.location[1])**2)**0.5
+                                   (node.location[1] - colony.location[1])**2)
                         priority = demand / max(distance, 1.0)  # Avoid division by zero
                         colony_demands.append((priority, colony, min(demand, amount)))
                 
