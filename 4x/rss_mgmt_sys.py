@@ -150,9 +150,8 @@ class ResourceManager:
                         demand = max(0, infrastructure_need - current_amount)
                         
                         if demand > 0:
-                            distance = ((node.location[0] - colony.location[0])**2 + 
-                                       (node.location[1] - colony.location[1])**2)**0.5
-                            priority = demand / max(distance, 1.0)
+                            distance_sq = (node.location[0] - colony.location[0])**2 + (node.location[1] - colony.location[1])**2
+                            priority = demand / max(distance_sq, 1.0)
                             strategic_demands.append((priority, colony, min(demand, amount)))
                     
                     # Allocate processed resources
