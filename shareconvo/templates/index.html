@@ -1,0 +1,71 @@
+<!doctype html>
+<title>ShareConvo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='main.js') }}" defer></script>
+<nav>
+  <a href="{{ url_for('index') }}">Home</a> |
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('submit') }}">Submit a Conversation</a>
+    <span style="float: right;">
+      Welcome, {{ current_user.username }} | Points: {{ current_user.points }} | Level: {{ current_user.level }} |
+      <a href="{{ url_for('auth.logout') }}">Log Out</a>
+    </span>
+  {% else %}
+    <span style="float: right;">
+      <a href="{{ url_for('auth.login') }}">Log In</a> |
+      <a href="{{ url_for('auth.register') }}">Register</a>
+    </span>
+  {% endif %}
+</nav>
+<h1>ShareConvo</h1>
+<div id="feedback-banner" class="hidden">
+  <p>Welcome back! How was the <strong id="feedback-convo-title"></strong> conversation?</p>
+  <form id="feedback-form">
+    <input type="hidden" name="accuracy" id="feedback-accuracy">
+    <input type="hidden" name="rating" id="feedback-rating">
+    <input type="hidden" name="report" id="feedback-report" value="0">
+
+    <div class="feedback-group">
+      <strong>Description Accuracy:</strong>
+      <button type="button" class="feedback-btn accuracy-btn" data-accuracy="1">👍 Accurate</button>
+      <button type="button" class="feedback-btn accuracy-btn" data-accuracy="0">👎 Inaccurate</button>
+    </div>
+
+    <div class="feedback-group">
+      <strong>Overall Quality:</strong>
+      <div class="stars" data-rating="0">
+        <span class="star" data-value="1">⭐</span>
+        <span class="star" data-value="2">⭐</span>
+        <span class="star" data-value="3">⭐</span>
+        <span class="star" data-value="4">⭐</span>
+        <span class="star" data-value="5">⭐</span>
+      </div>
+    </div>
+
+    <div class="feedback-group">
+      <button type="button" id="report-btn" class="feedback-btn">🚩 Report as Inappropriate</button>
+    </div>
+
+    <button type="submit">Submit Feedback</button>
+    <button type="button" id="close-feedback-banner">Close</button>
+  </form>
+</div>
+<ul class="conversations">
+{% for conversation in conversations %}
+  <li data-convo-id="{{ conversation.id }}">
+    <h2>{{ conversation.title }}</h2>
+    <p>{{ conversation.blurb }}</p>
+    <a href="{{ url_for('conversation_detail', convo_id=conversation.id) }}" target="_blank" class="view-convo-link">View Full Conversation</a>
+    <div>
+      <button class="vote-btn" data-vote-type="like">👍</button>
+      <span class="likes-count">{{ conversation.likes }}</span>
+      <button class="vote-btn" data-vote-type="dislike">👎</button>
+      <span class="dislikes-count">{{ conversation.dislikes }}</span>
+      <br>
+      <span>Quality Score: {{ "%.2f"|format(conversation.quality_score) }}</span>
+    </div>
+  </li>
+{% else %}
+  <li>No conversations yet.</li>
+{% endfor %}
+</ul>

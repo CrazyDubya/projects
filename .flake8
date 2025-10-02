@@ -1,0 +1,26 @@
+[flake8]
+max-line-length = 88
+extend-ignore = 
+    E203,  # whitespace before ':'
+    E501,  # line too long (handled by black)
+    W503,  # line break before binary operator
+    E402,  # module level import not at top of file (common in scripts)
+exclude = 
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    .pytest_cache,
+    *.egg-info,
+    build,
+    dist
+per-file-ignores =
+    # Allow longer lines in certain files
+    */4x/*.py:E501
+    */hive-mind/*.py:E501
+    # Allow print statements in CLI scripts
+    */ant/*.py:T201
+    */allseeingeye/*.py:T201
+    */mover/*.py:T201
+max-complexity = 15
+import-order-style = google

@@ -1,0 +1,8 @@
+<!doctype html>
+<title>{{ conversation.title }} - ShareConvo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<h1>{{ conversation.title }}</h1>
+<p><em>Submitted by: {{ conversation.author.username }}</em></p>
+<div>
+  {{ conversation.full_text | safe }}
+</div>
