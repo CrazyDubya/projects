@@ -1,0 +1,47 @@
+body { font-family: sans-serif; }
+h1, h2 { color: #333; }
+.conversations { list-style: none; padding: 0; }
+.conversations li { margin: 1em 0; padding: 1em; border: 1px solid #ccc; }
+
+#feedback-banner {
+  background-color: #f0f8ff;
+  padding: 1em;
+  border: 1px solid #add8e6;
+  margin-bottom: 1em;
+}
+.hidden {
+  display: none;
+}
+.feedback-group {
+  margin: 0.5em 0;
+}
+.feedback-btn.active {
+  border-width: 2px;
+  border-color: #007bff;
+}
+.stars {
+  cursor: pointer;
+  display: inline-block;
+}
+.star {
+  font-size: 1.5em;
+  color: #ccc;
+  transition: color 0.1s ease-in-out;
+}
+.stars:hover .star {
+  color: #f8d64e;
+}
+.star:hover ~ .star {
+  color: #ccc;
+}
+.stars[data-rating="1"] .star:nth-child(-n+1),
+.stars[data-rating="2"] .star:nth-child(-n+2),
+.stars[data-rating="3"] .star:nth-child(-n+3),
+.stars[data-rating="4"] .star:nth-child(-n+4),
+.stars[data-rating="5"] .star:nth-child(-n+5) {
+  color: #f8d64e;
+}
+#report-btn.active {
+  background-color: #dc3545;
+  color: white;
+}
