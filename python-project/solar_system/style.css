@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000020; /* Dark blue representing space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+#solar-system-container {
+    position: relative;
+    width: 800px; /* Adjust as needed */
+    height: 800px; /* Adjust as needed */
+}
+
+#sun {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: #FFD700; /* Gold/Yellow */
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 50px #FFA500; /* Orange glow */
+}
+
+/* General planet styling */
+[id^="mercury"], [id^="venus"], [id^="earth"], [id^="mars"], [id^="jupiter"], [id^="saturn"], [id^="uranus"], [id^="neptune"] {
+    position: absolute;
+    border-radius: 50%;
+}
+
+#mercury {
+    width: 10px;
+    height: 10px;
+    background-color: #A9A9A9; /* Dark Gray */
+    top: 48%;
+    left: 40%;
+}
+
+#venus {
+    width: 15px;
+    height: 15px;
+    background-color: #F5DEB3; /* Wheat */
+    top: 40%;
+    left: 30%;
+}
+
+#earth {
+    width: 20px;
+    height: 20px;
+    background-color: #4682B4; /* Steel Blue */
+    top: 30%;
+    left: 60%;
+}
+
+#mars {
+    width: 12px;
+    height: 12px;
+    background-color: #FF4500; /* OrangeRed */
+    top: 60%;
+    left: 25%;
+}
+
+#jupiter {
+    width: 40px;
+    height: 40px;
+    background-color: #DEB887; /* BurlyWood */
+    top: 70%;
+    left: 70%;
+}
+
+#saturn {
+    width: 35px;
+    height: 35px;
+    background-color: #F0E68C; /* Khaki */
+    top: 20%;
+    left: 20%;
+    /* Simple ring effect */
+    box-shadow: 0 0 0 5px #A52A2A33, 0 0 0 10px #A52A2A22, 0 0 0 15px #A52A2A11;
+}
+
+#uranus {
+    width: 25px;
+    height: 25px;
+    background-color: #ADD8E6; /* LightBlue */
+    top: 80%;
+    left: 40%;
+}
+
+#neptune {
+    width: 22px;
+    height: 22px;
+    background-color: #0000CD; /* MediumBlue */
+    top: 10%;
+    left: 75%;
+}

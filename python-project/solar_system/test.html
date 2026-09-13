@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Tests</title>
+    <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.20.0.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- QUnit specific elements -->
+    <div id="qunit"></div>
+    <div id="qunit-fixture">
+        <!-- Replicate HTML structure from index.html for script.js to work on -->
+        <div id="solar-system-container">
+            <div id="sun" style="width: 100px; height: 100px; position: absolute; top: 350px; left: 350px;"></div> <!-- Initial fixed position for sun during tests -->
+            <div id="mercury"></div>
+            <div id="venus"></div>
+            <div id="earth"></div>
+            <div id="mars"></div>
+            <div id="jupiter"></div>
+            <div id="saturn"></div>
+            <div id="uranus"></div>
+            <div id="neptune"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/qunit/qunit-2.20.0.js"></script>
+    <!-- Load the script to be tested -->
+    <script src="script.js"></script>
+
+    <script>
+        QUnit.module('Solar System Tests', function(hooks) {
+            hooks.beforeEach(function() {
+                // It's good practice to reset or re-initialize state before each test if needed
+                // For now, script.js initializes itself on DOMContentLoaded.
+                // We might need to manually call init functions if script.js is refactored.
+                // Also, ensure sun's position is fixed for predictable centerX, centerY
+                const sunElement = document.getElementById('sun');
+                sunElement.style.left = '350px'; 
+                sunElement.style.top = '350px';
+            });
+
+            QUnit.test('DOM Element Existence', function(assert) {
+                assert.ok(document.getElementById('solar-system-container'), 'Solar system container exists');
+                assert.ok(document.getElementById('sun'), 'Sun element exists');
+                const planets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'];
+                planets.forEach(planetId => {
+                    assert.ok(document.getElementById(planetId), `${planetId} element exists`);
+                });
+            });
+
+            QUnit.test('Initial Planet Positions', function(assert) {
+                const sunElement = document.getElementById('sun');
+                const centerX = sunElement.offsetLeft + sunElement.offsetWidth / 2;
+                const centerY = sunElement.offsetTop + sunElement.offsetHeight / 2;
+
+                // planetsData is defined in script.js. We access it here for testing.
+                // This assumes planetsData is globally accessible or can be exposed for testing.
+                // If not, this test needs to be adapted. For now, we assume it's available.
+                // Note: Accessing internal variables like this is not ideal for black-box testing.
+                // A better approach would be to have functions in script.js that return these values.
+                
+                // Wait for script.js to initialize positions
+                const done = assert.async();
+                setTimeout(() => {
+                    planetsData.forEach(planet => {
+                        const planetElement = planet.element;
+                        const expectedX = centerX + planet.radius * Math.cos(planet.angle) - planetElement.offsetWidth / 2;
+                        const expectedY = centerY + planet.radius * Math.sin(planet.angle) - planetElement.offsetHeight / 2;
+                        
+                        // Allow for minor floating point discrepancies
+                        assert.close(parseFloat(planetElement.style.left), expectedX, 1.5, 
+                            `${planet.id} initial X position is correct (Expected: ${expectedX.toFixed(2)}, Actual: ${planetElement.style.left})`);
+                        assert.close(parseFloat(planetElement.style.top), expectedY, 1.5,
+                            `${planet.id} initial Y position is correct (Expected: ${expectedY.toFixed(2)}, Actual: ${planetElement.style.top})`);
+                    });
+                    done();
+                }, 500); // Wait for initial positioning and first animation frame
+            });
+
+            QUnit.test('Planet Movement', function(assert) {
+                const done = assert.async();
+                const earthElement = document.getElementById('earth');
+                if (!earthElement) {
+                    assert.ok(false, "Earth element not found for movement test.");
+                    done();
+                    return;
+                }
+
+                const initialLeft = earthElement.style.left;
+                const initialTop = earthElement.style.top;
+
+                setTimeout(function() {
+                    const newLeft = earthElement.style.left;
+                    const newTop = earthElement.style.top;
+                    assert.notEqual(newLeft, initialLeft, 'Earth X position changed after delay.');
+                    assert.notEqual(newTop, initialTop, 'Earth Y position changed after delay.');
+                    done();
+                }, 1000); // Wait for animation to proceed
+            });
+            
+            QUnit.test('Relative Speeds (Conceptual - Mercury vs Neptune)', function(assert) {
+                const done = assert.async();
+                // This test checks if Mercury (shorter period) completes more of its orbit
+                // than Neptune (longer period) in the same amount of time.
+                // We'll check their angles.
+                // This requires planetsData to be accessible.
+                
+                const mercury = planetsData.find(p => p.id === 'mercury');
+                const neptune = planetsData.find(p => p.id === 'neptune');
+
+                if (!mercury || !neptune) {
+                    assert.ok(false, "Mercury or Neptune data not found for speed test.");
+                    done();
+                    return;
+                }
+
+                const initialMercuryAngle = mercury.angle;
+                const initialNeptuneAngle = neptune.angle;
+
+                setTimeout(function() {
+                    const currentMercuryAngle = mercury.angle;
+                    const currentNeptuneAngle = neptune.angle;
+
+                    // Calculate change in angle, accounting for wrapping around 2*PI
+                    let mercuryAngleChange = currentMercuryAngle - initialMercuryAngle;
+                    if (mercuryAngleChange < 0) mercuryAngleChange += 2 * Math.PI; 
+                    
+                    let neptuneAngleChange = currentNeptuneAngle - initialNeptuneAngle;
+                    if (neptuneAngleChange < 0) neptuneAngleChange += 2 * Math.PI;
+
+                    assert.ok(mercuryAngleChange > neptuneAngleChange, 
+                        `Mercury's angle changed more than Neptune's (${mercuryAngleChange.toFixed(2)} > ${neptuneAngleChange.toFixed(2)}) indicating faster relative speed.`);
+                    done();
+                }, 1500); // Let animation run for a bit
+            });
+        });
+    </script>
+</body>
+</html>

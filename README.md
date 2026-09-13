@@ -241,3 +241,10 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 ---
 
 *This repository represents a diverse collection of Python projects developed with LLM assistance, showcasing various programming concepts, AI integrations, and practical utilities. Each project is designed as a standalone utility while contributing to the overall learning and development ecosystem.*
+## Consolidation (2026-09-13)
+
+`python-project/` was merged in from the standalone repository
+`CrazyDubya/pythonProject` (a Python parser project with OpenAI/Azure OpenAI
+integration and agent functionality), which was then archived. See
+`docs/PROVENANCE.md`. Nothing was deleted; the source's full history remains in
+the archived repository.
