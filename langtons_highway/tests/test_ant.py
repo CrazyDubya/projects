@@ -85,3 +85,28 @@ def test_c_core_agrees_with_python_reference():
         assert row[1] == "HIGHWAY"
         assert (int(row[2]), int(row[3]), int(row[4]), int(row[5]), int(row[6])) == (
             r["onset"], r["cert_step"], r["period"], r["dx"], r["dy"])
+
+
+def test_catalogue_verifier_accepts_classic_and_rejects_corruption():
+    from highway_catalogue import verify, canonical
+
+    ant = Ant()
+    r = ant.find_highway(200_000)
+    s, P = r["cert_step"], 104
+    reads = [ant.history[s - P + i][2] for i in range(P)]
+    h0 = ant.history[s - P][3]
+    sol = {"P": P, "d": [r["dx"], r["dy"]], "h0": h0, "reads": reads}
+    # the SAT catalogue normalises drift to the quadrant dx>=1, dy>=0 by
+    # rotation; the verifier itself works for any drift
+    assert verify(sol)
+    bad = dict(sol, reads=reads[:10] + [1 - reads[10]] + reads[11:])
+    assert not verify(bad)
+    assert len(canonical(reads)) == P
+
+
+def test_catalogue_small_period_has_no_highway():
+    pytest.importorskip("pysat")
+    from highway_catalogue import solve_instance
+
+    res = solve_instance(12, (2, 0))
+    assert res["solutions"] == []

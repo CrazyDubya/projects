@@ -117,6 +117,52 @@ implement exactly this check and agree on every pattern in
 position sequence is `P`-periodic with drift `d`, found by walking backwards
 from the certified period.  For the empty grid that is step 9,977.
 
+## The catalogue: is the 104-highway the *only* highway?
+
+The brute-force survey above can only ever say "every seed we tried ended
+on the classic highway".  A stronger question is whether any *other*
+highway shape exists at all: a periodic-with-drift orbit of the ant on a
+white background, of any period, that is not the classic one.  Such an
+orbit would be reachable from a finite starting pattern (its own
+truncated trail), so finding one would refute the strong form of the
+conjecture ("the 104-highway is the unique attractor"), and proving none
+exists below some size narrows what a counterexample can look like.
+
+`highway_catalogue.py` turns "period-P orbit with drift d" into SAT: one-hot
+ant position and heading per step, per-cell colour epochs, the read / flip /
+move rules, and the periodicity constraint *colour of q+d after the period
+= colour of q before it, white beyond the window*.  CaDiCaL enumerates every
+solution (blocking all cyclic shifts of each), and every solution is
+re-verified with nothing but its read sequence: the walk determines the only
+consistent starting configuration (parity of visits along the forward ray
+q+d, q+2d, ...), and the plain ant from `ant.py` must replay the reads from
+it.  Convexity of the window then makes the cycle repeat forever.
+
+**Result.**  Within the searched scope there is exactly one highway, and it
+is the classic one (period 104, drift (2,2) up to rotation, 41 cells per
+period, 46 black reads).
+
+| scope | instances | solve time | highways found |
+|-------|-----------|------------|----------------|
+| every even P <= 50, every drift with \|d\|_1 <= 6, **unrestricted** window (any walk that returns to d) | 284 | 35 min | 0 |
+| every even P <= 104, **every** drift, one-period footprint fitting a **9 x 9** box | 1,754 | 2.4 h | **1: the classic highway** |
+
+The (P, d) grid is complete for both scopes (`catalogue_summary.py` checks
+it), no solution failed verification, and the box-window run reproduces the
+classic highway exactly where it must (P = 104, d = (2, 2)), which is the
+encoding's end-to-end check.
+
+What this does and does not say: any highway with period at most 104 whose
+one-period footprint fits in a 9 x 9 box *is* the classic highway.  A
+counterexample to the strong conjecture must therefore have a longer period,
+or a footprint wider than 9 cells, or both.  The unrestricted window was only
+affordable to period 50; the exponential cost of the full window (about x1.2
+per unit of period) is what forces the box.  Raising the box to 11 x 11 or
+the period past 104 is a matter of machine time, not new ideas.
+
+Data: `data/catalogue/instances_*.jsonl` (one line per (P, d) instance with
+timing and any solutions) and `data/catalogue/summary.json`.
+
 ## Honest limitations
 
 * Only patterns inside a centred *n*×*n* box with the ant at the box
@@ -139,11 +185,13 @@ python survey.py --n 4 --full          # 2 s
 python survey.py --n 5                 # ~6 min on 4 cores
 python survey.py --n 8 --random 100000 # random sample of a bigger box
 python make_movie.py                   # renders output/langtons_highway.mp4
+python highway_catalogue.py --pmax 104 --radius 8   # the catalogue sweep (~2.4 h on 4 cores)
+python catalogue_summary.py            # -> data/catalogue/summary.json
 pytest tests                           # from the repo root: pytest langtons_highway/tests
 ```
 
 Dependencies: a C compiler for the survey; `numpy`, `pillow` and
-`imageio-ffmpeg` (bundles ffmpeg) for the video.
+`imageio-ffmpeg` (bundles ffmpeg) for the video; `python-sat` for the catalogue.
 
 ## Files
 
@@ -153,6 +201,8 @@ Dependencies: a C compiler for the survey; `numpy`, `pillow` and
 | `ant_core.c` | fast C ant + certificate, one CSV line per pattern |
 | `survey.py` | compiles the core, sweeps a pattern space over all cores, writes `data/` |
 | `make_movie.py` | renders the vertical video and `output/poster.png` from the simulator and `data/` |
+| `highway_catalogue.py` | SAT enumeration of every highway (periodic drifting orbit) up to a period, with independent verification |
+| `catalogue_summary.py` | aggregates catalogue runs, checks grid completeness, groups highways |
 | `tests/test_ant.py` | rule sanity, empty-grid onset 9,977, certificate rejects chaos, C vs Python |
 | `data/` | survey results (see above) |
 | `output/` | the video and its poster frame |

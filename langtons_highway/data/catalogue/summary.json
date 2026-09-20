@@ -1,0 +1,123 @@
+{
+  "runs": {
+    "r8": {
+      "instances": 1754,
+      "periods": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40,
+        42,
+        44,
+        46,
+        48,
+        50,
+        52,
+        54,
+        56,
+        58,
+        60,
+        62,
+        64,
+        66,
+        68,
+        70,
+        72,
+        74,
+        76,
+        78,
+        80,
+        82,
+        84,
+        86,
+        88,
+        90,
+        92,
+        94,
+        96,
+        98,
+        100,
+        102,
+        104
+      ],
+      "drift_l1_max": 16,
+      "radius": 8,
+      "solve_seconds": 8610,
+      "slowest_instance_seconds": 379.4,
+      "solutions": 1,
+      "unverified_solutions": 0,
+      "missing_instances": []
+    },
+    "unrestricted": {
+      "instances": 284,
+      "periods": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40,
+        42,
+        44,
+        46,
+        48,
+        50
+      ],
+      "drift_l1_max": 6,
+      "radius": 0,
+      "solve_seconds": 2118,
+      "slowest_instance_seconds": 191.6,
+      "solutions": 0,
+      "unverified_solutions": 0,
+      "missing_instances": []
+    }
+  },
+  "highways": {
+    "00001000011110100001011001111001100001100101101101011000011011000011000011010000101111000010010000111101": {
+      "period": 104,
+      "cells_per_period": 41,
+      "black_reads": 46,
+      "found_in": [
+        {
+          "run": "r8",
+          "d": [
+            2,
+            2
+          ],
+          "h0": 0
+        }
+      ],
+      "verified": true
+    }
+  }
+}
