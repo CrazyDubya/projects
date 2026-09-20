@@ -1749,3 +1749,5 @@
 {"P": 104, "d": [8, 4], "radius": 8, "vars": 13550, "clauses": 98179, "lens_cells": 153, "build_s": 0.0, "total_s": 0.1, "solutions": []}
 {"P": 104, "d": [8, 6], "radius": 8, "vars": 13386, "clauses": 96947, "lens_cells": 153, "build_s": 0.0, "total_s": 0.1, "solutions": []}
 {"P": 104, "d": [8, 8], "radius": 8, "vars": 13150, "clauses": 95175, "lens_cells": 153, "build_s": 0.0, "total_s": 0.1, "solutions": []}
+{"P": 104, "d": [6, 4], "radius": 8, "vars": 13738, "clauses": 99615, "lens_cells": 153, "build_s": 0.0, "total_s": 25.6, "solutions": []}
+{"P": 104, "d": [4, 0], "radius": 8, "vars": 13902, "clauses": 100891, "lens_cells": 153, "build_s": 0.0, "total_s": 174.6, "solutions": []}
