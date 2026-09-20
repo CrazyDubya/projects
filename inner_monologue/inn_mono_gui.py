@@ -1,3 +1,4 @@
+import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QTextEdit, QSpinBox, QDoubleSpinBox, QDialog
 from inner_monologue import InnerMonologue
 
@@ -95,7 +96,7 @@ class InnerMonologueGUI(QWidget):
             return self.text_edit.toPlainText()
 
     def ask_user_question(self, question):
-        dialog = QuestionDialog(question)
+        dialog = self.QuestionDialog(question)
         if dialog.exec_() == QDialog.Accepted:
             return dialog.get_response()
         return ""

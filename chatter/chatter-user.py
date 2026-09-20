@@ -1,4 +1,5 @@
 # chatter-user.py
+import requests
 import json
 from datetime import datetime
 # Configuration for LLMs, with API key for the third model.

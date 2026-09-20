@@ -1,4 +1,5 @@
 # movelog.py
+import os
 import shutil
 
 # Set the directory where you want to search for log files

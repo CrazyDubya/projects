@@ -1,4 +1,6 @@
 # nomic.py
+import re
+import anthropic
 import time
 import json
 import random
@@ -271,7 +273,7 @@ def play_game():
             response_content = make_api_call(llm_id, game_state, history)
             history += response_content
 
-            game_state = update_game_state(game_state, response.content)  # Use the response content
+            game_state = update_game_state(game_state, response_content)  # Use the response content
 
             for player in game_state["players"]:
                 if player["points"] >= 150:

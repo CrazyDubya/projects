@@ -1,4 +1,5 @@
 # Noder.py
+import anthropic
 import xml.etree.ElementTree as ET
 from termcolor import colored
 from pyfiglet import figlet_format

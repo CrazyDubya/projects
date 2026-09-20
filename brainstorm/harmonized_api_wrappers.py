@@ -53,7 +53,7 @@ class APIWrapper:
 
     def process_monster_model(self, model_info, prompt, parameters):
         api_key = os.environ.get("MONSTER_API_KEY")
-        client_instance = MonsterAPI(api_key)
+        client_instance = client(api_key)
         response = client_instance.get_response(model=model_info["name"], data={
             "prompt": prompt,
             **parameters

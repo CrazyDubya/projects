@@ -1,4 +1,6 @@
 # hive-mind.py
+import os
+import re
 import sys
 import logging
 import xml.etree.ElementTree as ET

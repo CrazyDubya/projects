@@ -1,4 +1,5 @@
 # formatter.py
+import tkinter as tk
 from tkinter import simpledialog
 import webbrowser
 import markdown2
