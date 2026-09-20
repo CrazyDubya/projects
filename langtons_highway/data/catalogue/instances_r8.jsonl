@@ -1401,3 +1401,13 @@
 {"P": 86, "d": [2, 6], "radius": 8, "vars": 10842, "clauses": 78356, "lens_cells": 153, "build_s": 0.0, "total_s": 6.7, "solutions": []}
 {"P": 86, "d": [2, 4], "radius": 8, "vars": 11006, "clauses": 79600, "lens_cells": 153, "build_s": 0.0, "total_s": 11.7, "solutions": []}
 {"P": 86, "d": [3, 5], "radius": 8, "vars": 10992, "clauses": 79476, "lens_cells": 153, "build_s": 0.0, "total_s": 10.0, "solutions": []}
+{"P": 86, "d": [3, 7], "radius": 8, "vars": 10792, "clauses": 77964, "lens_cells": 153, "build_s": 0.0, "total_s": 4.4, "solutions": []}
+{"P": 86, "d": [3, 3], "radius": 8, "vars": 11120, "clauses": 80448, "lens_cells": 153, "build_s": 0.0, "total_s": 27.8, "solutions": []}
+{"P": 86, "d": [3, 1], "radius": 8, "vars": 11176, "clauses": 80880, "lens_cells": 153, "build_s": 0.0, "total_s": 33.7, "solutions": []}
+{"P": 86, "d": [4, 2], "radius": 8, "vars": 11182, "clauses": 80904, "lens_cells": 153, "build_s": 0.0, "total_s": 7.7, "solutions": []}
+{"P": 86, "d": [4, 0], "radius": 8, "vars": 11202, "clauses": 81064, "lens_cells": 153, "build_s": 0.0, "total_s": 17.5, "solutions": []}
+{"P": 86, "d": [4, 8], "radius": 8, "vars": 10690, "clauses": 77184, "lens_cells": 153, "build_s": 0.0, "total_s": 2.1, "solutions": []}
+{"P": 86, "d": [4, 4], "radius": 8, "vars": 11090, "clauses": 80204, "lens_cells": 153, "build_s": 0.0, "total_s": 7.0, "solutions": []}
+{"P": 86, "d": [4, 6], "radius": 8, "vars": 10926, "clauses": 78964, "lens_cells": 153, "build_s": 0.0, "total_s": 6.9, "solutions": []}
+{"P": 84, "d": [4, 0], "radius": 8, "vars": 10902, "clauses": 78861, "lens_cells": 153, "build_s": 0.0, "total_s": 124.9, "solutions": []}
+{"P": 86, "d": [5, 5], "radius": 8, "vars": 11008, "clauses": 79572, "lens_cells": 153, "build_s": 0.0, "total_s": 7.0, "solutions": []}
