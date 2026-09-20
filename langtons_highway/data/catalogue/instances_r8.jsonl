@@ -1643,3 +1643,7 @@
 {"P": 98, "d": [8, 8], "radius": 8, "vars": 12250, "clauses": 88566, "lens_cells": 153, "build_s": 0.0, "total_s": 0.1, "solutions": []}
 {"P": 98, "d": [7, 1], "radius": 8, "vars": 12872, "clauses": 93254, "lens_cells": 153, "build_s": 0.0, "total_s": 7.0, "solutions": []}
 {"P": 98, "d": [7, 5], "radius": 8, "vars": 12688, "clauses": 91866, "lens_cells": 153, "build_s": 0.0, "total_s": 2.2, "solutions": []}
+{"P": 100, "d": [1, 1], "radius": 8, "vars": 13124, "clauses": 95193, "lens_cells": 153, "build_s": 0.0, "total_s": 7.3, "solutions": []}
+{"P": 100, "d": [1, 3], "radius": 8, "vars": 13068, "clauses": 94757, "lens_cells": 153, "build_s": 0.0, "total_s": 8.8, "solutions": []}
+{"P": 100, "d": [1, 7], "radius": 8, "vars": 12740, "clauses": 92265, "lens_cells": 153, "build_s": 0.1, "total_s": 2.2, "solutions": []}
+{"P": 100, "d": [1, 5], "radius": 8, "vars": 12940, "clauses": 93781, "lens_cells": 153, "build_s": 0.0, "total_s": 20.7, "solutions": []}
