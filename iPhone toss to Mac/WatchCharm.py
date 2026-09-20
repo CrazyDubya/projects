@@ -1,4 +1,5 @@
 # WatchCharm.py
+import os
 import shutil
 
 from watchdog.events import FileSystemEventHandler

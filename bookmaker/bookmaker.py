@@ -1,4 +1,5 @@
 # bookmaker.py
+import os
 import time
 from harmonized_api_wrappers import APIWrapper
 

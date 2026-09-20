@@ -126,6 +126,7 @@ resources = 300
 allocated_resources = optimize_research(tech_tree, resources, strategic_goals)
 
 # Apply technology effects
+game_state = {}
 for tech_id, cost in allocated_resources.items():
     tech_tree.unlock_technology(tech_id)
     apply_technology_effects(tech_id, game_state)

@@ -1,6 +1,35 @@
 import random
 import heapq
 
+
+class Infrastructure:
+    """Base class for colony buildings."""
+
+    def __init__(self):
+        self.cost = {}
+        self.maintenance = 0
+
+
+class Colonist:
+    """Base class for colonist specialisations."""
+
+    def __init__(self):
+        self.skills = {}
+
+
+class EnvironmentalHazard:
+    """Base class for environmental hazards a colony can suffer."""
+
+    def __init__(self):
+        self.severity = 0
+
+
+class DefensePlatform:
+    """A defensive installation."""
+
+    def __init__(self):
+        self.strength = 1
+
 # Colony management
 class Colony:
     def __init__(self, name, location, resources, population=100, infrastructure=0):
@@ -54,7 +83,7 @@ class DefenseSystem:
         self.defense_platforms = []
         self.shields = 0
 
-    def update(self, time_step):
+    def update(self, time_step, threats=()):
         # Defend against threats
         for threat in threats:
             if self.engage(threat):

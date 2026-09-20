@@ -1,4 +1,5 @@
 # autopy.py
+import os
 import subprocess
 import time
 
@@ -41,7 +42,7 @@ class NewFileHandler(FileSystemEventHandler):
 
 
 if __name__ == "__main__":
-    path = '/PATH/charm
+    path = '/PATH/charm'
     event_handler = NewFileHandler()
     observer = Observer()
     observer.schedule(event_handler, path, recursive=False)

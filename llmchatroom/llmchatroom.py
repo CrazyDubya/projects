@@ -1,4 +1,5 @@
 # llmchatroom.py
+import requests
 import json
 from datetime import datetime
 from queue import Queue

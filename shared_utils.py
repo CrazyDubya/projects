@@ -89,6 +89,7 @@ def setup_logging(
     )
     
     logger = logging.getLogger(__name__.split('.')[0])
+    logger.setLevel(getattr(logging, level.upper()))
     
     # Console handler
     console_handler = logging.StreamHandler()
