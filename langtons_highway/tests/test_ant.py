@@ -171,3 +171,34 @@ def test_turmite_core_reproduces_langtons_ant():
     row = subprocess.run([str(exe), "RR", "200000"], capture_output=True, text=True,
                          check=True).stdout.strip().split(",")
     assert row[1] == "CYCLE"
+
+
+def test_backward_onset_matches_the_forward_onset():
+    """Time reversal is a rotation, so the two onsets must agree."""
+    from backward import backward_onset, drift_period, run_backward
+
+    states, _ = run_backward(20000)
+    d = drift_period(states)
+    assert d == {"period": 104, "drift": (2, 2)}
+    assert backward_onset(states, d) == 9977      # same as the forward run
+
+
+def test_turmite_summary_keeps_onset_exactness_and_names_its_fields():
+    """A truncated onset is a bound; it must never be served as a measurement."""
+    from turmite_survey import summarize
+
+    rows = [
+        # rule status onset cert period dx dy visited bw bh onset_exact
+        ["RL", "HIGHWAY", "9977", "10206", "104", "-2", "-2", "1648", "73", "45", "1"],
+        ["RRLX", "HIGHWAY", "500", "8691", "490", "1", "-1", "99", "20", "20", "0"],
+        ["RR", "CYCLE", "-1", "15", "8", "0", "0", "4", "2", "2", "0"],
+    ]
+    s = summarize(rows, 4, 20_000_000)
+    assert s["onset_inexact_rules"] == ["RRLX"]
+    assert s["largest_exact_onset"] == 9977        # the bounded row is excluded
+    entries = {h["rule"]: h for h in s["highways"]}
+    assert entries["RL"]["onset_exact"] is True
+    assert entries["RRLX"]["onset_exact"] is False
+    # column 7 is a cumulative count, so it must not claim to be per-period
+    assert entries["RL"]["visited_at_certification"] == 1648
+    assert "cells_per_period" not in entries["RL"]

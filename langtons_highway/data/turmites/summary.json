@@ -256,6 +256,15 @@
       "OOB": 121
     }
   },
+  "onset_inexact_rules": [
+    "RLRLRLLLRRL",
+    "RLRLRLRRLRLR",
+    "RRLLLRLLRLR",
+    "RRLLRLRRRRLL",
+    "RRRRLLLRLLRL",
+    "RRRRLRLLRRRR"
+  ],
+  "largest_exact_onset": 18962907,
   "highways": [
     {
       "rule": "RRL",
@@ -265,7 +274,8 @@
         -1
       ],
       "onset": 39,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRL",
@@ -275,7 +285,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLL",
@@ -285,7 +296,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLL",
@@ -295,7 +307,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLL",
@@ -305,7 +318,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLL",
@@ -315,7 +329,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLL",
@@ -325,7 +340,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLLL",
@@ -335,7 +351,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLLR",
@@ -345,7 +362,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLR",
@@ -355,7 +373,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLRL",
@@ -365,7 +384,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLLRR",
@@ -375,7 +395,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLR",
@@ -385,7 +406,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRL",
@@ -395,7 +417,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRLL",
@@ -405,7 +428,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRLR",
@@ -415,7 +439,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRR",
@@ -425,7 +450,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRRL",
@@ -435,7 +461,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLLRRR",
@@ -445,7 +472,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLR",
@@ -455,7 +483,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRL",
@@ -465,7 +494,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLL",
@@ -475,7 +505,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLLL",
@@ -485,7 +516,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLLR",
@@ -495,7 +527,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLR",
@@ -505,7 +538,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLRL",
@@ -515,7 +549,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRLRR",
@@ -525,7 +560,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRR",
@@ -535,7 +571,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRL",
@@ -545,7 +582,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRLL",
@@ -555,7 +593,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRLR",
@@ -565,7 +604,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRR",
@@ -575,7 +615,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRRL",
@@ -585,7 +626,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLLRRRR",
@@ -595,7 +637,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLR",
@@ -605,7 +648,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRL",
@@ -615,7 +659,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLL",
@@ -625,7 +670,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLL",
@@ -635,7 +681,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLLL",
@@ -645,7 +692,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLLR",
@@ -655,7 +703,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLR",
@@ -665,7 +714,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLRL",
@@ -675,7 +725,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLLRR",
@@ -685,7 +736,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLR",
@@ -695,7 +747,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRL",
@@ -705,7 +758,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRLL",
@@ -715,7 +769,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRLR",
@@ -725,7 +780,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRR",
@@ -735,7 +791,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRRL",
@@ -745,7 +802,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRLRRR",
@@ -755,7 +813,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRR",
@@ -765,7 +824,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRL",
@@ -775,7 +835,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLL",
@@ -785,7 +846,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLLL",
@@ -795,7 +857,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLLR",
@@ -805,7 +868,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLR",
@@ -815,7 +879,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLRL",
@@ -825,7 +890,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRLRR",
@@ -835,7 +901,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRR",
@@ -845,7 +912,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRL",
@@ -855,7 +923,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRLL",
@@ -865,7 +934,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRLR",
@@ -875,7 +945,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRR",
@@ -885,7 +956,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRRL",
@@ -895,7 +967,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLLRRRRR",
@@ -905,7 +978,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLR",
@@ -915,7 +989,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRL",
@@ -925,7 +1000,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLL",
@@ -935,7 +1011,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLL",
@@ -945,7 +1022,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLL",
@@ -955,7 +1033,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLLL",
@@ -965,7 +1044,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLLR",
@@ -975,7 +1055,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLR",
@@ -985,7 +1066,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLRL",
@@ -995,7 +1077,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLLRR",
@@ -1005,7 +1088,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLR",
@@ -1015,7 +1099,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRL",
@@ -1025,7 +1110,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRLL",
@@ -1035,7 +1121,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRLR",
@@ -1045,7 +1132,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRR",
@@ -1055,7 +1143,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRRL",
@@ -1065,7 +1154,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLLRRR",
@@ -1075,7 +1165,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLR",
@@ -1085,7 +1176,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRL",
@@ -1095,7 +1187,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLL",
@@ -1105,7 +1198,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLLL",
@@ -1115,7 +1209,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLLR",
@@ -1125,7 +1220,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLR",
@@ -1135,7 +1231,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLRL",
@@ -1145,7 +1242,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRLRR",
@@ -1155,7 +1253,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRR",
@@ -1165,7 +1264,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRL",
@@ -1175,7 +1275,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRLL",
@@ -1185,7 +1286,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRLR",
@@ -1195,7 +1297,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRR",
@@ -1205,7 +1308,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRRL",
@@ -1215,7 +1319,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRLRRRR",
@@ -1225,7 +1330,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRR",
@@ -1235,7 +1341,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRL",
@@ -1245,7 +1352,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLL",
@@ -1255,7 +1363,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLL",
@@ -1265,7 +1374,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLLL",
@@ -1275,7 +1385,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLLR",
@@ -1285,7 +1396,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLR",
@@ -1295,7 +1407,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLRL",
@@ -1305,7 +1418,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLLRR",
@@ -1315,7 +1429,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLR",
@@ -1325,7 +1440,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRL",
@@ -1335,7 +1451,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRLL",
@@ -1345,7 +1462,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRLR",
@@ -1355,7 +1473,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRR",
@@ -1365,7 +1484,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRRL",
@@ -1375,7 +1495,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRLRRR",
@@ -1385,7 +1506,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRR",
@@ -1395,7 +1517,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRL",
@@ -1405,7 +1528,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLL",
@@ -1415,7 +1539,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLLL",
@@ -1425,7 +1550,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLLR",
@@ -1435,7 +1561,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLR",
@@ -1445,7 +1572,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLRL",
@@ -1455,7 +1583,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRLRR",
@@ -1465,7 +1594,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRR",
@@ -1475,7 +1605,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRL",
@@ -1485,7 +1616,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRLL",
@@ -1495,7 +1627,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRLR",
@@ -1505,7 +1638,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRR",
@@ -1515,7 +1649,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRRL",
@@ -1525,7 +1660,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLRRLRRRRRR",
@@ -1535,7 +1671,8 @@
         -1
       ],
       "onset": 55,
-      "cells_per_period": 286
+      "onset_exact": true,
+      "visited_at_certification": 286
     },
     {
       "rule": "RRLLLRLRLLL",
@@ -1545,7 +1682,8 @@
         -1
       ],
       "onset": 1368,
-      "cells_per_period": 310
+      "onset_exact": true,
+      "visited_at_certification": 310
     },
     {
       "rule": "RRLLLRLRLLLL",
@@ -1555,7 +1693,8 @@
         -1
       ],
       "onset": 118,
-      "cells_per_period": 205
+      "onset_exact": true,
+      "visited_at_certification": 205
     },
     {
       "rule": "RRRLLL",
@@ -1565,7 +1704,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRL",
@@ -1575,7 +1715,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLL",
@@ -1585,7 +1726,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLLL",
@@ -1595,7 +1737,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLLR",
@@ -1605,7 +1748,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLR",
@@ -1615,7 +1759,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLRL",
@@ -1625,7 +1770,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRRLLLRRRLRR",
@@ -1635,7 +1781,8 @@
         1
       ],
       "onset": 99,
-      "cells_per_period": 198
+      "onset_exact": true,
+      "visited_at_certification": 198
     },
     {
       "rule": "RRLLLRL",
@@ -1645,7 +1792,8 @@
         1
       ],
       "onset": 118,
-      "cells_per_period": 359
+      "onset_exact": true,
+      "visited_at_certification": 359
     },
     {
       "rule": "RRLLLRLRRLLL",
@@ -1655,7 +1803,8 @@
         1
       ],
       "onset": 118,
-      "cells_per_period": 359
+      "onset_exact": true,
+      "visited_at_certification": 359
     },
     {
       "rule": "RRLLRLR",
@@ -1665,7 +1814,8 @@
         -1
       ],
       "onset": 301,
-      "cells_per_period": 221
+      "onset_exact": true,
+      "visited_at_certification": 221
     },
     {
       "rule": "RRLLRLRRRL",
@@ -1675,7 +1825,8 @@
         1
       ],
       "onset": 982,
-      "cells_per_period": 582
+      "onset_exact": true,
+      "visited_at_certification": 582
     },
     {
       "rule": "RRLLRLRRRLL",
@@ -1685,7 +1836,8 @@
         -1
       ],
       "onset": 337,
-      "cells_per_period": 214
+      "onset_exact": true,
+      "visited_at_certification": 214
     },
     {
       "rule": "RRLLRLRRRLLL",
@@ -1695,7 +1847,8 @@
         1
       ],
       "onset": 7448,
-      "cells_per_period": 696
+      "onset_exact": true,
+      "visited_at_certification": 696
     },
     {
       "rule": "RRLLRLRRRLLR",
@@ -1705,7 +1858,8 @@
         -1
       ],
       "onset": 297,
-      "cells_per_period": 221
+      "onset_exact": true,
+      "visited_at_certification": 221
     },
     {
       "rule": "RRLLRLRRRLR",
@@ -1715,7 +1869,8 @@
         -1
       ],
       "onset": 4702,
-      "cells_per_period": 438
+      "onset_exact": true,
+      "visited_at_certification": 438
     },
     {
       "rule": "RRLLRLRRRLRL",
@@ -1725,7 +1880,8 @@
         1
       ],
       "onset": 2504,
-      "cells_per_period": 376
+      "onset_exact": true,
+      "visited_at_certification": 376
     },
     {
       "rule": "RRLLRLRRRLRR",
@@ -1735,7 +1891,8 @@
         1
       ],
       "onset": 511,
-      "cells_per_period": 188
+      "onset_exact": true,
+      "visited_at_certification": 188
     },
     {
       "rule": "RRLLRLRLL",
@@ -1745,7 +1902,8 @@
         1
       ],
       "onset": 10833,
-      "cells_per_period": 706
+      "onset_exact": true,
+      "visited_at_certification": 706
     },
     {
       "rule": "RRLLRLRLLR",
@@ -1755,7 +1913,8 @@
         -1
       ],
       "onset": 24620,
-      "cells_per_period": 1310
+      "onset_exact": true,
+      "visited_at_certification": 1310
     },
     {
       "rule": "RRLLRLRLLRR",
@@ -1765,7 +1924,8 @@
         1
       ],
       "onset": 12247,
-      "cells_per_period": 1002
+      "onset_exact": true,
+      "visited_at_certification": 1002
     },
     {
       "rule": "RRLLRLRLLRRL",
@@ -1775,7 +1935,8 @@
         -1
       ],
       "onset": 54889,
-      "cells_per_period": 2375
+      "onset_exact": true,
+      "visited_at_certification": 2375
     },
     {
       "rule": "RRLLRLRLLRRR",
@@ -1785,7 +1946,8 @@
         1
       ],
       "onset": 122448,
-      "cells_per_period": 3455
+      "onset_exact": true,
+      "visited_at_certification": 3455
     },
     {
       "rule": "RRLLRRLRRRL",
@@ -1795,7 +1957,8 @@
         -1
       ],
       "onset": 912,
-      "cells_per_period": 353
+      "onset_exact": true,
+      "visited_at_certification": 353
     },
     {
       "rule": "RRLLRRLRRRLR",
@@ -1805,7 +1968,8 @@
         1
       ],
       "onset": 1929,
-      "cells_per_period": 223
+      "onset_exact": true,
+      "visited_at_certification": 223
     },
     {
       "rule": "RRRLRLLRLLRL",
@@ -1815,7 +1979,8 @@
         1
       ],
       "onset": 34464,
-      "cells_per_period": 2200
+      "onset_exact": true,
+      "visited_at_certification": 2200
     },
     {
       "rule": "RRRL",
@@ -1825,7 +1990,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRL",
@@ -1835,7 +2001,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLL",
@@ -1845,7 +2012,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLL",
@@ -1855,7 +2023,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLL",
@@ -1865,7 +2034,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLLL",
@@ -1875,7 +2045,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLLR",
@@ -1885,7 +2056,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLR",
@@ -1895,7 +2067,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLRL",
@@ -1905,7 +2078,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLLRR",
@@ -1915,7 +2089,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLR",
@@ -1925,7 +2100,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRL",
@@ -1935,7 +2111,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRLL",
@@ -1945,7 +2122,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRLR",
@@ -1955,7 +2133,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRR",
@@ -1965,7 +2144,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRRL",
@@ -1975,7 +2155,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLLRRR",
@@ -1985,7 +2166,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLR",
@@ -1995,7 +2177,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRL",
@@ -2005,7 +2188,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLL",
@@ -2015,7 +2199,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLLL",
@@ -2025,7 +2210,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLLR",
@@ -2035,7 +2221,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLR",
@@ -2045,7 +2232,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLRL",
@@ -2055,7 +2243,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRLRR",
@@ -2065,7 +2254,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRR",
@@ -2075,7 +2265,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRL",
@@ -2085,7 +2276,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRLL",
@@ -2095,7 +2287,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRLR",
@@ -2105,7 +2298,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRR",
@@ -2115,7 +2309,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRRL",
@@ -2125,7 +2320,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRRLRRRLRRRR",
@@ -2135,7 +2331,8 @@
         -2
       ],
       "onset": 79,
-      "cells_per_period": 987
+      "onset_exact": true,
+      "visited_at_certification": 987
     },
     {
       "rule": "RRLLRLRRRRRL",
@@ -2145,7 +2342,8 @@
         1
       ],
       "onset": 13544973,
-      "cells_per_period": 74865
+      "onset_exact": true,
+      "visited_at_certification": 74865
     },
     {
       "rule": "RRLLRLRLLRLR",
@@ -2155,7 +2353,8 @@
         -1
       ],
       "onset": 18273,
-      "cells_per_period": 1137
+      "onset_exact": true,
+      "visited_at_certification": 1137
     },
     {
       "rule": "RRRLLRRLRR",
@@ -2165,7 +2364,8 @@
         -1
       ],
       "onset": 454,
-      "cells_per_period": 155
+      "onset_exact": true,
+      "visited_at_certification": 155
     },
     {
       "rule": "RRRLRLLRLLR",
@@ -2175,7 +2375,8 @@
         -1
       ],
       "onset": 16908,
-      "cells_per_period": 1945
+      "onset_exact": true,
+      "visited_at_certification": 1945
     },
     {
       "rule": "RRRRLLRLR",
@@ -2185,7 +2386,8 @@
         1
       ],
       "onset": 145,
-      "cells_per_period": 328
+      "onset_exact": true,
+      "visited_at_certification": 328
     },
     {
       "rule": "RRLLRRRLRLL",
@@ -2195,7 +2397,8 @@
         1
       ],
       "onset": 547533,
-      "cells_per_period": 8508
+      "onset_exact": true,
+      "visited_at_certification": 8508
     },
     {
       "rule": "RRRRLLLLL",
@@ -2205,7 +2408,8 @@
         1
       ],
       "onset": 522,
-      "cells_per_period": 137
+      "onset_exact": true,
+      "visited_at_certification": 137
     },
     {
       "rule": "RRRRLRLRL",
@@ -2215,7 +2419,8 @@
         -1
       ],
       "onset": 2639,
-      "cells_per_period": 244
+      "onset_exact": true,
+      "visited_at_certification": 244
     },
     {
       "rule": "RRRRLRLRLRRL",
@@ -2225,7 +2430,8 @@
         1
       ],
       "onset": 69892,
-      "cells_per_period": 2094
+      "onset_exact": true,
+      "visited_at_certification": 2094
     },
     {
       "rule": "RRRRL",
@@ -2235,7 +2441,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRL",
@@ -2245,7 +2452,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLL",
@@ -2255,7 +2463,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLLL",
@@ -2265,7 +2474,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLLR",
@@ -2275,7 +2485,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLR",
@@ -2285,7 +2496,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLRL",
@@ -2295,7 +2507,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRLRRRRLRR",
@@ -2305,7 +2518,8 @@
         -2
       ],
       "onset": 103,
-      "cells_per_period": 606
+      "onset_exact": true,
+      "visited_at_certification": 606
     },
     {
       "rule": "RRRRRLLRRLRR",
@@ -2315,7 +2529,8 @@
         1
       ],
       "onset": 187,
-      "cells_per_period": 132
+      "onset_exact": true,
+      "visited_at_certification": 132
     },
     {
       "rule": "RRLLRLRLRLRL",
@@ -2325,7 +2540,8 @@
         1
       ],
       "onset": 1840506,
-      "cells_per_period": 20875
+      "onset_exact": true,
+      "visited_at_certification": 20875
     },
     {
       "rule": "RRRRRRLLLLL",
@@ -2335,7 +2551,8 @@
         1
       ],
       "onset": 205,
-      "cells_per_period": 130
+      "onset_exact": true,
+      "visited_at_certification": 130
     },
     {
       "rule": "RRRRRRLRLRL",
@@ -2345,7 +2562,8 @@
         1
       ],
       "onset": 209,
-      "cells_per_period": 121
+      "onset_exact": true,
+      "visited_at_certification": 121
     },
     {
       "rule": "RLLLRRLRLRRR",
@@ -2355,7 +2573,8 @@
         2
       ],
       "onset": 241,
-      "cells_per_period": 322
+      "onset_exact": true,
+      "visited_at_certification": 322
     },
     {
       "rule": "RRRRRL",
@@ -2365,7 +2584,8 @@
         -2
       ],
       "onset": 127,
-      "cells_per_period": 247
+      "onset_exact": true,
+      "visited_at_certification": 247
     },
     {
       "rule": "RRRRRLRRRRRL",
@@ -2375,7 +2595,8 @@
         -2
       ],
       "onset": 127,
-      "cells_per_period": 247
+      "onset_exact": true,
+      "visited_at_certification": 247
     },
     {
       "rule": "RRRRLLRLLL",
@@ -2385,7 +2606,8 @@
         1
       ],
       "onset": 8891,
-      "cells_per_period": 434
+      "onset_exact": true,
+      "visited_at_certification": 434
     },
     {
       "rule": "RLRLRLRR",
@@ -2395,7 +2617,8 @@
         -2
       ],
       "onset": 4174,
-      "cells_per_period": 1011
+      "onset_exact": true,
+      "visited_at_certification": 1011
     },
     {
       "rule": "RLRLRLRRR",
@@ -2405,7 +2628,8 @@
         -2
       ],
       "onset": 728,
-      "cells_per_period": 232
+      "onset_exact": true,
+      "visited_at_certification": 232
     },
     {
       "rule": "RLRLRLRRRL",
@@ -2415,7 +2639,8 @@
         2
       ],
       "onset": 1766,
-      "cells_per_period": 380
+      "onset_exact": true,
+      "visited_at_certification": 380
     },
     {
       "rule": "RLRLRLRRRLL",
@@ -2425,7 +2650,8 @@
         2
       ],
       "onset": 8751,
-      "cells_per_period": 1540
+      "onset_exact": true,
+      "visited_at_certification": 1540
     },
     {
       "rule": "RLRLRLRRRLLL",
@@ -2435,7 +2661,8 @@
         -2
       ],
       "onset": 4253,
-      "cells_per_period": 738
+      "onset_exact": true,
+      "visited_at_certification": 738
     },
     {
       "rule": "RLRLRLRRRLLR",
@@ -2445,7 +2672,8 @@
         -2
       ],
       "onset": 6458,
-      "cells_per_period": 1015
+      "onset_exact": true,
+      "visited_at_certification": 1015
     },
     {
       "rule": "RLRLRLRRRLR",
@@ -2455,7 +2683,8 @@
         -2
       ],
       "onset": 4073,
-      "cells_per_period": 1095
+      "onset_exact": true,
+      "visited_at_certification": 1095
     },
     {
       "rule": "RLRLRLRRRLRL",
@@ -2465,7 +2694,8 @@
         2
       ],
       "onset": 3429,
-      "cells_per_period": 955
+      "onset_exact": true,
+      "visited_at_certification": 955
     },
     {
       "rule": "RLRLRLRRRLRR",
@@ -2475,7 +2705,8 @@
         2
       ],
       "onset": 819,
-      "cells_per_period": 468
+      "onset_exact": true,
+      "visited_at_certification": 468
     },
     {
       "rule": "RLRLRLRRRR",
@@ -2485,7 +2716,8 @@
         2
       ],
       "onset": 8585,
-      "cells_per_period": 1584
+      "onset_exact": true,
+      "visited_at_certification": 1584
     },
     {
       "rule": "RLRLRLRRRRL",
@@ -2495,7 +2727,8 @@
         2
       ],
       "onset": 3232,
-      "cells_per_period": 992
+      "onset_exact": true,
+      "visited_at_certification": 992
     },
     {
       "rule": "RLRLRLRRRRLL",
@@ -2505,7 +2738,8 @@
         2
       ],
       "onset": 763,
-      "cells_per_period": 496
+      "onset_exact": true,
+      "visited_at_certification": 496
     },
     {
       "rule": "RLRLRLRRRRLR",
@@ -2515,7 +2749,8 @@
         2
       ],
       "onset": 2872,
-      "cells_per_period": 1239
+      "onset_exact": true,
+      "visited_at_certification": 1239
     },
     {
       "rule": "RLRLRLRRRRR",
@@ -2525,7 +2760,8 @@
         2
       ],
       "onset": 2755,
-      "cells_per_period": 814
+      "onset_exact": true,
+      "visited_at_certification": 814
     },
     {
       "rule": "RLRLRLRRRRRL",
@@ -2535,7 +2771,8 @@
         2
       ],
       "onset": 4477,
-      "cells_per_period": 923
+      "onset_exact": true,
+      "visited_at_certification": 923
     },
     {
       "rule": "RLRLRLRRRRRR",
@@ -2545,7 +2782,8 @@
         2
       ],
       "onset": 3015,
-      "cells_per_period": 749
+      "onset_exact": true,
+      "visited_at_certification": 749
     },
     {
       "rule": "RRLLLRLRLL",
@@ -2555,7 +2793,8 @@
         -2
       ],
       "onset": 1051,
-      "cells_per_period": 364
+      "onset_exact": true,
+      "visited_at_certification": 364
     },
     {
       "rule": "RRLLLRLRLLLR",
@@ -2565,7 +2804,8 @@
         2
       ],
       "onset": 1736,
-      "cells_per_period": 261
+      "onset_exact": true,
+      "visited_at_certification": 261
     },
     {
       "rule": "RRRRLLL",
@@ -2575,7 +2815,8 @@
         2
       ],
       "onset": 115,
-      "cells_per_period": 1255
+      "onset_exact": true,
+      "visited_at_certification": 1255
     },
     {
       "rule": "RRRRLLLRRRRL",
@@ -2585,7 +2826,8 @@
         2
       ],
       "onset": 115,
-      "cells_per_period": 1255
+      "onset_exact": true,
+      "visited_at_certification": 1255
     },
     {
       "rule": "RRRRLLRLLRL",
@@ -2595,7 +2837,8 @@
         1
       ],
       "onset": 1189232,
-      "cells_per_period": 9985
+      "onset_exact": true,
+      "visited_at_certification": 9985
     },
     {
       "rule": "RRRRRRLLRLLL",
@@ -2605,7 +2848,8 @@
         1
       ],
       "onset": 560150,
-      "cells_per_period": 15414
+      "onset_exact": true,
+      "visited_at_certification": 15414
     },
     {
       "rule": "RLRLLRLLRR",
@@ -2615,7 +2859,8 @@
         -2
       ],
       "onset": 923,
-      "cells_per_period": 412
+      "onset_exact": true,
+      "visited_at_certification": 412
     },
     {
       "rule": "RLRLLRLLRRR",
@@ -2625,7 +2870,8 @@
         -2
       ],
       "onset": 780,
-      "cells_per_period": 223
+      "onset_exact": true,
+      "visited_at_certification": 223
     },
     {
       "rule": "RLRLLRLLRRRL",
@@ -2635,7 +2881,8 @@
         -2
       ],
       "onset": 1283,
-      "cells_per_period": 380
+      "onset_exact": true,
+      "visited_at_certification": 380
     },
     {
       "rule": "RLRLLRLLRRRR",
@@ -2645,7 +2892,8 @@
         2
       ],
       "onset": 9318,
-      "cells_per_period": 1091
+      "onset_exact": true,
+      "visited_at_certification": 1091
     },
     {
       "rule": "RRLLLRLRRLRR",
@@ -2655,7 +2903,8 @@
         -2
       ],
       "onset": 1949,
-      "cells_per_period": 437
+      "onset_exact": true,
+      "visited_at_certification": 437
     },
     {
       "rule": "RRRLLRLR",
@@ -2665,7 +2914,8 @@
         2
       ],
       "onset": 129,
-      "cells_per_period": 375
+      "onset_exact": true,
+      "visited_at_certification": 375
     },
     {
       "rule": "RRRLLRLRRRRL",
@@ -2675,7 +2925,8 @@
         2
       ],
       "onset": 129,
-      "cells_per_period": 375
+      "onset_exact": true,
+      "visited_at_certification": 375
     },
     {
       "rule": "RRRRRRL",
@@ -2685,7 +2936,8 @@
         -2
       ],
       "onset": 151,
-      "cells_per_period": 107
+      "onset_exact": true,
+      "visited_at_certification": 107
     },
     {
       "rule": "RL",
@@ -2695,7 +2947,8 @@
         -2
       ],
       "onset": 9977,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRL",
@@ -2705,7 +2958,8 @@
         -2
       ],
       "onset": 10077,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRLRL",
@@ -2715,7 +2969,8 @@
         -2
       ],
       "onset": 10077,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRLRLRL",
@@ -2725,7 +2980,8 @@
         -2
       ],
       "onset": 10077,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRLRLRLRL",
@@ -2735,7 +2991,8 @@
         -2
       ],
       "onset": 10077,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRLRLRLRLL",
@@ -2745,7 +3002,8 @@
         2
       ],
       "onset": 992,
-      "cells_per_period": 432
+      "onset_exact": true,
+      "visited_at_certification": 432
     },
     {
       "rule": "RLRLRLRLRLLL",
@@ -2755,7 +3013,8 @@
         -2
       ],
       "onset": 3108,
-      "cells_per_period": 776
+      "onset_exact": true,
+      "visited_at_certification": 776
     },
     {
       "rule": "RLRLRLRLRLLR",
@@ -2765,7 +3024,8 @@
         -2
       ],
       "onset": 5405,
-      "cells_per_period": 877
+      "onset_exact": true,
+      "visited_at_certification": 877
     },
     {
       "rule": "RLRLRLRLRLR",
@@ -2775,7 +3035,8 @@
         -2
       ],
       "onset": 872,
-      "cells_per_period": 442
+      "onset_exact": true,
+      "visited_at_certification": 442
     },
     {
       "rule": "RLRLRLRLRLRL",
@@ -2785,7 +3046,8 @@
         -2
       ],
       "onset": 10077,
-      "cells_per_period": 1648
+      "onset_exact": true,
+      "visited_at_certification": 1648
     },
     {
       "rule": "RLRLRLRLRLRR",
@@ -2795,7 +3057,8 @@
         2
       ],
       "onset": 570,
-      "cells_per_period": 450
+      "onset_exact": true,
+      "visited_at_certification": 450
     },
     {
       "rule": "RLRLRLRLR",
@@ -2805,7 +3068,8 @@
         -2
       ],
       "onset": 8627,
-      "cells_per_period": 1225
+      "onset_exact": true,
+      "visited_at_certification": 1225
     },
     {
       "rule": "RLRLRLRLRRL",
@@ -2815,7 +3079,8 @@
         2
       ],
       "onset": 7536,
-      "cells_per_period": 1068
+      "onset_exact": true,
+      "visited_at_certification": 1068
     },
     {
       "rule": "RLRLRLRLRRLL",
@@ -2825,7 +3090,8 @@
         2
       ],
       "onset": 1270,
-      "cells_per_period": 380
+      "onset_exact": true,
+      "visited_at_certification": 380
     },
     {
       "rule": "RLRLRLRLRRLR",
@@ -2835,7 +3101,8 @@
         -2
       ],
       "onset": 1585,
-      "cells_per_period": 393
+      "onset_exact": true,
+      "visited_at_certification": 393
     },
     {
       "rule": "RRLLLRLLR",
@@ -2845,7 +3112,8 @@
         2
       ],
       "onset": 32157,
-      "cells_per_period": 2229
+      "onset_exact": true,
+      "visited_at_certification": 2229
     },
     {
       "rule": "RRLLRLLRLRL",
@@ -2855,7 +3123,8 @@
         2
       ],
       "onset": 1636907,
-      "cells_per_period": 18976
+      "onset_exact": true,
+      "visited_at_certification": 18976
     },
     {
       "rule": "RRLLRLRLLRL",
@@ -2865,7 +3134,8 @@
         2
       ],
       "onset": 346,
-      "cells_per_period": 148
+      "onset_exact": true,
+      "visited_at_certification": 148
     },
     {
       "rule": "RRLLRLRRRRLL",
@@ -2875,7 +3145,8 @@
         2
       ],
       "onset": 2762753,
-      "cells_per_period": 29592
+      "onset_exact": false,
+      "visited_at_certification": 29592
     },
     {
       "rule": "RRLLRRLRRR",
@@ -2885,7 +3156,8 @@
         2
       ],
       "onset": 9576269,
-      "cells_per_period": 62352
+      "onset_exact": true,
+      "visited_at_certification": 62352
     },
     {
       "rule": "RRRLRRLLRLL",
@@ -2895,7 +3167,8 @@
         2
       ],
       "onset": 80,
-      "cells_per_period": 274
+      "onset_exact": true,
+      "visited_at_certification": 274
     },
     {
       "rule": "RRRRRLLL",
@@ -2905,7 +3178,8 @@
         2
       ],
       "onset": 131,
-      "cells_per_period": 143
+      "onset_exact": true,
+      "visited_at_certification": 143
     },
     {
       "rule": "RRRRRLLRLLRL",
@@ -2915,7 +3189,8 @@
         1
       ],
       "onset": 267324,
-      "cells_per_period": 4925
+      "onset_exact": true,
+      "visited_at_certification": 4925
     },
     {
       "rule": "RLRLLLRLLLRR",
@@ -2925,7 +3200,8 @@
         -2
       ],
       "onset": 1260,
-      "cells_per_period": 358
+      "onset_exact": true,
+      "visited_at_certification": 358
     },
     {
       "rule": "RLRLLRRRLLR",
@@ -2935,7 +3211,8 @@
         2
       ],
       "onset": 1339,
-      "cells_per_period": 571
+      "onset_exact": true,
+      "visited_at_certification": 571
     },
     {
       "rule": "RLRLLRRRLLRR",
@@ -2945,7 +3222,8 @@
         2
       ],
       "onset": 20416,
-      "cells_per_period": 1350
+      "onset_exact": true,
+      "visited_at_certification": 1350
     },
     {
       "rule": "RRRRRRRL",
@@ -2955,7 +3233,8 @@
         -2
       ],
       "onset": 175,
-      "cells_per_period": 267
+      "onset_exact": true,
+      "visited_at_certification": 267
     },
     {
       "rule": "RLRLLRLL",
@@ -2965,7 +3244,8 @@
         2
       ],
       "onset": 129218,
-      "cells_per_period": 6432
+      "onset_exact": true,
+      "visited_at_certification": 6432
     },
     {
       "rule": "RRLLLRR",
@@ -2975,7 +3255,8 @@
         -2
       ],
       "onset": 977,
-      "cells_per_period": 266
+      "onset_exact": true,
+      "visited_at_certification": 266
     },
     {
       "rule": "RRLLLRRRRLLL",
@@ -2985,7 +3266,8 @@
         -2
       ],
       "onset": 1673,
-      "cells_per_period": 281
+      "onset_exact": true,
+      "visited_at_certification": 281
     },
     {
       "rule": "RRRRRRLLL",
@@ -2995,7 +3277,8 @@
         2
       ],
       "onset": 147,
-      "cells_per_period": 245
+      "onset_exact": true,
+      "visited_at_certification": 245
     },
     {
       "rule": "RLRLLRLLRLRL",
@@ -3005,7 +3288,8 @@
         -2
       ],
       "onset": 55787,
-      "cells_per_period": 3900
+      "onset_exact": true,
+      "visited_at_certification": 3900
     },
     {
       "rule": "RLRLLRLRLRRL",
@@ -3015,7 +3299,8 @@
         2
       ],
       "onset": 2139,
-      "cells_per_period": 554
+      "onset_exact": true,
+      "visited_at_certification": 554
     },
     {
       "rule": "RRRLLRLLRRLR",
@@ -3025,7 +3310,8 @@
         -1
       ],
       "onset": 6352647,
-      "cells_per_period": 37263
+      "onset_exact": true,
+      "visited_at_certification": 37263
     },
     {
       "rule": "RLLRRLRLRLRR",
@@ -3035,7 +3321,8 @@
         -2
       ],
       "onset": 4168657,
-      "cells_per_period": 56856
+      "onset_exact": true,
+      "visited_at_certification": 56856
     },
     {
       "rule": "RLRLLLRLLRLL",
@@ -3045,7 +3332,8 @@
         2
       ],
       "onset": 59334,
-      "cells_per_period": 2786
+      "onset_exact": true,
+      "visited_at_certification": 2786
     },
     {
       "rule": "RRRRLLRRLRR",
@@ -3055,7 +3343,8 @@
         2
       ],
       "onset": 171,
-      "cells_per_period": 150
+      "onset_exact": true,
+      "visited_at_certification": 150
     },
     {
       "rule": "RRRRRLLRLR",
@@ -3065,7 +3354,8 @@
         2
       ],
       "onset": 161,
-      "cells_per_period": 149
+      "onset_exact": true,
+      "visited_at_certification": 149
     },
     {
       "rule": "RRRRRRRRL",
@@ -3075,7 +3365,8 @@
         -2
       ],
       "onset": 199,
-      "cells_per_period": 237
+      "onset_exact": true,
+      "visited_at_certification": 237
     },
     {
       "rule": "RRLLRRLLRLRR",
@@ -3085,7 +3376,8 @@
         -2
       ],
       "onset": 200963,
-      "cells_per_period": 4291
+      "onset_exact": true,
+      "visited_at_certification": 4291
     },
     {
       "rule": "RRRRRLLLRRR",
@@ -3095,7 +3387,8 @@
         2
       ],
       "onset": 143356,
-      "cells_per_period": 3643
+      "onset_exact": true,
+      "visited_at_certification": 3643
     },
     {
       "rule": "RLRLRLLRLR",
@@ -3105,7 +3398,8 @@
         -1
       ],
       "onset": 1426,
-      "cells_per_period": 846
+      "onset_exact": true,
+      "visited_at_certification": 846
     },
     {
       "rule": "RLRLRLLRLRRL",
@@ -3115,7 +3409,8 @@
         -1
       ],
       "onset": 1426,
-      "cells_per_period": 846
+      "onset_exact": true,
+      "visited_at_certification": 846
     },
     {
       "rule": "RLRLLLLRLLR",
@@ -3125,7 +3420,8 @@
         -2
       ],
       "onset": 3243,
-      "cells_per_period": 663
+      "onset_exact": true,
+      "visited_at_certification": 663
     },
     {
       "rule": "RRLLLRLLLLR",
@@ -3135,7 +3431,8 @@
         -2
       ],
       "onset": 19640,
-      "cells_per_period": 1211
+      "onset_exact": true,
+      "visited_at_certification": 1211
     },
     {
       "rule": "RRRRLLRLLLR",
@@ -3145,7 +3442,8 @@
         2
       ],
       "onset": 759,
-      "cells_per_period": 523
+      "onset_exact": true,
+      "visited_at_certification": 523
     },
     {
       "rule": "RRRRLRRLLRLL",
@@ -3155,7 +3453,8 @@
         2
       ],
       "onset": 18200,
-      "cells_per_period": 1139
+      "onset_exact": true,
+      "visited_at_certification": 1139
     },
     {
       "rule": "RRRRRLLLLL",
@@ -3165,7 +3464,8 @@
         2
       ],
       "onset": 189,
-      "cells_per_period": 274
+      "onset_exact": true,
+      "visited_at_certification": 274
     },
     {
       "rule": "RRRRRRRLLL",
@@ -3175,7 +3475,8 @@
         2
       ],
       "onset": 163,
-      "cells_per_period": 219
+      "onset_exact": true,
+      "visited_at_certification": 219
     },
     {
       "rule": "RLRLLLRLLRRR",
@@ -3185,7 +3486,8 @@
         2
       ],
       "onset": 105856,
-      "cells_per_period": 4557
+      "onset_exact": true,
+      "visited_at_certification": 4557
     },
     {
       "rule": "RRLLLRLLLLLR",
@@ -3195,7 +3497,8 @@
         2
       ],
       "onset": 607010,
-      "cells_per_period": 15056
+      "onset_exact": true,
+      "visited_at_certification": 15056
     },
     {
       "rule": "RRLLLRRRRRRL",
@@ -3205,7 +3508,8 @@
         2
       ],
       "onset": 10653,
-      "cells_per_period": 890
+      "onset_exact": true,
+      "visited_at_certification": 890
     },
     {
       "rule": "RRRRRLLLRRRR",
@@ -3215,7 +3519,8 @@
         -2
       ],
       "onset": 4686,
-      "cells_per_period": 354
+      "onset_exact": true,
+      "visited_at_certification": 354
     },
     {
       "rule": "RRRRRRLLLRR",
@@ -3225,7 +3530,8 @@
         -2
       ],
       "onset": 59426,
-      "cells_per_period": 1629
+      "onset_exact": true,
+      "visited_at_certification": 1629
     },
     {
       "rule": "RLRLRLLRLRLR",
@@ -3235,7 +3541,8 @@
         -3
       ],
       "onset": 21606,
-      "cells_per_period": 2363
+      "onset_exact": true,
+      "visited_at_certification": 2363
     },
     {
       "rule": "RRLLLRRRLLRL",
@@ -3245,7 +3552,8 @@
         -2
       ],
       "onset": 2694,
-      "cells_per_period": 346
+      "onset_exact": true,
+      "visited_at_certification": 346
     },
     {
       "rule": "RRLLRLRRL",
@@ -3255,7 +3563,8 @@
         -2
       ],
       "onset": 1210285,
-      "cells_per_period": 16833
+      "onset_exact": true,
+      "visited_at_certification": 16833
     },
     {
       "rule": "RRRRLLLLRLR",
@@ -3265,7 +3574,8 @@
         -2
       ],
       "onset": 535,
-      "cells_per_period": 134
+      "onset_exact": true,
+      "visited_at_certification": 134
     },
     {
       "rule": "RRRRLRLLRRL",
@@ -3275,7 +3585,8 @@
         -2
       ],
       "onset": 309,
-      "cells_per_period": 486
+      "onset_exact": true,
+      "visited_at_certification": 486
     },
     {
       "rule": "RRRRLRLRRLR",
@@ -3285,7 +3596,8 @@
         2
       ],
       "onset": 22327,
-      "cells_per_period": 1186
+      "onset_exact": true,
+      "visited_at_certification": 1186
     },
     {
       "rule": "RRRRRLLRLRRR",
@@ -3295,7 +3607,8 @@
         -2
       ],
       "onset": 50909,
-      "cells_per_period": 2023
+      "onset_exact": true,
+      "visited_at_certification": 2023
     },
     {
       "rule": "RRRRRLRLRL",
@@ -3305,7 +3618,8 @@
         2
       ],
       "onset": 193,
-      "cells_per_period": 132
+      "onset_exact": true,
+      "visited_at_certification": 132
     },
     {
       "rule": "RRRRRRLLRLR",
@@ -3315,7 +3629,8 @@
         2
       ],
       "onset": 177,
-      "cells_per_period": 383
+      "onset_exact": true,
+      "visited_at_certification": 383
     },
     {
       "rule": "RRRRRRRRRL",
@@ -3325,7 +3640,8 @@
         -2
       ],
       "onset": 223,
-      "cells_per_period": 487
+      "onset_exact": true,
+      "visited_at_certification": 487
     },
     {
       "rule": "RLLRLRLLLRRR",
@@ -3335,7 +3651,8 @@
         -2
       ],
       "onset": 1798243,
-      "cells_per_period": 26624
+      "onset_exact": true,
+      "visited_at_certification": 26624
     },
     {
       "rule": "RLLRLRRLLRL",
@@ -3345,7 +3662,8 @@
         2
       ],
       "onset": 12091631,
-      "cells_per_period": 108280
+      "onset_exact": true,
+      "visited_at_certification": 108280
     },
     {
       "rule": "RLRRLRLLRRLL",
@@ -3355,7 +3673,8 @@
         -2
       ],
       "onset": 6493,
-      "cells_per_period": 733
+      "onset_exact": true,
+      "visited_at_certification": 733
     },
     {
       "rule": "RRLLLRLLRLLL",
@@ -3365,7 +3684,8 @@
         2
       ],
       "onset": 172663,
-      "cells_per_period": 5661
+      "onset_exact": true,
+      "visited_at_certification": 5661
     },
     {
       "rule": "RRLLLRLLRRRL",
@@ -3375,7 +3695,8 @@
         -2
       ],
       "onset": 44622,
-      "cells_per_period": 2142
+      "onset_exact": true,
+      "visited_at_certification": 2142
     },
     {
       "rule": "RRRRRRLLLRRR",
@@ -3385,7 +3706,8 @@
         2
       ],
       "onset": 138436,
-      "cells_per_period": 2932
+      "onset_exact": true,
+      "visited_at_certification": 2932
     },
     {
       "rule": "RRRRRRLRLLR",
@@ -3395,7 +3717,8 @@
         2
       ],
       "onset": 690,
-      "cells_per_period": 299
+      "onset_exact": true,
+      "visited_at_certification": 299
     },
     {
       "rule": "RRLRLRRLRRRR",
@@ -3405,7 +3728,8 @@
         2
       ],
       "onset": 48717,
-      "cells_per_period": 2359
+      "onset_exact": true,
+      "visited_at_certification": 2359
     },
     {
       "rule": "RRRRRLLRLLLR",
@@ -3415,7 +3739,8 @@
         2
       ],
       "onset": 215,
-      "cells_per_period": 717
+      "onset_exact": true,
+      "visited_at_certification": 717
     },
     {
       "rule": "RRRRRRRRLLL",
@@ -3425,7 +3750,8 @@
         2
       ],
       "onset": 179,
-      "cells_per_period": 107
+      "onset_exact": true,
+      "visited_at_certification": 107
     },
     {
       "rule": "RRRRRRLRLLRR",
@@ -3435,7 +3761,8 @@
         2
       ],
       "onset": 706,
-      "cells_per_period": 290
+      "onset_exact": true,
+      "visited_at_certification": 290
     },
     {
       "rule": "RRRRRRRLLLRR",
@@ -3445,7 +3772,8 @@
         2
       ],
       "onset": 401501,
-      "cells_per_period": 5850
+      "onset_exact": true,
+      "visited_at_certification": 5850
     },
     {
       "rule": "RRRRRLLLLRLR",
@@ -3455,7 +3783,8 @@
         2
       ],
       "onset": 217,
-      "cells_per_period": 121
+      "onset_exact": true,
+      "visited_at_certification": 121
     },
     {
       "rule": "RRRRRLRLRRLR",
@@ -3465,7 +3794,8 @@
         2
       ],
       "onset": 219,
-      "cells_per_period": 232
+      "onset_exact": true,
+      "visited_at_certification": 232
     },
     {
       "rule": "RRRRRRRLLRLR",
@@ -3475,7 +3805,8 @@
         2
       ],
       "onset": 193,
-      "cells_per_period": 238
+      "onset_exact": true,
+      "visited_at_certification": 238
     },
     {
       "rule": "RRRRRRRRRRL",
@@ -3485,7 +3816,8 @@
         -2
       ],
       "onset": 247,
-      "cells_per_period": 67
+      "onset_exact": true,
+      "visited_at_certification": 67
     },
     {
       "rule": "RLRRLLR",
@@ -3495,7 +3827,8 @@
         -2
       ],
       "onset": 192632,
-      "cells_per_period": 8171
+      "onset_exact": true,
+      "visited_at_certification": 8171
     },
     {
       "rule": "RLRRLLRRLR",
@@ -3505,7 +3838,8 @@
         -2
       ],
       "onset": 677343,
-      "cells_per_period": 19239
+      "onset_exact": true,
+      "visited_at_certification": 19239
     },
     {
       "rule": "RLRRLLRRLRR",
@@ -3515,7 +3849,8 @@
         2
       ],
       "onset": 1384,
-      "cells_per_period": 510
+      "onset_exact": true,
+      "visited_at_certification": 510
     },
     {
       "rule": "RLRRLLRRLRRR",
@@ -3525,7 +3860,8 @@
         -2
       ],
       "onset": 130688,
-      "cells_per_period": 4713
+      "onset_exact": true,
+      "visited_at_certification": 4713
     },
     {
       "rule": "RRLLLRRLLR",
@@ -3535,7 +3871,8 @@
         2
       ],
       "onset": 13325,
-      "cells_per_period": 1252
+      "onset_exact": true,
+      "visited_at_certification": 1252
     },
     {
       "rule": "RRLLRRLLLRRR",
@@ -3545,7 +3882,8 @@
         2
       ],
       "onset": 387081,
-      "cells_per_period": 7775
+      "onset_exact": true,
+      "visited_at_certification": 7775
     },
     {
       "rule": "RRLLRRLLRLR",
@@ -3555,7 +3893,8 @@
         2
       ],
       "onset": 2779384,
-      "cells_per_period": 26110
+      "onset_exact": true,
+      "visited_at_certification": 26110
     },
     {
       "rule": "RRRLRLLLLR",
@@ -3565,7 +3904,8 @@
         -2
       ],
       "onset": 163366,
-      "cells_per_period": 3965
+      "onset_exact": true,
+      "visited_at_certification": 3965
     },
     {
       "rule": "RRRRRRRLRLLR",
@@ -3575,7 +3915,8 @@
         2
       ],
       "onset": 1576,
-      "cells_per_period": 258
+      "onset_exact": true,
+      "visited_at_certification": 258
     },
     {
       "rule": "RLRLLLLRLLLR",
@@ -3585,7 +3926,8 @@
         -2
       ],
       "onset": 48143,
-      "cells_per_period": 3359
+      "onset_exact": true,
+      "visited_at_certification": 3359
     },
     {
       "rule": "RLRLLRRRRLL",
@@ -3595,7 +3937,8 @@
         -2
       ],
       "onset": 7415,
-      "cells_per_period": 610
+      "onset_exact": true,
+      "visited_at_certification": 610
     },
     {
       "rule": "RLRRLLRRLRRL",
@@ -3605,7 +3948,8 @@
         -2
       ],
       "onset": 698150,
-      "cells_per_period": 16861
+      "onset_exact": true,
+      "visited_at_certification": 16861
     },
     {
       "rule": "RLRRLRLLRRL",
@@ -3615,7 +3959,8 @@
         -2
       ],
       "onset": 4714,
-      "cells_per_period": 718
+      "onset_exact": true,
+      "visited_at_certification": 718
     },
     {
       "rule": "RRLLRRRLRLLL",
@@ -3625,7 +3970,8 @@
         2
       ],
       "onset": 3354101,
-      "cells_per_period": 26437
+      "onset_exact": true,
+      "visited_at_certification": 26437
     },
     {
       "rule": "RRRRLRLLRRLL",
@@ -3635,7 +3981,8 @@
         2
       ],
       "onset": 2791,
-      "cells_per_period": 377
+      "onset_exact": true,
+      "visited_at_certification": 377
     },
     {
       "rule": "RRRRRRRLLLLL",
@@ -3645,7 +3992,8 @@
         2
       ],
       "onset": 221,
-      "cells_per_period": 437
+      "onset_exact": true,
+      "visited_at_certification": 437
     },
     {
       "rule": "RRRRRRRRRLLL",
@@ -3655,7 +4003,8 @@
         2
       ],
       "onset": 195,
-      "cells_per_period": 429
+      "onset_exact": true,
+      "visited_at_certification": 429
     },
     {
       "rule": "RRLLLLRLRLLR",
@@ -3665,7 +4014,8 @@
         2
       ],
       "onset": 1482585,
-      "cells_per_period": 16952
+      "onset_exact": true,
+      "visited_at_certification": 16952
     },
     {
       "rule": "RRLLLRRLRLRR",
@@ -3675,7 +4025,8 @@
         -2
       ],
       "onset": 484879,
-      "cells_per_period": 11263
+      "onset_exact": true,
+      "visited_at_certification": 11263
     },
     {
       "rule": "RRRRRRRLRRLL",
@@ -3685,7 +4036,8 @@
         2
       ],
       "onset": 10046,
-      "cells_per_period": 733
+      "onset_exact": true,
+      "visited_at_certification": 733
     },
     {
       "rule": "RLRLLLRRRLLR",
@@ -3695,7 +4047,8 @@
         2
       ],
       "onset": 163098,
-      "cells_per_period": 4665
+      "onset_exact": true,
+      "visited_at_certification": 4665
     },
     {
       "rule": "RLRLRLLRLLLL",
@@ -3705,7 +4058,8 @@
         2
       ],
       "onset": 2140144,
-      "cells_per_period": 58932
+      "onset_exact": true,
+      "visited_at_certification": 58932
     },
     {
       "rule": "RLRRLRLLRLLL",
@@ -3715,7 +4069,8 @@
         -2
       ],
       "onset": 809257,
-      "cells_per_period": 18664
+      "onset_exact": true,
+      "visited_at_certification": 18664
     },
     {
       "rule": "RRLRLRRLRRR",
@@ -3725,7 +4080,8 @@
         -2
       ],
       "onset": 5316,
-      "cells_per_period": 686
+      "onset_exact": true,
+      "visited_at_certification": 686
     },
     {
       "rule": "RRRRLLRRLRRR",
@@ -3735,7 +4091,8 @@
         2
       ],
       "onset": 862,
-      "cells_per_period": 668
+      "onset_exact": true,
+      "visited_at_certification": 668
     },
     {
       "rule": "RRRRRLRLLLLR",
@@ -3745,7 +4102,8 @@
         2
       ],
       "onset": 2817859,
-      "cells_per_period": 23755
+      "onset_exact": true,
+      "visited_at_certification": 23755
     },
     {
       "rule": "RRRRRRRLRLRL",
@@ -3755,7 +4113,8 @@
         2
       ],
       "onset": 225,
-      "cells_per_period": 319
+      "onset_exact": true,
+      "visited_at_certification": 319
     },
     {
       "rule": "RRRRRRRRRRRL",
@@ -3765,7 +4124,8 @@
         -2
       ],
       "onset": 271,
-      "cells_per_period": 287
+      "onset_exact": true,
+      "visited_at_certification": 287
     },
     {
       "rule": "RLRRLLRRRL",
@@ -3775,7 +4135,8 @@
         -2
       ],
       "onset": 157412,
-      "cells_per_period": 6041
+      "onset_exact": true,
+      "visited_at_certification": 6041
     },
     {
       "rule": "RRLRLRLRLRRR",
@@ -3785,7 +4146,8 @@
         2
       ],
       "onset": 16104012,
-      "cells_per_period": 121014
+      "onset_exact": true,
+      "visited_at_certification": 121014
     },
     {
       "rule": "RLRLRLLRLLL",
@@ -3795,7 +4157,8 @@
         2
       ],
       "onset": 677199,
-      "cells_per_period": 25043
+      "onset_exact": true,
+      "visited_at_certification": 25043
     },
     {
       "rule": "RRLLLRRLRRRL",
@@ -3805,7 +4168,8 @@
         -2
       ],
       "onset": 243386,
-      "cells_per_period": 6003
+      "onset_exact": true,
+      "visited_at_certification": 6003
     },
     {
       "rule": "RRRRLLLLLRR",
@@ -3815,7 +4179,8 @@
         2
       ],
       "onset": 1205,
-      "cells_per_period": 196
+      "onset_exact": true,
+      "visited_at_certification": 196
     },
     {
       "rule": "RRRRRLRLRLR",
@@ -3825,7 +4190,8 @@
         -2
       ],
       "onset": 2772,
-      "cells_per_period": 329
+      "onset_exact": true,
+      "visited_at_certification": 329
     },
     {
       "rule": "RLRRLRLLRR",
@@ -3835,7 +4201,8 @@
         2
       ],
       "onset": 5290350,
-      "cells_per_period": 70426
+      "onset_exact": true,
+      "visited_at_certification": 70426
     },
     {
       "rule": "RRLLLRLRRLRL",
@@ -3845,7 +4212,8 @@
         -5
       ],
       "onset": 167,
-      "cells_per_period": 435
+      "onset_exact": true,
+      "visited_at_certification": 435
     },
     {
       "rule": "RRLLLRRRRLLR",
@@ -3855,7 +4223,8 @@
         2
       ],
       "onset": 245413,
-      "cells_per_period": 8343
+      "onset_exact": true,
+      "visited_at_certification": 8343
     },
     {
       "rule": "RRRLRLLLRLRL",
@@ -3865,7 +4234,8 @@
         2
       ],
       "onset": 2556231,
-      "cells_per_period": 26189
+      "onset_exact": true,
+      "visited_at_certification": 26189
     },
     {
       "rule": "RLRLLRLLLRLL",
@@ -3875,7 +4245,8 @@
         3
       ],
       "onset": 1677,
-      "cells_per_period": 725
+      "onset_exact": true,
+      "visited_at_certification": 725
     },
     {
       "rule": "RRLRRRLL",
@@ -3885,7 +4256,8 @@
         -2
       ],
       "onset": 2834,
-      "cells_per_period": 741
+      "onset_exact": true,
+      "visited_at_certification": 741
     },
     {
       "rule": "RRLRRRLLRRL",
@@ -3895,7 +4267,8 @@
         -2
       ],
       "onset": 120059,
-      "cells_per_period": 4781
+      "onset_exact": true,
+      "visited_at_certification": 4781
     },
     {
       "rule": "RRLRRRLLRRLR",
@@ -3905,7 +4278,8 @@
         -2
       ],
       "onset": 484861,
-      "cells_per_period": 12203
+      "onset_exact": true,
+      "visited_at_certification": 12203
     },
     {
       "rule": "RRRRRLRLL",
@@ -3915,7 +4289,8 @@
         2
       ],
       "onset": 348707,
-      "cells_per_period": 5843
+      "onset_exact": true,
+      "visited_at_certification": 5843
     },
     {
       "rule": "RRRRLRLLRRLR",
@@ -3925,7 +4300,8 @@
         -2
       ],
       "onset": 4109890,
-      "cells_per_period": 37699
+      "onset_exact": true,
+      "visited_at_certification": 37699
     },
     {
       "rule": "RRLLLRRLRR",
@@ -3935,7 +4311,8 @@
         2
       ],
       "onset": 6387373,
-      "cells_per_period": 51691
+      "onset_exact": true,
+      "visited_at_certification": 51691
     },
     {
       "rule": "RRRLRRLRRLRR",
@@ -3945,7 +4322,8 @@
         -2
       ],
       "onset": 1586724,
-      "cells_per_period": 20525
+      "onset_exact": true,
+      "visited_at_certification": 20525
     },
     {
       "rule": "RRLLLRRRRR",
@@ -3955,7 +4333,8 @@
         -2
       ],
       "onset": 4059,
-      "cells_per_period": 471
+      "onset_exact": true,
+      "visited_at_certification": 471
     },
     {
       "rule": "RRLLRRLRRRR",
@@ -3965,7 +4344,8 @@
         3
       ],
       "onset": 16478282,
-      "cells_per_period": 87307
+      "onset_exact": true,
+      "visited_at_certification": 87307
     },
     {
       "rule": "RLLLLRLLLR",
@@ -3975,7 +4355,8 @@
         2
       ],
       "onset": 22338,
-      "cells_per_period": 1421
+      "onset_exact": true,
+      "visited_at_certification": 1421
     },
     {
       "rule": "RRLLLRRRLRR",
@@ -3985,7 +4366,8 @@
         2
       ],
       "onset": 4480005,
-      "cells_per_period": 37915
+      "onset_exact": true,
+      "visited_at_certification": 37915
     },
     {
       "rule": "RRLLLRRRLRRR",
@@ -3995,7 +4377,8 @@
         0
       ],
       "onset": 1164553,
-      "cells_per_period": 13903
+      "onset_exact": true,
+      "visited_at_certification": 13903
     },
     {
       "rule": "RRLRRRLLLR",
@@ -4005,7 +4388,8 @@
         2
       ],
       "onset": 503410,
-      "cells_per_period": 12134
+      "onset_exact": true,
+      "visited_at_certification": 12134
     },
     {
       "rule": "RRLRRRLLLRR",
@@ -4015,7 +4399,8 @@
         -2
       ],
       "onset": 1943094,
-      "cells_per_period": 31826
+      "onset_exact": true,
+      "visited_at_certification": 31826
     },
     {
       "rule": "RRLRRRLLLRRR",
@@ -4025,7 +4410,8 @@
         2
       ],
       "onset": 705933,
-      "cells_per_period": 15564
+      "onset_exact": true,
+      "visited_at_certification": 15564
     },
     {
       "rule": "RRRRRLRRRLRL",
@@ -4035,7 +4421,8 @@
         -2
       ],
       "onset": 2206744,
-      "cells_per_period": 23011
+      "onset_exact": true,
+      "visited_at_certification": 23011
     },
     {
       "rule": "RRLLLRRR",
@@ -4045,7 +4432,8 @@
         -2
       ],
       "onset": 1543281,
-      "cells_per_period": 21616
+      "onset_exact": true,
+      "visited_at_certification": 21616
     },
     {
       "rule": "RRRLLRLRR",
@@ -4055,7 +4443,8 @@
         4
       ],
       "onset": 967,
-      "cells_per_period": 357
+      "onset_exact": true,
+      "visited_at_certification": 357
     },
     {
       "rule": "RRLLRRLRRRRR",
@@ -4065,7 +4454,8 @@
         3
       ],
       "onset": 9256187,
-      "cells_per_period": 52863
+      "onset_exact": true,
+      "visited_at_certification": 52863
     },
     {
       "rule": "RRLLLRRRRRR",
@@ -4075,7 +4465,8 @@
         -2
       ],
       "onset": 4172,
-      "cells_per_period": 522
+      "onset_exact": true,
+      "visited_at_certification": 522
     },
     {
       "rule": "RRRLLRRLRRLL",
@@ -4085,7 +4476,8 @@
         -2
       ],
       "onset": 9708476,
-      "cells_per_period": 50443
+      "onset_exact": true,
+      "visited_at_certification": 50443
     },
     {
       "rule": "RRRRLLRLRR",
@@ -4095,7 +4487,8 @@
         -2
       ],
       "onset": 8619,
-      "cells_per_period": 611
+      "onset_exact": true,
+      "visited_at_certification": 611
     },
     {
       "rule": "RRRLRRLRRLRL",
@@ -4105,7 +4498,8 @@
         2
       ],
       "onset": 720583,
-      "cells_per_period": 12890
+      "onset_exact": true,
+      "visited_at_certification": 12890
     },
     {
       "rule": "RRLLLRLRLLRR",
@@ -4115,7 +4509,8 @@
         -5
       ],
       "onset": 1680,
-      "cells_per_period": 585
+      "onset_exact": true,
+      "visited_at_certification": 585
     },
     {
       "rule": "RRRRLLRRLLLR",
@@ -4125,7 +4520,8 @@
         -2
       ],
       "onset": 3053,
-      "cells_per_period": 318
+      "onset_exact": true,
+      "visited_at_certification": 318
     },
     {
       "rule": "RRLLRLRLR",
@@ -4135,7 +4531,8 @@
         -2
       ],
       "onset": 11916160,
-      "cells_per_period": 79449
+      "onset_exact": true,
+      "visited_at_certification": 79449
     },
     {
       "rule": "RRRLLLR",
@@ -4145,7 +4542,8 @@
         2
       ],
       "onset": 5716,
-      "cells_per_period": 640
+      "onset_exact": true,
+      "visited_at_certification": 640
     },
     {
       "rule": "RRLLLRRRRRRR",
@@ -4155,7 +4553,8 @@
         -2
       ],
       "onset": 4416,
-      "cells_per_period": 648
+      "onset_exact": true,
+      "visited_at_certification": 648
     },
     {
       "rule": "RRRLRLLRLL",
@@ -4165,7 +4564,8 @@
         -3
       ],
       "onset": 69379,
-      "cells_per_period": 3691
+      "onset_exact": true,
+      "visited_at_certification": 3691
     },
     {
       "rule": "RRRLLRLRRRR",
@@ -4175,7 +4575,8 @@
         2
       ],
       "onset": 6710,
-      "cells_per_period": 770
+      "onset_exact": true,
+      "visited_at_certification": 770
     },
     {
       "rule": "RLRLLRRRLL",
@@ -4185,7 +4586,8 @@
         4
       ],
       "onset": 37618,
-      "cells_per_period": 1919
+      "onset_exact": true,
+      "visited_at_certification": 1919
     },
     {
       "rule": "RRLLLRRRLLR",
@@ -4195,7 +4597,8 @@
         2
       ],
       "onset": 39598,
-      "cells_per_period": 1989
+      "onset_exact": true,
+      "visited_at_certification": 1989
     },
     {
       "rule": "RRRRRRLRRLRL",
@@ -4205,7 +4608,8 @@
         -2
       ],
       "onset": 292367,
-      "cells_per_period": 5009
+      "onset_exact": true,
+      "visited_at_certification": 5009
     },
     {
       "rule": "RRRRLLLLRL",
@@ -4215,7 +4619,8 @@
         3
       ],
       "onset": 722,
-      "cells_per_period": 399
+      "onset_exact": true,
+      "visited_at_certification": 399
     },
     {
       "rule": "RRRRLLLLLRRR",
@@ -4225,7 +4630,8 @@
         2
       ],
       "onset": 2430545,
-      "cells_per_period": 24583
+      "onset_exact": true,
+      "visited_at_certification": 24583
     },
     {
       "rule": "RLLLRLLRRRL",
@@ -4235,7 +4641,8 @@
         3
       ],
       "onset": 647356,
-      "cells_per_period": 14778
+      "onset_exact": true,
+      "visited_at_certification": 14778
     },
     {
       "rule": "RRLRRRLRRR",
@@ -4245,7 +4652,8 @@
         2
       ],
       "onset": 16897953,
-      "cells_per_period": 124625
+      "onset_exact": true,
+      "visited_at_certification": 124625
     },
     {
       "rule": "RRLRLRRLLRRR",
@@ -4255,7 +4663,8 @@
         -2
       ],
       "onset": 44868,
-      "cells_per_period": 2275
+      "onset_exact": true,
+      "visited_at_certification": 2275
     },
     {
       "rule": "RRRLLRRRLRRR",
@@ -4265,7 +4674,8 @@
         -2
       ],
       "onset": 17301,
-      "cells_per_period": 748
+      "onset_exact": true,
+      "visited_at_certification": 748
     },
     {
       "rule": "RRRRLRLLRRRR",
@@ -4275,7 +4685,8 @@
         -2
       ],
       "onset": 15620097,
-      "cells_per_period": 88228
+      "onset_exact": false,
+      "visited_at_certification": 88228
     },
     {
       "rule": "RLRLRLLRLL",
@@ -4285,7 +4696,8 @@
         4
       ],
       "onset": 56067,
-      "cells_per_period": 5739
+      "onset_exact": true,
+      "visited_at_certification": 5739
     },
     {
       "rule": "RLRLRLLRLLRL",
@@ -4295,7 +4707,8 @@
         4
       ],
       "onset": 20949,
-      "cells_per_period": 3062
+      "onset_exact": true,
+      "visited_at_certification": 3062
     },
     {
       "rule": "RRRLLRLRRRRR",
@@ -4305,7 +4718,8 @@
         2
       ],
       "onset": 1245784,
-      "cells_per_period": 13566
+      "onset_exact": true,
+      "visited_at_certification": 13566
     },
     {
       "rule": "RRRLRRRRLLLR",
@@ -4315,7 +4729,8 @@
         2
       ],
       "onset": 3339801,
-      "cells_per_period": 47139
+      "onset_exact": true,
+      "visited_at_certification": 47139
     },
     {
       "rule": "RRLLLRLRRLR",
@@ -4325,7 +4740,8 @@
         7
       ],
       "onset": 567,
-      "cells_per_period": 923
+      "onset_exact": true,
+      "visited_at_certification": 923
     },
     {
       "rule": "RLRLRLRRLRLR",
@@ -4335,7 +4751,8 @@
         -4
       ],
       "onset": 1328129,
-      "cells_per_period": 47535
+      "onset_exact": false,
+      "visited_at_certification": 47535
     },
     {
       "rule": "RRRLRRLRLLRL",
@@ -4345,7 +4762,8 @@
         4
       ],
       "onset": 231469,
-      "cells_per_period": 7637
+      "onset_exact": true,
+      "visited_at_certification": 7637
     },
     {
       "rule": "RRLLRRRLRR",
@@ -4355,7 +4773,8 @@
         2
       ],
       "onset": 11452415,
-      "cells_per_period": 70871
+      "onset_exact": true,
+      "visited_at_certification": 70871
     },
     {
       "rule": "RRRLLLRRLRRL",
@@ -4365,7 +4784,8 @@
         -5
       ],
       "onset": 574,
-      "cells_per_period": 748
+      "onset_exact": true,
+      "visited_at_certification": 748
     },
     {
       "rule": "RRLLLRRRRRL",
@@ -4375,7 +4795,8 @@
         2
       ],
       "onset": 1676632,
-      "cells_per_period": 22389
+      "onset_exact": true,
+      "visited_at_certification": 22389
     },
     {
       "rule": "RRLLLRRLLRL",
@@ -4385,7 +4806,8 @@
         -4
       ],
       "onset": 11047002,
-      "cells_per_period": 81615
+      "onset_exact": true,
+      "visited_at_certification": 81615
     },
     {
       "rule": "RRRRLRLLRRR",
@@ -4395,7 +4817,8 @@
         -2
       ],
       "onset": 1301661,
-      "cells_per_period": 15994
+      "onset_exact": true,
+      "visited_at_certification": 15994
     },
     {
       "rule": "RRRRLRRLL",
@@ -4405,7 +4828,8 @@
         2
       ],
       "onset": 1847577,
-      "cells_per_period": 24170
+      "onset_exact": true,
+      "visited_at_certification": 24170
     },
     {
       "rule": "RRRRLRLLRR",
@@ -4415,7 +4839,8 @@
         -2
       ],
       "onset": 13005,
-      "cells_per_period": 870
+      "onset_exact": true,
+      "visited_at_certification": 870
     },
     {
       "rule": "RRLLLRLRRLL",
@@ -4425,7 +4850,8 @@
         7
       ],
       "onset": 163,
-      "cells_per_period": 357
+      "onset_exact": true,
+      "visited_at_certification": 357
     },
     {
       "rule": "RRLLLRLRRLLR",
@@ -4435,7 +4861,8 @@
         -7
       ],
       "onset": 578,
-      "cells_per_period": 362
+      "onset_exact": true,
+      "visited_at_certification": 362
     },
     {
       "rule": "RRLLLRRLRRRR",
@@ -4445,7 +4872,8 @@
         -2
       ],
       "onset": 4411,
-      "cells_per_period": 869
+      "onset_exact": true,
+      "visited_at_certification": 869
     },
     {
       "rule": "RLRLLRLRLRL",
@@ -4455,7 +4883,8 @@
         -4
       ],
       "onset": 56574,
-      "cells_per_period": 4026
+      "onset_exact": true,
+      "visited_at_certification": 4026
     },
     {
       "rule": "RRRRRLLRRLLL",
@@ -4465,7 +4894,8 @@
         -3
       ],
       "onset": 32687,
-      "cells_per_period": 1476
+      "onset_exact": true,
+      "visited_at_certification": 1476
     },
     {
       "rule": "RRRRLLRRRLRR",
@@ -4475,7 +4905,8 @@
         -3
       ],
       "onset": 200022,
-      "cells_per_period": 3902
+      "onset_exact": true,
+      "visited_at_certification": 3902
     },
     {
       "rule": "RRLLLRRRRLL",
@@ -4485,7 +4916,8 @@
         -2
       ],
       "onset": 11355,
-      "cells_per_period": 1169
+      "onset_exact": true,
+      "visited_at_certification": 1169
     },
     {
       "rule": "RLRRRLRLL",
@@ -4495,7 +4927,8 @@
         -4
       ],
       "onset": 11775,
-      "cells_per_period": 1151
+      "onset_exact": true,
+      "visited_at_certification": 1151
     },
     {
       "rule": "RLRLRLLRRRLL",
@@ -4505,7 +4938,8 @@
         0
       ],
       "onset": 6062,
-      "cells_per_period": 1738
+      "onset_exact": true,
+      "visited_at_certification": 1738
     },
     {
       "rule": "RRRLLLRRR",
@@ -4515,7 +4949,8 @@
         -2
       ],
       "onset": 6772883,
-      "cells_per_period": 46059
+      "onset_exact": true,
+      "visited_at_certification": 46059
     },
     {
       "rule": "RLRLRLLLRRL",
@@ -4525,7 +4960,8 @@
         5
       ],
       "onset": 502785,
-      "cells_per_period": 21424
+      "onset_exact": false,
+      "visited_at_certification": 21424
     },
     {
       "rule": "RRRRRLRLRLRR",
@@ -4535,7 +4971,8 @@
         -2
       ],
       "onset": 4621515,
-      "cells_per_period": 32920
+      "onset_exact": true,
+      "visited_at_certification": 32920
     },
     {
       "rule": "RRLLLRLLRLR",
@@ -4545,7 +4982,8 @@
         4
       ],
       "onset": 19171329,
-      "cells_per_period": 120255
+      "onset_exact": false,
+      "visited_at_certification": 120255
     },
     {
       "rule": "RRRRLLRRL",
@@ -4555,7 +4993,8 @@
         -4
       ],
       "onset": 1858344,
-      "cells_per_period": 16110
+      "onset_exact": true,
+      "visited_at_certification": 16110
     },
     {
       "rule": "RRRLLLRRRR",
@@ -4565,7 +5004,8 @@
         2
       ],
       "onset": 4146465,
-      "cells_per_period": 30638
+      "onset_exact": true,
+      "visited_at_certification": 30638
     },
     {
       "rule": "RLRLLLRLLR",
@@ -4575,7 +5015,8 @@
         -4
       ],
       "onset": 1568691,
-      "cells_per_period": 30890
+      "onset_exact": true,
+      "visited_at_certification": 30890
     },
     {
       "rule": "RRRLRRLLRLLR",
@@ -4585,7 +5026,8 @@
         4
       ],
       "onset": 233562,
-      "cells_per_period": 8375
+      "onset_exact": true,
+      "visited_at_certification": 8375
     },
     {
       "rule": "RRRRLLLR",
@@ -4595,7 +5037,8 @@
         2
       ],
       "onset": 55912,
-      "cells_per_period": 2237
+      "onset_exact": true,
+      "visited_at_certification": 2237
     },
     {
       "rule": "RRRRLLLRRRL",
@@ -4605,7 +5048,8 @@
         -4
       ],
       "onset": 5078,
-      "cells_per_period": 791
+      "onset_exact": true,
+      "visited_at_certification": 791
     },
     {
       "rule": "RLRLLLLRLLLL",
@@ -4615,7 +5059,8 @@
         -4
       ],
       "onset": 236591,
-      "cells_per_period": 9548
+      "onset_exact": true,
+      "visited_at_certification": 9548
     },
     {
       "rule": "RRRLLLRRRRR",
@@ -4625,7 +5070,8 @@
         2
       ],
       "onset": 2194242,
-      "cells_per_period": 19045
+      "onset_exact": true,
+      "visited_at_certification": 19045
     },
     {
       "rule": "RRRRLRRLLRLR",
@@ -4635,7 +5081,8 @@
         4
       ],
       "onset": 13546415,
-      "cells_per_period": 83057
+      "onset_exact": true,
+      "visited_at_certification": 83057
     },
     {
       "rule": "RRRLLLRRLR",
@@ -4645,7 +5092,8 @@
         4
       ],
       "onset": 9449049,
-      "cells_per_period": 70671
+      "onset_exact": true,
+      "visited_at_certification": 70671
     },
     {
       "rule": "RLLRLRRRL",
@@ -4655,7 +5103,8 @@
         -5
       ],
       "onset": 14973493,
-      "cells_per_period": 129687
+      "onset_exact": true,
+      "visited_at_certification": 129687
     },
     {
       "rule": "RRRLLLRRRRRR",
@@ -4665,7 +5114,8 @@
         2
       ],
       "onset": 786683,
-      "cells_per_period": 10388
+      "onset_exact": true,
+      "visited_at_certification": 10388
     },
     {
       "rule": "RRRRLLLRRR",
@@ -4675,7 +5125,8 @@
         2
       ],
       "onset": 1074049,
-      "cells_per_period": 12964
+      "onset_exact": true,
+      "visited_at_certification": 12964
     },
     {
       "rule": "RLRLLRRRLLRL",
@@ -4685,7 +5136,8 @@
         -6
       ],
       "onset": 15622,
-      "cells_per_period": 1741
+      "onset_exact": true,
+      "visited_at_certification": 1741
     },
     {
       "rule": "RRRRLLLRLLRL",
@@ -4695,7 +5147,8 @@
         -4
       ],
       "onset": 1998849,
-      "cells_per_period": 26208
+      "onset_exact": false,
+      "visited_at_certification": 26208
     },
     {
       "rule": "RRRRLLLRRRR",
@@ -4705,7 +5158,8 @@
         2
       ],
       "onset": 6314039,
-      "cells_per_period": 37930
+      "onset_exact": true,
+      "visited_at_certification": 37930
     },
     {
       "rule": "RRRRRLLLR",
@@ -4715,7 +5169,8 @@
         -2
       ],
       "onset": 8744719,
-      "cells_per_period": 64466
+      "onset_exact": true,
+      "visited_at_certification": 64466
     },
     {
       "rule": "RRRRLLLRRRRR",
@@ -4725,7 +5180,8 @@
         -2
       ],
       "onset": 18962907,
-      "cells_per_period": 73538
+      "onset_exact": true,
+      "visited_at_certification": 73538
     },
     {
       "rule": "RLRRLLRLRLRR",
@@ -4735,7 +5191,8 @@
         -7
       ],
       "onset": 555362,
-      "cells_per_period": 13652
+      "onset_exact": true,
+      "visited_at_certification": 13652
     },
     {
       "rule": "RLRRLLRLLLLL",
@@ -4745,7 +5202,8 @@
         -2
       ],
       "onset": 860474,
-      "cells_per_period": 21815
+      "onset_exact": true,
+      "visited_at_certification": 21815
     },
     {
       "rule": "RRLRLLRLR",
@@ -4755,7 +5213,8 @@
         4
       ],
       "onset": 10850523,
-      "cells_per_period": 100615
+      "onset_exact": true,
+      "visited_at_certification": 100615
     },
     {
       "rule": "RRRRLLLLLR",
@@ -4765,7 +5224,8 @@
         6
       ],
       "onset": 208528,
-      "cells_per_period": 6222
+      "onset_exact": true,
+      "visited_at_certification": 6222
     },
     {
       "rule": "RRRLLRRRLRR",
@@ -4775,7 +5235,8 @@
         6
       ],
       "onset": 202542,
-      "cells_per_period": 4633
+      "onset_exact": true,
+      "visited_at_certification": 4633
     },
     {
       "rule": "RRRRRRLLLRLL",
@@ -4785,7 +5246,8 @@
         6
       ],
       "onset": 1709071,
-      "cells_per_period": 17877
+      "onset_exact": true,
+      "visited_at_certification": 17877
     },
     {
       "rule": "RRLRLRRLLRR",
@@ -4795,7 +5257,8 @@
         2
       ],
       "onset": 67282,
-      "cells_per_period": 5239
+      "onset_exact": true,
+      "visited_at_certification": 5239
     },
     {
       "rule": "RRRRRRLLLLLR",
@@ -4805,7 +5268,8 @@
         4
       ],
       "onset": 287327,
-      "cells_per_period": 5832
+      "onset_exact": true,
+      "visited_at_certification": 5832
     },
     {
       "rule": "RRRLLRRLR",
@@ -4815,7 +5279,8 @@
         -6
       ],
       "onset": 151095,
-      "cells_per_period": 4337
+      "onset_exact": true,
+      "visited_at_certification": 4337
     },
     {
       "rule": "RRLRRRLRLRRL",
@@ -4825,7 +5290,8 @@
         6
       ],
       "onset": 14343140,
-      "cells_per_period": 158931
+      "onset_exact": true,
+      "visited_at_certification": 158931
     },
     {
       "rule": "RLRRRLRLLRLR",
@@ -4835,7 +5301,8 @@
         -8
       ],
       "onset": 201370,
-      "cells_per_period": 7413
+      "onset_exact": true,
+      "visited_at_certification": 7413
     },
     {
       "rule": "RLRRLRLRLRRR",
@@ -4845,7 +5312,8 @@
         11
       ],
       "onset": 48892,
-      "cells_per_period": 3648
+      "onset_exact": true,
+      "visited_at_certification": 3648
     },
     {
       "rule": "RLRLRLRLLRLL",
@@ -4855,7 +5323,8 @@
         -8
       ],
       "onset": 16141256,
-      "cells_per_period": 299680
+      "onset_exact": true,
+      "visited_at_certification": 299680
     },
     {
       "rule": "RLRLLRLRLRR",
@@ -4865,7 +5334,8 @@
         10
       ],
       "onset": 6452264,
-      "cells_per_period": 115971
+      "onset_exact": true,
+      "visited_at_certification": 115971
     },
     {
       "rule": "RRRRRLLLLLR",
@@ -4875,7 +5345,8 @@
         -4
       ],
       "onset": 596234,
-      "cells_per_period": 15948
+      "onset_exact": true,
+      "visited_at_certification": 15948
     },
     {
       "rule": "RRLRLLRLRRRR",
@@ -4885,7 +5356,8 @@
         -6
       ],
       "onset": 117599,
-      "cells_per_period": 4703
+      "onset_exact": true,
+      "visited_at_certification": 4703
     },
     {
       "rule": "RRRRLLRLRRR",
@@ -4895,7 +5367,8 @@
         6
       ],
       "onset": 19466,
-      "cells_per_period": 1140
+      "onset_exact": true,
+      "visited_at_certification": 1140
     },
     {
       "rule": "RLRLRLLRLLLR",
@@ -4905,7 +5378,8 @@
         8
       ],
       "onset": 3488661,
-      "cells_per_period": 88738
+      "onset_exact": true,
+      "visited_at_certification": 88738
     },
     {
       "rule": "RRRRRRRRLRLL",
@@ -4915,7 +5389,8 @@
         4
       ],
       "onset": 4759724,
-      "cells_per_period": 29389
+      "onset_exact": true,
+      "visited_at_certification": 29389
     },
     {
       "rule": "RRRRRLLRLRR",
@@ -4925,7 +5400,8 @@
         8
       ],
       "onset": 19650,
-      "cells_per_period": 1411
+      "onset_exact": true,
+      "visited_at_certification": 1411
     },
     {
       "rule": "RRLLLRLRLRRL",
@@ -4935,7 +5411,8 @@
         0
       ],
       "onset": 29898,
-      "cells_per_period": 2291
+      "onset_exact": true,
+      "visited_at_certification": 2291
     }
   ]
 }

@@ -93,6 +93,22 @@ def match_symmetry(back: Set[Cell], fwd: Set[Cell], span: int = 3) -> Optional[s
     return None
 
 
+def backward_onset(states, d: dict) -> int:
+    """Earliest step from which the trajectory is periodic with the given drift.
+
+    The scan has to start a full period before the end, otherwise the first
+    partner index states[t - 1 + period] is already past the end of the list.
+    """
+    p, (dx, dy) = d["period"], d["drift"]
+    t = len(states) - 1 - p
+    while t > 0:
+        a, b = states[t - 1], states[t - 1 + p]
+        if (b[0] - a[0], b[1] - a[1]) != (dx, dy) or a[2] != b[2]:
+            break
+        t -= 1
+    return t
+
+
 def main() -> None:
     N = 20000
     states, back_black = run_backward(N)
@@ -118,16 +134,7 @@ def main() -> None:
 
     # where does the backward highway first lock in?
     if d:
-        p = d["period"]
-        onset = len(states) - 1
-        while onset > p:
-            a, b = states[onset - 1], states[onset - 1 + p] if onset - 1 + p < len(states) else None
-            if b is None:
-                break
-            if (b[0] - a[0], b[1] - a[1]) != d["drift"] or a[2] != b[2]:
-                break
-            onset -= 1
-        print(f"  backward onset  : {onset:,}")
+        print(f"  backward onset  : {backward_onset(states, d):,}")
 
 
 if __name__ == "__main__":

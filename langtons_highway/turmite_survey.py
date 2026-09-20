@@ -61,6 +61,41 @@ def run_rule(exe: Path, rule: str, max_steps: int) -> list[str]:
     return out.strip().split(",")
 
 
+def summarize(rows: list[list[str]], max_len: int, max_steps: int) -> dict:
+    """Aggregate result rows, keeping every caveat the core reported."""
+    status = Counter(r[1] for r in rows)
+    by_len = defaultdict(Counter)
+    for r in rows:
+        by_len[len(r[0])][r[1]] += 1
+    hw = [r for r in rows if r[1] == "HIGHWAY"]
+    periods = Counter(int(r[4]) for r in hw)
+    drifts = Counter(f"{r[5]},{r[6]}" for r in hw)
+    # An onset is exact only if the backward scan stopped on a genuine
+    # mismatch.  When it ran out of ring buffer it stopped early, and the
+    # reported figure is an upper bound on the true onset, not a measurement.
+    inexact = [r[0] for r in hw if r[10] == "0"]
+    exact_onsets = [int(r[2]) for r in hw if r[10] == "1"]
+    return {
+        "rules_tested": len(rows),
+        "max_len": max_len,
+        "max_steps": max_steps,
+        "status": dict(status),
+        "highway_fraction": len(hw) / len(rows) if rows else None,
+        "periods": {str(k): v for k, v in sorted(periods.items())},
+        "drifts": dict(drifts),
+        "by_length": {str(k): dict(v) for k, v in sorted(by_len.items())},
+        "onset_inexact_rules": sorted(inexact),
+        "largest_exact_onset": max(exact_onsets) if exact_onsets else None,
+        "highways": sorted(
+            ({"rule": r[0], "period": int(r[4]), "drift": [int(r[5]), int(r[6])],
+              "onset": int(r[2]), "onset_exact": r[10] == "1",
+              # column 7 is the cumulative count of distinct cells visited by
+              # certification time, not the footprint of a single period
+              "visited_at_certification": int(r[7])} for r in hw),
+            key=lambda d: (d["period"], d["rule"])),
+    }
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -68,10 +103,19 @@ def main() -> None:
     ap.add_argument("--max-steps", type=int, default=20_000_000)
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 1)
     ap.add_argument("--out", type=Path, default=OUT)
+    ap.add_argument("--summarize-only", action="store_true",
+                    help="rebuild summary.json from an existing rules.csv")
     a = ap.parse_args()
 
-    exe = build(HERE / "build")
     a.out.mkdir(parents=True, exist_ok=True)
+    if a.summarize_only:
+        with open(a.out / "rules.csv") as fh:
+            rows = [line.rstrip("\n").split(",") for line in fh.readlines()[1:] if line.strip()]
+        summary = summarize(rows, a.max_len, a.max_steps)
+        (a.out / "summary.json").write_text(json.dumps(summary, indent=2))
+        print(json.dumps({k: v for k, v in summary.items() if k != "highways"}, indent=2))
+        return
+    exe = build(HERE / "build")
     rules = list(rules_up_to(a.max_len))
     print(f"{len(rules)} rules (lengths 1..{a.max_len}, mirrors implied), "
           f"budget {a.max_steps:,} steps", flush=True)
@@ -91,30 +135,10 @@ def main() -> None:
         for r in rows:
             fh.write(",".join(r) + "\n")
 
-    status = Counter(r[1] for r in rows)
-    by_len = defaultdict(Counter)
-    for r in rows:
-        by_len[len(r[0])][r[1]] += 1
-    hw = [r for r in rows if r[1] == "HIGHWAY"]
-    periods = Counter(int(r[4]) for r in hw)
-    drifts = Counter(f"{r[5]},{r[6]}" for r in hw)
-    summary = {
-        "rules_tested": len(rows),
-        "max_len": a.max_len,
-        "max_steps": a.max_steps,
-        "status": dict(status),
-        "highway_fraction": len(hw) / len(rows) if rows else None,
-        "periods": {str(k): v for k, v in sorted(periods.items())},
-        "drifts": dict(drifts),
-        "by_length": {str(k): dict(v) for k, v in sorted(by_len.items())},
-        "highways": sorted(
-            ({"rule": r[0], "period": int(r[4]), "drift": [int(r[5]), int(r[6])],
-              "onset": int(r[2]), "cells_per_period": int(r[7])} for r in hw),
-            key=lambda d: (d["period"], d["rule"])),
-    }
+    summary = summarize(rows, a.max_len, a.max_steps)
     (a.out / "summary.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps({k: v for k, v in summary.items() if k != "highways"}, indent=2))
-    print(f"{len(hw)} rules certify a highway")
+    print(f"{len(summary['highways'])} rules certify a highway")
 
 
 if __name__ == "__main__":

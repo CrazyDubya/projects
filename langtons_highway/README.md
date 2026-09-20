@@ -201,13 +201,20 @@ had densely filled a 1468x1468 region and was still growing.  The CYCLE class
 now comes from Brent's algorithm over an incremental hash of the whole grid,
 so it means the exact state recurred.
 
-**The budget caveat, tested.**  Certified onsets run as high as 19,171,329
-steps against a 20,000,000 budget, so the cutoff lies *inside* the onset
-distribution and "no highway" can only ever be an upper bound.  To measure how
-badly, 150 randomly chosen timed-out rules were rerun at ten times the budget
-(200 million steps): **none converted** (141 still timed out, 9 left the
-grid).  The 11.4% figure therefore looks stable rather than an artifact, but
-it remains a sample, and a rule needing 10^9 steps would still be misfiled.
+**The budget caveat, tested.**  The largest exactly-measured onset is
+18,962,907 steps against a 20,000,000 budget, so the cutoff lies *inside* the
+onset distribution and "no highway" can only ever be an upper bound.  To
+measure how badly, 150 randomly chosen timed-out rules were rerun at ten times
+the budget (200 million steps): **none converted** (141 still timed out, 9 left
+the grid).  The 11.4% figure therefore looks stable rather than an artifact,
+but it remains a sample, and a rule needing 10^9 steps would still be misfiled.
+
+Six of the 468 onsets are bounds rather than measurements.  The backward scan
+that locates an onset can only look as far as the ring buffer holds, so when it
+reaches that wall it stops and the row is flagged `onset_exact = 0`; the true
+onset is then somewhere at or before the figure shown.  Those six rules are
+named in `summary.json` under `onset_inexact_rules`, and every highway entry
+carries its own `onset_exact` flag so the two kinds are never mixed.
 
 ### 2. How hard is it to trap a highway?  (`trap.py`)
 
