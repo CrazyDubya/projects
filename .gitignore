@@ -133,6 +133,9 @@ dmypy.json
 output/
 */output/
 **/output/
+# ...except deliverables that are meant to be committed. Add a line here
+# for any project whose output/ holds shipped artifacts (see #14/#15).
+!langtons_highway/output/
 
 # Temporary files
 *.tmp
