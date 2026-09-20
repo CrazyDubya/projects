@@ -1,0 +1,4941 @@
+{
+  "rules_tested": 4095,
+  "max_len": 12,
+  "max_steps": 20000000,
+  "status": {
+    "CYCLE": 12,
+    "HIGHWAY": 468,
+    "TIMEOUT": 3365,
+    "OOB": 250
+  },
+  "highway_fraction": 0.11428571428571428,
+  "periods": {
+    "18": 128,
+    "38": 10,
+    "42": 10,
+    "46": 8,
+    "52": 32,
+    "54": 1,
+    "58": 4,
+    "62": 2,
+    "66": 2,
+    "68": 8,
+    "74": 1,
+    "78": 2,
+    "82": 1,
+    "84": 3,
+    "86": 1,
+    "88": 18,
+    "92": 2,
+    "98": 2,
+    "100": 8,
+    "104": 11,
+    "108": 11,
+    "110": 1,
+    "116": 4,
+    "120": 3,
+    "124": 1,
+    "128": 2,
+    "130": 1,
+    "132": 5,
+    "136": 2,
+    "138": 2,
+    "140": 6,
+    "144": 5,
+    "146": 1,
+    "148": 9,
+    "152": 7,
+    "156": 3,
+    "160": 2,
+    "164": 4,
+    "168": 9,
+    "172": 8,
+    "176": 3,
+    "180": 8,
+    "184": 2,
+    "192": 3,
+    "196": 1,
+    "200": 1,
+    "206": 1,
+    "208": 2,
+    "210": 1,
+    "216": 4,
+    "220": 1,
+    "224": 2,
+    "232": 1,
+    "238": 1,
+    "240": 1,
+    "244": 6,
+    "248": 2,
+    "250": 1,
+    "252": 3,
+    "256": 1,
+    "258": 1,
+    "264": 1,
+    "268": 2,
+    "272": 1,
+    "274": 1,
+    "284": 1,
+    "288": 3,
+    "290": 1,
+    "292": 1,
+    "298": 1,
+    "300": 1,
+    "312": 3,
+    "320": 2,
+    "324": 1,
+    "336": 1,
+    "338": 1,
+    "340": 1,
+    "344": 1,
+    "352": 1,
+    "354": 1,
+    "360": 1,
+    "368": 1,
+    "372": 1,
+    "380": 1,
+    "384": 1,
+    "394": 1,
+    "398": 1,
+    "408": 1,
+    "420": 1,
+    "434": 1,
+    "446": 1,
+    "448": 1,
+    "476": 1,
+    "484": 1,
+    "488": 1,
+    "490": 1,
+    "492": 1,
+    "508": 1,
+    "520": 1,
+    "524": 1,
+    "528": 1,
+    "532": 2,
+    "536": 1,
+    "548": 1,
+    "560": 2,
+    "576": 1,
+    "578": 1,
+    "596": 1,
+    "604": 1,
+    "608": 1,
+    "632": 1,
+    "640": 1,
+    "664": 1,
+    "676": 1,
+    "686": 1,
+    "732": 1,
+    "776": 1,
+    "816": 1,
+    "820": 1,
+    "860": 1,
+    "880": 1,
+    "884": 1,
+    "928": 1,
+    "952": 1,
+    "992": 1,
+    "1062": 1,
+    "1128": 1,
+    "1192": 1,
+    "1200": 1,
+    "1272": 1,
+    "1284": 1,
+    "1312": 1,
+    "1544": 1,
+    "1948": 1,
+    "1968": 1
+  },
+  "drifts": {
+    "-2,-2": 40,
+    "1,-1": 138,
+    "2,-2": 88,
+    "-1,1": 22,
+    "-2,2": 65,
+    "2,2": 38,
+    "-4,-4": 6,
+    "6,-6": 2,
+    "-4,4": 5,
+    "4,4": 7,
+    "4,-4": 4,
+    "5,-5": 4,
+    "-3,3": 2,
+    "-6,6": 2,
+    "-3,-3": 2,
+    "-1,-1": 4,
+    "1,1": 10,
+    "-3,-1": 2,
+    "-8,8": 1,
+    "6,6": 2,
+    "3,3": 2,
+    "0,2": 3,
+    "7,7": 1,
+    "-7,7": 1,
+    "-3,5": 1,
+    "10,10": 1,
+    "3,-3": 1,
+    "-4,6": 1,
+    "2,0": 1,
+    "7,-7": 1,
+    "16,0": 1,
+    "-8,-8": 1,
+    "-3,11": 1,
+    "-5,-7": 1,
+    "6,-2": 1,
+    "12,-8": 1,
+    "8,0": 1,
+    "1,-3": 1,
+    "8,8": 1,
+    "-6,-6": 1,
+    "-1,3": 1
+  },
+  "by_length": {
+    "1": {
+      "CYCLE": 1
+    },
+    "2": {
+      "CYCLE": 1,
+      "HIGHWAY": 1
+    },
+    "3": {
+      "CYCLE": 1,
+      "HIGHWAY": 1,
+      "TIMEOUT": 2
+    },
+    "4": {
+      "CYCLE": 1,
+      "HIGHWAY": 2,
+      "OOB": 1,
+      "TIMEOUT": 4
+    },
+    "5": {
+      "CYCLE": 1,
+      "HIGHWAY": 1,
+      "TIMEOUT": 14
+    },
+    "6": {
+      "CYCLE": 1,
+      "HIGHWAY": 4,
+      "TIMEOUT": 26,
+      "OOB": 1
+    },
+    "7": {
+      "CYCLE": 1,
+      "HIGHWAY": 9,
+      "TIMEOUT": 50,
+      "OOB": 4
+    },
+    "8": {
+      "CYCLE": 1,
+      "HIGHWAY": 14,
+      "TIMEOUT": 103,
+      "OOB": 10
+    },
+    "9": {
+      "CYCLE": 1,
+      "HIGHWAY": 31,
+      "TIMEOUT": 209,
+      "OOB": 15
+    },
+    "10": {
+      "CYCLE": 1,
+      "HIGHWAY": 60,
+      "TIMEOUT": 413,
+      "OOB": 38
+    },
+    "11": {
+      "CYCLE": 1,
+      "HIGHWAY": 114,
+      "TIMEOUT": 849,
+      "OOB": 60
+    },
+    "12": {
+      "CYCLE": 1,
+      "HIGHWAY": 231,
+      "TIMEOUT": 1695,
+      "OOB": 121
+    }
+  },
+  "highways": [
+    {
+      "rule": "RRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 39,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLLRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLLRRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRLRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRLRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRLL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRLR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRRL",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLRRLRRRRRR",
+      "period": 18,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 55,
+      "cells_per_period": 286
+    },
+    {
+      "rule": "RRLLLRLRLLL",
+      "period": 38,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 1368,
+      "cells_per_period": 310
+    },
+    {
+      "rule": "RRLLLRLRLLLL",
+      "period": 38,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 118,
+      "cells_per_period": 205
+    },
+    {
+      "rule": "RRRLLL",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRL",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLL",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLLL",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLLR",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLR",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLRL",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRRLLLRRRLRR",
+      "period": 38,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 99,
+      "cells_per_period": 198
+    },
+    {
+      "rule": "RRLLLRL",
+      "period": 42,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 118,
+      "cells_per_period": 359
+    },
+    {
+      "rule": "RRLLLRLRRLLL",
+      "period": 42,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 118,
+      "cells_per_period": 359
+    },
+    {
+      "rule": "RRLLRLR",
+      "period": 42,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 301,
+      "cells_per_period": 221
+    },
+    {
+      "rule": "RRLLRLRRRL",
+      "period": 42,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 982,
+      "cells_per_period": 582
+    },
+    {
+      "rule": "RRLLRLRRRLL",
+      "period": 42,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 337,
+      "cells_per_period": 214
+    },
+    {
+      "rule": "RRLLRLRRRLLL",
+      "period": 42,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 7448,
+      "cells_per_period": 696
+    },
+    {
+      "rule": "RRLLRLRRRLLR",
+      "period": 42,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 297,
+      "cells_per_period": 221
+    },
+    {
+      "rule": "RRLLRLRRRLR",
+      "period": 42,
+      "drift": [
+        -1,
+        -1
+      ],
+      "onset": 4702,
+      "cells_per_period": 438
+    },
+    {
+      "rule": "RRLLRLRRRLRL",
+      "period": 42,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 2504,
+      "cells_per_period": 376
+    },
+    {
+      "rule": "RRLLRLRRRLRR",
+      "period": 42,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 511,
+      "cells_per_period": 188
+    },
+    {
+      "rule": "RRLLRLRLL",
+      "period": 46,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 10833,
+      "cells_per_period": 706
+    },
+    {
+      "rule": "RRLLRLRLLR",
+      "period": 46,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 24620,
+      "cells_per_period": 1310
+    },
+    {
+      "rule": "RRLLRLRLLRR",
+      "period": 46,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 12247,
+      "cells_per_period": 1002
+    },
+    {
+      "rule": "RRLLRLRLLRRL",
+      "period": 46,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 54889,
+      "cells_per_period": 2375
+    },
+    {
+      "rule": "RRLLRLRLLRRR",
+      "period": 46,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 122448,
+      "cells_per_period": 3455
+    },
+    {
+      "rule": "RRLLRRLRRRL",
+      "period": 46,
+      "drift": [
+        -1,
+        -1
+      ],
+      "onset": 912,
+      "cells_per_period": 353
+    },
+    {
+      "rule": "RRLLRRLRRRLR",
+      "period": 46,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 1929,
+      "cells_per_period": 223
+    },
+    {
+      "rule": "RRRLRLLRLLRL",
+      "period": 46,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 34464,
+      "cells_per_period": 2200
+    },
+    {
+      "rule": "RRRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLLRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLLRRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRLRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRLL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRLR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRRL",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRRLRRRLRRRR",
+      "period": 52,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 79,
+      "cells_per_period": 987
+    },
+    {
+      "rule": "RRLLRLRRRRRL",
+      "period": 54,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 13544973,
+      "cells_per_period": 74865
+    },
+    {
+      "rule": "RRLLRLRLLRLR",
+      "period": 58,
+      "drift": [
+        -1,
+        -1
+      ],
+      "onset": 18273,
+      "cells_per_period": 1137
+    },
+    {
+      "rule": "RRRLLRRLRR",
+      "period": 58,
+      "drift": [
+        -1,
+        -1
+      ],
+      "onset": 454,
+      "cells_per_period": 155
+    },
+    {
+      "rule": "RRRLRLLRLLR",
+      "period": 58,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 16908,
+      "cells_per_period": 1945
+    },
+    {
+      "rule": "RRRRLLRLR",
+      "period": 58,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 145,
+      "cells_per_period": 328
+    },
+    {
+      "rule": "RRLLRRRLRLL",
+      "period": 62,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 547533,
+      "cells_per_period": 8508
+    },
+    {
+      "rule": "RRRRLLLLL",
+      "period": 62,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 522,
+      "cells_per_period": 137
+    },
+    {
+      "rule": "RRRRLRLRL",
+      "period": 66,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 2639,
+      "cells_per_period": 244
+    },
+    {
+      "rule": "RRRRLRLRLRRL",
+      "period": 66,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 69892,
+      "cells_per_period": 2094
+    },
+    {
+      "rule": "RRRRL",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRL",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLL",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLLL",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLLR",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLR",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLRL",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRLRRRRLRR",
+      "period": 68,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 103,
+      "cells_per_period": 606
+    },
+    {
+      "rule": "RRRRRLLRRLRR",
+      "period": 74,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 187,
+      "cells_per_period": 132
+    },
+    {
+      "rule": "RRLLRLRLRLRL",
+      "period": 78,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 1840506,
+      "cells_per_period": 20875
+    },
+    {
+      "rule": "RRRRRRLLLLL",
+      "period": 78,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 205,
+      "cells_per_period": 130
+    },
+    {
+      "rule": "RRRRRRLRLRL",
+      "period": 82,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 209,
+      "cells_per_period": 121
+    },
+    {
+      "rule": "RLLLRRLRLRRR",
+      "period": 84,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 241,
+      "cells_per_period": 322
+    },
+    {
+      "rule": "RRRRRL",
+      "period": 84,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 127,
+      "cells_per_period": 247
+    },
+    {
+      "rule": "RRRRRLRRRRRL",
+      "period": 84,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 127,
+      "cells_per_period": 247
+    },
+    {
+      "rule": "RRRRLLRLLL",
+      "period": 86,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 8891,
+      "cells_per_period": 434
+    },
+    {
+      "rule": "RLRLRLRR",
+      "period": 88,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4174,
+      "cells_per_period": 1011
+    },
+    {
+      "rule": "RLRLRLRRR",
+      "period": 88,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 728,
+      "cells_per_period": 232
+    },
+    {
+      "rule": "RLRLRLRRRL",
+      "period": 88,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 1766,
+      "cells_per_period": 380
+    },
+    {
+      "rule": "RLRLRLRRRLL",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 8751,
+      "cells_per_period": 1540
+    },
+    {
+      "rule": "RLRLRLRRRLLL",
+      "period": 88,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4253,
+      "cells_per_period": 738
+    },
+    {
+      "rule": "RLRLRLRRRLLR",
+      "period": 88,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 6458,
+      "cells_per_period": 1015
+    },
+    {
+      "rule": "RLRLRLRRRLR",
+      "period": 88,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4073,
+      "cells_per_period": 1095
+    },
+    {
+      "rule": "RLRLRLRRRLRL",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 3429,
+      "cells_per_period": 955
+    },
+    {
+      "rule": "RLRLRLRRRLRR",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 819,
+      "cells_per_period": 468
+    },
+    {
+      "rule": "RLRLRLRRRR",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 8585,
+      "cells_per_period": 1584
+    },
+    {
+      "rule": "RLRLRLRRRRL",
+      "period": 88,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 3232,
+      "cells_per_period": 992
+    },
+    {
+      "rule": "RLRLRLRRRRLL",
+      "period": 88,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 763,
+      "cells_per_period": 496
+    },
+    {
+      "rule": "RLRLRLRRRRLR",
+      "period": 88,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2872,
+      "cells_per_period": 1239
+    },
+    {
+      "rule": "RLRLRLRRRRR",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 2755,
+      "cells_per_period": 814
+    },
+    {
+      "rule": "RLRLRLRRRRRL",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 4477,
+      "cells_per_period": 923
+    },
+    {
+      "rule": "RLRLRLRRRRRR",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 3015,
+      "cells_per_period": 749
+    },
+    {
+      "rule": "RRLLLRLRLL",
+      "period": 88,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1051,
+      "cells_per_period": 364
+    },
+    {
+      "rule": "RRLLLRLRLLLR",
+      "period": 88,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1736,
+      "cells_per_period": 261
+    },
+    {
+      "rule": "RRRRLLL",
+      "period": 92,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 115,
+      "cells_per_period": 1255
+    },
+    {
+      "rule": "RRRRLLLRRRRL",
+      "period": 92,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 115,
+      "cells_per_period": 1255
+    },
+    {
+      "rule": "RRRRLLRLLRL",
+      "period": 98,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 1189232,
+      "cells_per_period": 9985
+    },
+    {
+      "rule": "RRRRRRLLRLLL",
+      "period": 98,
+      "drift": [
+        -1,
+        1
+      ],
+      "onset": 560150,
+      "cells_per_period": 15414
+    },
+    {
+      "rule": "RLRLLRLLRR",
+      "period": 100,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 923,
+      "cells_per_period": 412
+    },
+    {
+      "rule": "RLRLLRLLRRR",
+      "period": 100,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 780,
+      "cells_per_period": 223
+    },
+    {
+      "rule": "RLRLLRLLRRRL",
+      "period": 100,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1283,
+      "cells_per_period": 380
+    },
+    {
+      "rule": "RLRLLRLLRRRR",
+      "period": 100,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 9318,
+      "cells_per_period": 1091
+    },
+    {
+      "rule": "RRLLLRLRRLRR",
+      "period": 100,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1949,
+      "cells_per_period": 437
+    },
+    {
+      "rule": "RRRLLRLR",
+      "period": 100,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 129,
+      "cells_per_period": 375
+    },
+    {
+      "rule": "RRRLLRLRRRRL",
+      "period": 100,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 129,
+      "cells_per_period": 375
+    },
+    {
+      "rule": "RRRRRRL",
+      "period": 100,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 151,
+      "cells_per_period": 107
+    },
+    {
+      "rule": "RL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 9977,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 10077,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRLRL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 10077,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRLRLRL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 10077,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRLRLRLRL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 10077,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRLRLRLRLL",
+      "period": 104,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 992,
+      "cells_per_period": 432
+    },
+    {
+      "rule": "RLRLRLRLRLLL",
+      "period": 104,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 3108,
+      "cells_per_period": 776
+    },
+    {
+      "rule": "RLRLRLRLRLLR",
+      "period": 104,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 5405,
+      "cells_per_period": 877
+    },
+    {
+      "rule": "RLRLRLRLRLR",
+      "period": 104,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 872,
+      "cells_per_period": 442
+    },
+    {
+      "rule": "RLRLRLRLRLRL",
+      "period": 104,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 10077,
+      "cells_per_period": 1648
+    },
+    {
+      "rule": "RLRLRLRLRLRR",
+      "period": 104,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 570,
+      "cells_per_period": 450
+    },
+    {
+      "rule": "RLRLRLRLR",
+      "period": 108,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 8627,
+      "cells_per_period": 1225
+    },
+    {
+      "rule": "RLRLRLRLRRL",
+      "period": 108,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 7536,
+      "cells_per_period": 1068
+    },
+    {
+      "rule": "RLRLRLRLRRLL",
+      "period": 108,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 1270,
+      "cells_per_period": 380
+    },
+    {
+      "rule": "RLRLRLRLRRLR",
+      "period": 108,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1585,
+      "cells_per_period": 393
+    },
+    {
+      "rule": "RRLLLRLLR",
+      "period": 108,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 32157,
+      "cells_per_period": 2229
+    },
+    {
+      "rule": "RRLLRLLRLRL",
+      "period": 108,
+      "drift": [
+        0,
+        2
+      ],
+      "onset": 1636907,
+      "cells_per_period": 18976
+    },
+    {
+      "rule": "RRLLRLRLLRL",
+      "period": 108,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 346,
+      "cells_per_period": 148
+    },
+    {
+      "rule": "RRLLRLRRRRLL",
+      "period": 108,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 2762753,
+      "cells_per_period": 29592
+    },
+    {
+      "rule": "RRLLRRLRRR",
+      "period": 108,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 9576269,
+      "cells_per_period": 62352
+    },
+    {
+      "rule": "RRRLRRLLRLL",
+      "period": 108,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 80,
+      "cells_per_period": 274
+    },
+    {
+      "rule": "RRRRRLLL",
+      "period": 108,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 131,
+      "cells_per_period": 143
+    },
+    {
+      "rule": "RRRRRLLRLLRL",
+      "period": 110,
+      "drift": [
+        1,
+        1
+      ],
+      "onset": 267324,
+      "cells_per_period": 4925
+    },
+    {
+      "rule": "RLRLLLRLLLRR",
+      "period": 116,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1260,
+      "cells_per_period": 358
+    },
+    {
+      "rule": "RLRLLRRRLLR",
+      "period": 116,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1339,
+      "cells_per_period": 571
+    },
+    {
+      "rule": "RLRLLRRRLLRR",
+      "period": 116,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 20416,
+      "cells_per_period": 1350
+    },
+    {
+      "rule": "RRRRRRRL",
+      "period": 116,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 175,
+      "cells_per_period": 267
+    },
+    {
+      "rule": "RLRLLRLL",
+      "period": 120,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 129218,
+      "cells_per_period": 6432
+    },
+    {
+      "rule": "RRLLLRR",
+      "period": 120,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 977,
+      "cells_per_period": 266
+    },
+    {
+      "rule": "RRLLLRRRRLLL",
+      "period": 120,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1673,
+      "cells_per_period": 281
+    },
+    {
+      "rule": "RRRRRRLLL",
+      "period": 124,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 147,
+      "cells_per_period": 245
+    },
+    {
+      "rule": "RLRLLRLLRLRL",
+      "period": 128,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 55787,
+      "cells_per_period": 3900
+    },
+    {
+      "rule": "RLRLLRLRLRRL",
+      "period": 128,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2139,
+      "cells_per_period": 554
+    },
+    {
+      "rule": "RRRLLRLLRRLR",
+      "period": 130,
+      "drift": [
+        1,
+        -1
+      ],
+      "onset": 6352647,
+      "cells_per_period": 37263
+    },
+    {
+      "rule": "RLLRRLRLRLRR",
+      "period": 132,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4168657,
+      "cells_per_period": 56856
+    },
+    {
+      "rule": "RLRLLLRLLRLL",
+      "period": 132,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 59334,
+      "cells_per_period": 2786
+    },
+    {
+      "rule": "RRRRLLRRLRR",
+      "period": 132,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 171,
+      "cells_per_period": 150
+    },
+    {
+      "rule": "RRRRRLLRLR",
+      "period": 132,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 161,
+      "cells_per_period": 149
+    },
+    {
+      "rule": "RRRRRRRRL",
+      "period": 132,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 199,
+      "cells_per_period": 237
+    },
+    {
+      "rule": "RRLLRRLLRLRR",
+      "period": 136,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 200963,
+      "cells_per_period": 4291
+    },
+    {
+      "rule": "RRRRRLLLRRR",
+      "period": 136,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 143356,
+      "cells_per_period": 3643
+    },
+    {
+      "rule": "RLRLRLLRLR",
+      "period": 138,
+      "drift": [
+        -3,
+        -1
+      ],
+      "onset": 1426,
+      "cells_per_period": 846
+    },
+    {
+      "rule": "RLRLRLLRLRRL",
+      "period": 138,
+      "drift": [
+        -3,
+        -1
+      ],
+      "onset": 1426,
+      "cells_per_period": 846
+    },
+    {
+      "rule": "RLRLLLLRLLR",
+      "period": 140,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 3243,
+      "cells_per_period": 663
+    },
+    {
+      "rule": "RRLLLRLLLLR",
+      "period": 140,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 19640,
+      "cells_per_period": 1211
+    },
+    {
+      "rule": "RRRRLLRLLLR",
+      "period": 140,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 759,
+      "cells_per_period": 523
+    },
+    {
+      "rule": "RRRRLRRLLRLL",
+      "period": 140,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 18200,
+      "cells_per_period": 1139
+    },
+    {
+      "rule": "RRRRRLLLLL",
+      "period": 140,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 189,
+      "cells_per_period": 274
+    },
+    {
+      "rule": "RRRRRRRLLL",
+      "period": 140,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 163,
+      "cells_per_period": 219
+    },
+    {
+      "rule": "RLRLLLRLLRRR",
+      "period": 144,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 105856,
+      "cells_per_period": 4557
+    },
+    {
+      "rule": "RRLLLRLLLLLR",
+      "period": 144,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 607010,
+      "cells_per_period": 15056
+    },
+    {
+      "rule": "RRLLLRRRRRRL",
+      "period": 144,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 10653,
+      "cells_per_period": 890
+    },
+    {
+      "rule": "RRRRRLLLRRRR",
+      "period": 144,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4686,
+      "cells_per_period": 354
+    },
+    {
+      "rule": "RRRRRRLLLRR",
+      "period": 144,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 59426,
+      "cells_per_period": 1629
+    },
+    {
+      "rule": "RLRLRLLRLRLR",
+      "period": 146,
+      "drift": [
+        1,
+        -3
+      ],
+      "onset": 21606,
+      "cells_per_period": 2363
+    },
+    {
+      "rule": "RRLLLRRRLLRL",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 2694,
+      "cells_per_period": 346
+    },
+    {
+      "rule": "RRLLRLRRL",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1210285,
+      "cells_per_period": 16833
+    },
+    {
+      "rule": "RRRRLLLLRLR",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 535,
+      "cells_per_period": 134
+    },
+    {
+      "rule": "RRRRLRLLRRL",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 309,
+      "cells_per_period": 486
+    },
+    {
+      "rule": "RRRRLRLRRLR",
+      "period": 148,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 22327,
+      "cells_per_period": 1186
+    },
+    {
+      "rule": "RRRRRLLRLRRR",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 50909,
+      "cells_per_period": 2023
+    },
+    {
+      "rule": "RRRRRLRLRL",
+      "period": 148,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 193,
+      "cells_per_period": 132
+    },
+    {
+      "rule": "RRRRRRLLRLR",
+      "period": 148,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 177,
+      "cells_per_period": 383
+    },
+    {
+      "rule": "RRRRRRRRRL",
+      "period": 148,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 223,
+      "cells_per_period": 487
+    },
+    {
+      "rule": "RLLRLRLLLRRR",
+      "period": 152,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1798243,
+      "cells_per_period": 26624
+    },
+    {
+      "rule": "RLLRLRRLLRL",
+      "period": 152,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 12091631,
+      "cells_per_period": 108280
+    },
+    {
+      "rule": "RLRRLRLLRRLL",
+      "period": 152,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 6493,
+      "cells_per_period": 733
+    },
+    {
+      "rule": "RRLLLRLLRLLL",
+      "period": 152,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 172663,
+      "cells_per_period": 5661
+    },
+    {
+      "rule": "RRLLLRLLRRRL",
+      "period": 152,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 44622,
+      "cells_per_period": 2142
+    },
+    {
+      "rule": "RRRRRRLLLRRR",
+      "period": 152,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 138436,
+      "cells_per_period": 2932
+    },
+    {
+      "rule": "RRRRRRLRLLR",
+      "period": 152,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 690,
+      "cells_per_period": 299
+    },
+    {
+      "rule": "RRLRLRRLRRRR",
+      "period": 156,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 48717,
+      "cells_per_period": 2359
+    },
+    {
+      "rule": "RRRRRLLRLLLR",
+      "period": 156,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 215,
+      "cells_per_period": 717
+    },
+    {
+      "rule": "RRRRRRRRLLL",
+      "period": 156,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 179,
+      "cells_per_period": 107
+    },
+    {
+      "rule": "RRRRRRLRLLRR",
+      "period": 160,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 706,
+      "cells_per_period": 290
+    },
+    {
+      "rule": "RRRRRRRLLLRR",
+      "period": 160,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 401501,
+      "cells_per_period": 5850
+    },
+    {
+      "rule": "RRRRRLLLLRLR",
+      "period": 164,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 217,
+      "cells_per_period": 121
+    },
+    {
+      "rule": "RRRRRLRLRRLR",
+      "period": 164,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 219,
+      "cells_per_period": 232
+    },
+    {
+      "rule": "RRRRRRRLLRLR",
+      "period": 164,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 193,
+      "cells_per_period": 238
+    },
+    {
+      "rule": "RRRRRRRRRRL",
+      "period": 164,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 247,
+      "cells_per_period": 67
+    },
+    {
+      "rule": "RLRRLLR",
+      "period": 168,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 192632,
+      "cells_per_period": 8171
+    },
+    {
+      "rule": "RLRRLLRRLR",
+      "period": 168,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 677343,
+      "cells_per_period": 19239
+    },
+    {
+      "rule": "RLRRLLRRLRR",
+      "period": 168,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1384,
+      "cells_per_period": 510
+    },
+    {
+      "rule": "RLRRLLRRLRRR",
+      "period": 168,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 130688,
+      "cells_per_period": 4713
+    },
+    {
+      "rule": "RRLLLRRLLR",
+      "period": 168,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 13325,
+      "cells_per_period": 1252
+    },
+    {
+      "rule": "RRLLRRLLLRRR",
+      "period": 168,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 387081,
+      "cells_per_period": 7775
+    },
+    {
+      "rule": "RRLLRRLLRLR",
+      "period": 168,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 2779384,
+      "cells_per_period": 26110
+    },
+    {
+      "rule": "RRRLRLLLLR",
+      "period": 168,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 163366,
+      "cells_per_period": 3965
+    },
+    {
+      "rule": "RRRRRRRLRLLR",
+      "period": 168,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1576,
+      "cells_per_period": 258
+    },
+    {
+      "rule": "RLRLLLLRLLLR",
+      "period": 172,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 48143,
+      "cells_per_period": 3359
+    },
+    {
+      "rule": "RLRLLRRRRLL",
+      "period": 172,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 7415,
+      "cells_per_period": 610
+    },
+    {
+      "rule": "RLRRLLRRLRRL",
+      "period": 172,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 698150,
+      "cells_per_period": 16861
+    },
+    {
+      "rule": "RLRRLRLLRRL",
+      "period": 172,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4714,
+      "cells_per_period": 718
+    },
+    {
+      "rule": "RRLLRRRLRLLL",
+      "period": 172,
+      "drift": [
+        0,
+        2
+      ],
+      "onset": 3354101,
+      "cells_per_period": 26437
+    },
+    {
+      "rule": "RRRRLRLLRRLL",
+      "period": 172,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2791,
+      "cells_per_period": 377
+    },
+    {
+      "rule": "RRRRRRRLLLLL",
+      "period": 172,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 221,
+      "cells_per_period": 437
+    },
+    {
+      "rule": "RRRRRRRRRLLL",
+      "period": 172,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 195,
+      "cells_per_period": 429
+    },
+    {
+      "rule": "RRLLLLRLRLLR",
+      "period": 176,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1482585,
+      "cells_per_period": 16952
+    },
+    {
+      "rule": "RRLLLRRLRLRR",
+      "period": 176,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 484879,
+      "cells_per_period": 11263
+    },
+    {
+      "rule": "RRRRRRRLRRLL",
+      "period": 176,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 10046,
+      "cells_per_period": 733
+    },
+    {
+      "rule": "RLRLLLRRRLLR",
+      "period": 180,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 163098,
+      "cells_per_period": 4665
+    },
+    {
+      "rule": "RLRLRLLRLLLL",
+      "period": 180,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 2140144,
+      "cells_per_period": 58932
+    },
+    {
+      "rule": "RLRRLRLLRLLL",
+      "period": 180,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 809257,
+      "cells_per_period": 18664
+    },
+    {
+      "rule": "RRLRLRRLRRR",
+      "period": 180,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 5316,
+      "cells_per_period": 686
+    },
+    {
+      "rule": "RRRRLLRRLRRR",
+      "period": 180,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 862,
+      "cells_per_period": 668
+    },
+    {
+      "rule": "RRRRRLRLLLLR",
+      "period": 180,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2817859,
+      "cells_per_period": 23755
+    },
+    {
+      "rule": "RRRRRRRLRLRL",
+      "period": 180,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 225,
+      "cells_per_period": 319
+    },
+    {
+      "rule": "RRRRRRRRRRRL",
+      "period": 180,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 271,
+      "cells_per_period": 287
+    },
+    {
+      "rule": "RLRRLLRRRL",
+      "period": 184,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 157412,
+      "cells_per_period": 6041
+    },
+    {
+      "rule": "RRLRLRLRLRRR",
+      "period": 184,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 16104012,
+      "cells_per_period": 121014
+    },
+    {
+      "rule": "RLRLRLLRLLL",
+      "period": 192,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 677199,
+      "cells_per_period": 25043
+    },
+    {
+      "rule": "RRLLLRRLRRRL",
+      "period": 192,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 243386,
+      "cells_per_period": 6003
+    },
+    {
+      "rule": "RRRRLLLLLRR",
+      "period": 192,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1205,
+      "cells_per_period": 196
+    },
+    {
+      "rule": "RRRRRLRLRLR",
+      "period": 196,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 2772,
+      "cells_per_period": 329
+    },
+    {
+      "rule": "RLRRLRLLRR",
+      "period": 200,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 5290350,
+      "cells_per_period": 70426
+    },
+    {
+      "rule": "RRLLLRLRRLRL",
+      "period": 206,
+      "drift": [
+        5,
+        -5
+      ],
+      "onset": 167,
+      "cells_per_period": 435
+    },
+    {
+      "rule": "RRLLLRRRRLLR",
+      "period": 208,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 245413,
+      "cells_per_period": 8343
+    },
+    {
+      "rule": "RRRLRLLLRLRL",
+      "period": 208,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2556231,
+      "cells_per_period": 26189
+    },
+    {
+      "rule": "RLRLLRLLLRLL",
+      "period": 210,
+      "drift": [
+        -1,
+        3
+      ],
+      "onset": 1677,
+      "cells_per_period": 725
+    },
+    {
+      "rule": "RRLRRRLL",
+      "period": 216,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 2834,
+      "cells_per_period": 741
+    },
+    {
+      "rule": "RRLRRRLLRRL",
+      "period": 216,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 120059,
+      "cells_per_period": 4781
+    },
+    {
+      "rule": "RRLRRRLLRRLR",
+      "period": 216,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 484861,
+      "cells_per_period": 12203
+    },
+    {
+      "rule": "RRRRRLRLL",
+      "period": 216,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 348707,
+      "cells_per_period": 5843
+    },
+    {
+      "rule": "RRRRLRLLRRLR",
+      "period": 220,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4109890,
+      "cells_per_period": 37699
+    },
+    {
+      "rule": "RRLLLRRLRR",
+      "period": 224,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 6387373,
+      "cells_per_period": 51691
+    },
+    {
+      "rule": "RRRLRRLRRLRR",
+      "period": 224,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1586724,
+      "cells_per_period": 20525
+    },
+    {
+      "rule": "RRLLLRRRRR",
+      "period": 232,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4059,
+      "cells_per_period": 471
+    },
+    {
+      "rule": "RRLLRRLRRRR",
+      "period": 238,
+      "drift": [
+        3,
+        3
+      ],
+      "onset": 16478282,
+      "cells_per_period": 87307
+    },
+    {
+      "rule": "RLLLLRLLLR",
+      "period": 240,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 22338,
+      "cells_per_period": 1421
+    },
+    {
+      "rule": "RRLLLRRRLRR",
+      "period": 244,
+      "drift": [
+        0,
+        2
+      ],
+      "onset": 4480005,
+      "cells_per_period": 37915
+    },
+    {
+      "rule": "RRLLLRRRLRRR",
+      "period": 244,
+      "drift": [
+        2,
+        0
+      ],
+      "onset": 1164553,
+      "cells_per_period": 13903
+    },
+    {
+      "rule": "RRLRRRLLLR",
+      "period": 244,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 503410,
+      "cells_per_period": 12134
+    },
+    {
+      "rule": "RRLRRRLLLRR",
+      "period": 244,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1943094,
+      "cells_per_period": 31826
+    },
+    {
+      "rule": "RRLRRRLLLRRR",
+      "period": 244,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 705933,
+      "cells_per_period": 15564
+    },
+    {
+      "rule": "RRRRRLRRRLRL",
+      "period": 244,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 2206744,
+      "cells_per_period": 23011
+    },
+    {
+      "rule": "RRLLLRRR",
+      "period": 248,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 1543281,
+      "cells_per_period": 21616
+    },
+    {
+      "rule": "RRRLLRLRR",
+      "period": 248,
+      "drift": [
+        -4,
+        4
+      ],
+      "onset": 967,
+      "cells_per_period": 357
+    },
+    {
+      "rule": "RRLLRRLRRRRR",
+      "period": 250,
+      "drift": [
+        -3,
+        3
+      ],
+      "onset": 9256187,
+      "cells_per_period": 52863
+    },
+    {
+      "rule": "RRLLLRRRRRR",
+      "period": 252,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4172,
+      "cells_per_period": 522
+    },
+    {
+      "rule": "RRRLLRRLRRLL",
+      "period": 252,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 9708476,
+      "cells_per_period": 50443
+    },
+    {
+      "rule": "RRRRLLRLRR",
+      "period": 252,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 8619,
+      "cells_per_period": 611
+    },
+    {
+      "rule": "RRRLRRLRRLRL",
+      "period": 256,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 720583,
+      "cells_per_period": 12890
+    },
+    {
+      "rule": "RRLLLRLRLLRR",
+      "period": 258,
+      "drift": [
+        5,
+        -5
+      ],
+      "onset": 1680,
+      "cells_per_period": 585
+    },
+    {
+      "rule": "RRRRLLRRLLLR",
+      "period": 264,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 3053,
+      "cells_per_period": 318
+    },
+    {
+      "rule": "RRLLRLRLR",
+      "period": 268,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 11916160,
+      "cells_per_period": 79449
+    },
+    {
+      "rule": "RRRLLLR",
+      "period": 268,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 5716,
+      "cells_per_period": 640
+    },
+    {
+      "rule": "RRLLLRRRRRRR",
+      "period": 272,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4416,
+      "cells_per_period": 648
+    },
+    {
+      "rule": "RRRLRLLRLL",
+      "period": 274,
+      "drift": [
+        -3,
+        -3
+      ],
+      "onset": 69379,
+      "cells_per_period": 3691
+    },
+    {
+      "rule": "RRRLLRLRRRR",
+      "period": 284,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 6710,
+      "cells_per_period": 770
+    },
+    {
+      "rule": "RLRLLRRRLL",
+      "period": 288,
+      "drift": [
+        -4,
+        4
+      ],
+      "onset": 37618,
+      "cells_per_period": 1919
+    },
+    {
+      "rule": "RRLLLRRRLLR",
+      "period": 288,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 39598,
+      "cells_per_period": 1989
+    },
+    {
+      "rule": "RRRRRRLRRLRL",
+      "period": 288,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 292367,
+      "cells_per_period": 5009
+    },
+    {
+      "rule": "RRRRLLLLRL",
+      "period": 290,
+      "drift": [
+        -3,
+        3
+      ],
+      "onset": 722,
+      "cells_per_period": 399
+    },
+    {
+      "rule": "RRRRLLLLLRRR",
+      "period": 292,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 2430545,
+      "cells_per_period": 24583
+    },
+    {
+      "rule": "RLLLRLLRRRL",
+      "period": 298,
+      "drift": [
+        3,
+        3
+      ],
+      "onset": 647356,
+      "cells_per_period": 14778
+    },
+    {
+      "rule": "RRLRRRLRRR",
+      "period": 300,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 16897953,
+      "cells_per_period": 124625
+    },
+    {
+      "rule": "RRLRLRRLLRRR",
+      "period": 312,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 44868,
+      "cells_per_period": 2275
+    },
+    {
+      "rule": "RRRLLRRRLRRR",
+      "period": 312,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 17301,
+      "cells_per_period": 748
+    },
+    {
+      "rule": "RRRRLRLLRRRR",
+      "period": 312,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 15620097,
+      "cells_per_period": 88228
+    },
+    {
+      "rule": "RLRLRLLRLL",
+      "period": 320,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 56067,
+      "cells_per_period": 5739
+    },
+    {
+      "rule": "RLRLRLLRLLRL",
+      "period": 320,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 20949,
+      "cells_per_period": 3062
+    },
+    {
+      "rule": "RRRLLRLRRRRR",
+      "period": 324,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1245784,
+      "cells_per_period": 13566
+    },
+    {
+      "rule": "RRRLRRRRLLLR",
+      "period": 336,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 3339801,
+      "cells_per_period": 47139
+    },
+    {
+      "rule": "RRLLLRLRRLR",
+      "period": 338,
+      "drift": [
+        7,
+        7
+      ],
+      "onset": 567,
+      "cells_per_period": 923
+    },
+    {
+      "rule": "RLRLRLRRLRLR",
+      "period": 340,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 1328129,
+      "cells_per_period": 47535
+    },
+    {
+      "rule": "RRRLRRLRLLRL",
+      "period": 344,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 231469,
+      "cells_per_period": 7637
+    },
+    {
+      "rule": "RRLLRRRLRR",
+      "period": 352,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 11452415,
+      "cells_per_period": 70871
+    },
+    {
+      "rule": "RRRLLLRRLRRL",
+      "period": 354,
+      "drift": [
+        5,
+        -5
+      ],
+      "onset": 574,
+      "cells_per_period": 748
+    },
+    {
+      "rule": "RRLLLRRRRRL",
+      "period": 360,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1676632,
+      "cells_per_period": 22389
+    },
+    {
+      "rule": "RRLLLRRLLRL",
+      "period": 368,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 11047002,
+      "cells_per_period": 81615
+    },
+    {
+      "rule": "RRRRLRLLRRR",
+      "period": 372,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 1301661,
+      "cells_per_period": 15994
+    },
+    {
+      "rule": "RRRRLRRLL",
+      "period": 380,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 1847577,
+      "cells_per_period": 24170
+    },
+    {
+      "rule": "RRRRLRLLRR",
+      "period": 384,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 13005,
+      "cells_per_period": 870
+    },
+    {
+      "rule": "RRLLLRLRRLL",
+      "period": 394,
+      "drift": [
+        -7,
+        7
+      ],
+      "onset": 163,
+      "cells_per_period": 357
+    },
+    {
+      "rule": "RRLLLRLRRLLR",
+      "period": 398,
+      "drift": [
+        7,
+        -7
+      ],
+      "onset": 578,
+      "cells_per_period": 362
+    },
+    {
+      "rule": "RRLLLRRLRRRR",
+      "period": 408,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 4411,
+      "cells_per_period": 869
+    },
+    {
+      "rule": "RLRLLRLRLRL",
+      "period": 420,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 56574,
+      "cells_per_period": 4026
+    },
+    {
+      "rule": "RRRRRLLRRLLL",
+      "period": 434,
+      "drift": [
+        3,
+        -3
+      ],
+      "onset": 32687,
+      "cells_per_period": 1476
+    },
+    {
+      "rule": "RRRRLLRRRLRR",
+      "period": 446,
+      "drift": [
+        -3,
+        -3
+      ],
+      "onset": 200022,
+      "cells_per_period": 3902
+    },
+    {
+      "rule": "RRLLLRRRRLL",
+      "period": 448,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 11355,
+      "cells_per_period": 1169
+    },
+    {
+      "rule": "RLRRRLRLL",
+      "period": 476,
+      "drift": [
+        4,
+        -4
+      ],
+      "onset": 11775,
+      "cells_per_period": 1151
+    },
+    {
+      "rule": "RLRLRLLRRRLL",
+      "period": 484,
+      "drift": [
+        8,
+        0
+      ],
+      "onset": 6062,
+      "cells_per_period": 1738
+    },
+    {
+      "rule": "RRRLLLRRR",
+      "period": 488,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 6772883,
+      "cells_per_period": 46059
+    },
+    {
+      "rule": "RLRLRLLLRRL",
+      "period": 490,
+      "drift": [
+        -3,
+        5
+      ],
+      "onset": 502785,
+      "cells_per_period": 21424
+    },
+    {
+      "rule": "RRRRRLRLRLRR",
+      "period": 492,
+      "drift": [
+        -2,
+        -2
+      ],
+      "onset": 4621515,
+      "cells_per_period": 32920
+    },
+    {
+      "rule": "RRLLLRLLRLR",
+      "period": 508,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 19171329,
+      "cells_per_period": 120255
+    },
+    {
+      "rule": "RRRRLLRRL",
+      "period": 520,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 1858344,
+      "cells_per_period": 16110
+    },
+    {
+      "rule": "RRRLLLRRRR",
+      "period": 524,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 4146465,
+      "cells_per_period": 30638
+    },
+    {
+      "rule": "RLRLLLRLLR",
+      "period": 528,
+      "drift": [
+        4,
+        -4
+      ],
+      "onset": 1568691,
+      "cells_per_period": 30890
+    },
+    {
+      "rule": "RRRLRRLLRLLR",
+      "period": 532,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 233562,
+      "cells_per_period": 8375
+    },
+    {
+      "rule": "RRRRLLLR",
+      "period": 532,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 55912,
+      "cells_per_period": 2237
+    },
+    {
+      "rule": "RRRRLLLRRRL",
+      "period": 536,
+      "drift": [
+        4,
+        -4
+      ],
+      "onset": 5078,
+      "cells_per_period": 791
+    },
+    {
+      "rule": "RLRLLLLRLLLL",
+      "period": 548,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 236591,
+      "cells_per_period": 9548
+    },
+    {
+      "rule": "RRRLLLRRRRR",
+      "period": 560,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 2194242,
+      "cells_per_period": 19045
+    },
+    {
+      "rule": "RRRRLRRLLRLR",
+      "period": 560,
+      "drift": [
+        -4,
+        4
+      ],
+      "onset": 13546415,
+      "cells_per_period": 83057
+    },
+    {
+      "rule": "RRRLLLRRLR",
+      "period": 576,
+      "drift": [
+        -4,
+        4
+      ],
+      "onset": 9449049,
+      "cells_per_period": 70671
+    },
+    {
+      "rule": "RLLRLRRRL",
+      "period": 578,
+      "drift": [
+        5,
+        -5
+      ],
+      "onset": 14973493,
+      "cells_per_period": 129687
+    },
+    {
+      "rule": "RRRLLLRRRRRR",
+      "period": 596,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 786683,
+      "cells_per_period": 10388
+    },
+    {
+      "rule": "RRRRLLLRRR",
+      "period": 604,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 1074049,
+      "cells_per_period": 12964
+    },
+    {
+      "rule": "RLRLLRRRLLRL",
+      "period": 608,
+      "drift": [
+        -6,
+        -6
+      ],
+      "onset": 15622,
+      "cells_per_period": 1741
+    },
+    {
+      "rule": "RRRRLLLRLLRL",
+      "period": 632,
+      "drift": [
+        4,
+        -4
+      ],
+      "onset": 1998849,
+      "cells_per_period": 26208
+    },
+    {
+      "rule": "RRRRLLLRRRR",
+      "period": 640,
+      "drift": [
+        -2,
+        2
+      ],
+      "onset": 6314039,
+      "cells_per_period": 37930
+    },
+    {
+      "rule": "RRRRRLLLR",
+      "period": 664,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 8744719,
+      "cells_per_period": 64466
+    },
+    {
+      "rule": "RRRRLLLRRRRR",
+      "period": 676,
+      "drift": [
+        2,
+        -2
+      ],
+      "onset": 18962907,
+      "cells_per_period": 73538
+    },
+    {
+      "rule": "RLRRLLRLRLRR",
+      "period": 686,
+      "drift": [
+        -5,
+        -7
+      ],
+      "onset": 555362,
+      "cells_per_period": 13652
+    },
+    {
+      "rule": "RLRRLLRLLLLL",
+      "period": 732,
+      "drift": [
+        6,
+        -2
+      ],
+      "onset": 860474,
+      "cells_per_period": 21815
+    },
+    {
+      "rule": "RRLRLLRLR",
+      "period": 776,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 10850523,
+      "cells_per_period": 100615
+    },
+    {
+      "rule": "RRRRLLLLLR",
+      "period": 816,
+      "drift": [
+        -6,
+        6
+      ],
+      "onset": 208528,
+      "cells_per_period": 6222
+    },
+    {
+      "rule": "RRRLLRRRLRR",
+      "period": 820,
+      "drift": [
+        -6,
+        6
+      ],
+      "onset": 202542,
+      "cells_per_period": 4633
+    },
+    {
+      "rule": "RRRRRRLLLRLL",
+      "period": 860,
+      "drift": [
+        6,
+        6
+      ],
+      "onset": 1709071,
+      "cells_per_period": 17877
+    },
+    {
+      "rule": "RRLRLRRLLRR",
+      "period": 880,
+      "drift": [
+        2,
+        2
+      ],
+      "onset": 67282,
+      "cells_per_period": 5239
+    },
+    {
+      "rule": "RRRRRRLLLLLR",
+      "period": 884,
+      "drift": [
+        -4,
+        4
+      ],
+      "onset": 287327,
+      "cells_per_period": 5832
+    },
+    {
+      "rule": "RRRLLRRLR",
+      "period": 928,
+      "drift": [
+        6,
+        -6
+      ],
+      "onset": 151095,
+      "cells_per_period": 4337
+    },
+    {
+      "rule": "RRLRRRLRLRRL",
+      "period": 952,
+      "drift": [
+        -4,
+        6
+      ],
+      "onset": 14343140,
+      "cells_per_period": 158931
+    },
+    {
+      "rule": "RLRRRLRLLRLR",
+      "period": 992,
+      "drift": [
+        -8,
+        -8
+      ],
+      "onset": 201370,
+      "cells_per_period": 7413
+    },
+    {
+      "rule": "RLRRLRLRLRRR",
+      "period": 1062,
+      "drift": [
+        -3,
+        11
+      ],
+      "onset": 48892,
+      "cells_per_period": 3648
+    },
+    {
+      "rule": "RLRLRLRLLRLL",
+      "period": 1128,
+      "drift": [
+        12,
+        -8
+      ],
+      "onset": 16141256,
+      "cells_per_period": 299680
+    },
+    {
+      "rule": "RLRLLRLRLRR",
+      "period": 1192,
+      "drift": [
+        10,
+        10
+      ],
+      "onset": 6452264,
+      "cells_per_period": 115971
+    },
+    {
+      "rule": "RRRRRLLLLLR",
+      "period": 1200,
+      "drift": [
+        -4,
+        -4
+      ],
+      "onset": 596234,
+      "cells_per_period": 15948
+    },
+    {
+      "rule": "RRLRLLRLRRRR",
+      "period": 1272,
+      "drift": [
+        6,
+        -6
+      ],
+      "onset": 117599,
+      "cells_per_period": 4703
+    },
+    {
+      "rule": "RRRRLLRLRRR",
+      "period": 1284,
+      "drift": [
+        6,
+        6
+      ],
+      "onset": 19466,
+      "cells_per_period": 1140
+    },
+    {
+      "rule": "RLRLRLLRLLLR",
+      "period": 1312,
+      "drift": [
+        8,
+        8
+      ],
+      "onset": 3488661,
+      "cells_per_period": 88738
+    },
+    {
+      "rule": "RRRRRRRRLRLL",
+      "period": 1544,
+      "drift": [
+        4,
+        4
+      ],
+      "onset": 4759724,
+      "cells_per_period": 29389
+    },
+    {
+      "rule": "RRRRRLLRLRR",
+      "period": 1948,
+      "drift": [
+        -8,
+        8
+      ],
+      "onset": 19650,
+      "cells_per_period": 1411
+    },
+    {
+      "rule": "RRLLLRLRLRRL",
+      "period": 1968,
+      "drift": [
+        16,
+        0
+      ],
+      "onset": 29898,
+      "cells_per_period": 2291
+    }
+  ]
+}

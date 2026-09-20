@@ -1,0 +1,4259 @@
+{
+  "trials": 245,
+  "outcomes": {
+    "missed": 57,
+    "recovered": 188
+  },
+  "recovered": 188,
+  "never_recovered": 0,
+  "budget": 2000000,
+  "recovery_steps_min": 311,
+  "recovery_steps_median": 7047,
+  "recovery_steps_max": 56117,
+  "periods_seen": [
+    104
+  ],
+  "kept_same_direction": 67,
+  "turned_elsewhere": 121,
+  "trials_detail": [
+    {
+      "periods_ahead": 2,
+      "lateral": -6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10880,
+      "outcome": "recovered",
+      "recovery_steps": 32760,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 0,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10866,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11192,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 0,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11178,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11712,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 0,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11698,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12752,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 0,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12738,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14832,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 0,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14818,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 3,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 6,
+      "shape": "cell",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10879,
+      "outcome": "recovered",
+      "recovery_steps": 21614,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 0,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10855,
+      "outcome": "recovered",
+      "recovery_steps": 708,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11191,
+      "outcome": "recovered",
+      "recovery_steps": 3268,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 0,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11167,
+      "outcome": "recovered",
+      "recovery_steps": 708,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11711,
+      "outcome": "recovered",
+      "recovery_steps": 3268,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 0,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11687,
+      "outcome": "recovered",
+      "recovery_steps": 708,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12751,
+      "outcome": "recovered",
+      "recovery_steps": 3268,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 0,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12727,
+      "outcome": "recovered",
+      "recovery_steps": 708,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14831,
+      "outcome": "recovered",
+      "recovery_steps": 3268,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 0,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14807,
+      "outcome": "recovered",
+      "recovery_steps": 708,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 3,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 6,
+      "shape": "block",
+      "size": 2,
+      "obstacle_cells": 4,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10870,
+      "outcome": "recovered",
+      "recovery_steps": 11793,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 19519,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 14305,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 16643,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10942,
+      "outcome": "recovered",
+      "recovery_steps": 2653,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11182,
+      "outcome": "recovered",
+      "recovery_steps": 2681,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 6324,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 3730,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 20018,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11254,
+      "outcome": "recovered",
+      "recovery_steps": 2653,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11702,
+      "outcome": "recovered",
+      "recovery_steps": 2681,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 6324,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 6214,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 18717,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11774,
+      "outcome": "recovered",
+      "recovery_steps": 2653,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12742,
+      "outcome": "recovered",
+      "recovery_steps": 2681,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 6324,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 6214,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 19749,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12814,
+      "outcome": "recovered",
+      "recovery_steps": 2653,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14822,
+      "outcome": "recovered",
+      "recovery_steps": 2681,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 6324,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 6214,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 21829,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14894,
+      "outcome": "recovered",
+      "recovery_steps": 2653,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 5383,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 4873,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 27151,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 19519,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 2995,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 6007,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 5185,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 29761,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 7953,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11176,
+      "outcome": "recovered",
+      "recovery_steps": 2995,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 7047,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 5705,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 19553,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 7953,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11696,
+      "outcome": "recovered",
+      "recovery_steps": 2995,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 9127,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 6745,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 15169,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 7953,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 2995,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 13287,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 8825,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 0,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 15169,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 3,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 7953,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 6,
+      "shape": "wall",
+      "size": 21,
+      "obstacle_cells": 21,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14816,
+      "outcome": "recovered",
+      "recovery_steps": 2995,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": -3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10880,
+      "outcome": "recovered",
+      "recovery_steps": 13565,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 0,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 10866,
+      "outcome": "recovered",
+      "recovery_steps": 2321,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 2,
+      "lateral": 6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": -3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11192,
+      "outcome": "recovered",
+      "recovery_steps": 17529,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 0,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11178,
+      "outcome": "recovered",
+      "recovery_steps": 2321,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 5,
+      "lateral": 6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": -3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11712,
+      "outcome": "recovered",
+      "recovery_steps": 38026,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 0,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 11698,
+      "outcome": "recovered",
+      "recovery_steps": 2321,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 10,
+      "lateral": 6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": -3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12752,
+      "outcome": "recovered",
+      "recovery_steps": 31966,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 0,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 12738,
+      "outcome": "recovered",
+      "recovery_steps": 2321,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 20,
+      "lateral": 6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": -3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14832,
+      "outcome": "recovered",
+      "recovery_steps": 37295,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 0,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": 14818,
+      "outcome": "recovered",
+      "recovery_steps": 2321,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 3,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": 40,
+      "lateral": 6,
+      "shape": "spike",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": 0,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12114,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13880,
+      "outcome": "recovered",
+      "recovery_steps": 21739,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12842,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12112,
+      "outcome": "recovered",
+      "recovery_steps": 6367,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13986,
+      "outcome": "recovered",
+      "recovery_steps": 3089,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12742,
+      "outcome": "recovered",
+      "recovery_steps": 27203,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14164,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12218,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10942,
+      "outcome": "recovered",
+      "recovery_steps": 19253,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11390,
+      "outcome": "recovered",
+      "recovery_steps": 51234,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11078,
+      "outcome": "recovered",
+      "recovery_steps": 9143,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11148,
+      "outcome": "recovered",
+      "recovery_steps": 5626,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13644,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11982,
+      "outcome": "recovered",
+      "recovery_steps": 13204,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11490,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11816,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14000,
+      "outcome": "recovered",
+      "recovery_steps": 4944,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11384,
+      "outcome": "recovered",
+      "recovery_steps": 12759,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12188,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12294,
+      "outcome": "recovered",
+      "recovery_steps": 7157,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 11,
+      "obstacle_cells": 11,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13064,
+      "outcome": "recovered",
+      "recovery_steps": 4478,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12426,
+      "outcome": "recovered",
+      "recovery_steps": 6898,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14208,
+      "outcome": "recovered",
+      "recovery_steps": 18521,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10942,
+      "outcome": "recovered",
+      "recovery_steps": 29417,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12424,
+      "outcome": "recovered",
+      "recovery_steps": 36204,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11078,
+      "outcome": "recovered",
+      "recovery_steps": 22447,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13152,
+      "outcome": "recovered",
+      "recovery_steps": 4322,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11920,
+      "outcome": "recovered",
+      "recovery_steps": 1707,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11356,
+      "outcome": "recovered",
+      "recovery_steps": 6404,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11698,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10864,
+      "outcome": "recovered",
+      "recovery_steps": 3836,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11460,
+      "outcome": "recovered",
+      "recovery_steps": 18518,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12322,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11608,
+      "outcome": "recovered",
+      "recovery_steps": 1181,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11386,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13584,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11800,
+      "outcome": "recovered",
+      "recovery_steps": 10159,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12222,
+      "outcome": "recovered",
+      "recovery_steps": 19179,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13258,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12742,
+      "outcome": "recovered",
+      "recovery_steps": 10271,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12528,
+      "outcome": "recovered",
+      "recovery_steps": 12414,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10940,
+      "outcome": "recovered",
+      "recovery_steps": 28142,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11074,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11702,
+      "outcome": "recovered",
+      "recovery_steps": 2826,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 11,
+      "obstacle_cells": 11,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11286,
+      "outcome": "recovered",
+      "recovery_steps": 24370,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11280,
+      "outcome": "recovered",
+      "recovery_steps": 56117,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13376,
+      "outcome": "recovered",
+      "recovery_steps": 14910,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11800,
+      "outcome": "recovered",
+      "recovery_steps": 11147,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10970,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10870,
+      "outcome": "recovered",
+      "recovery_steps": 10020,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12118,
+      "outcome": "recovered",
+      "recovery_steps": 37441,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11044,
+      "outcome": "recovered",
+      "recovery_steps": 13427,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11698,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11904,
+      "outcome": "recovered",
+      "recovery_steps": 28391,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13778,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11072,
+      "outcome": "recovered",
+      "recovery_steps": 19282,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13228,
+      "outcome": "recovered",
+      "recovery_steps": 1208,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12534,
+      "outcome": "recovered",
+      "recovery_steps": 14896,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14094,
+      "outcome": "recovered",
+      "recovery_steps": 18907,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11980,
+      "outcome": "recovered",
+      "recovery_steps": 23950,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14894,
+      "outcome": "recovered",
+      "recovery_steps": 11175,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14104,
+      "outcome": "recovered",
+      "recovery_steps": 13805,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11384,
+      "outcome": "recovered",
+      "recovery_steps": 12759,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11566,
+      "outcome": "recovered",
+      "recovery_steps": 8069,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13154,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12736,
+      "outcome": "recovered",
+      "recovery_steps": 11486,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11594,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11802,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11358,
+      "outcome": "recovered",
+      "recovery_steps": 14427,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12232,
+      "outcome": "recovered",
+      "recovery_steps": 8680,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11400,
+      "outcome": "recovered",
+      "recovery_steps": 15578,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12840,
+      "outcome": "recovered",
+      "recovery_steps": 6367,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12638,
+      "outcome": "recovered",
+      "recovery_steps": 15036,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12738,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11254,
+      "outcome": "recovered",
+      "recovery_steps": 43686,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11910,
+      "outcome": "recovered",
+      "recovery_steps": 9280,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14198,
+      "outcome": "recovered",
+      "recovery_steps": 31022,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12430,
+      "outcome": "recovered",
+      "recovery_steps": 5930,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14712,
+      "outcome": "recovered",
+      "recovery_steps": 8917,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11774,
+      "outcome": "recovered",
+      "recovery_steps": 21269,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11074,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 1,
+      "obstacle_cells": 1,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 11,
+      "obstacle_cells": 11,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12634,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11254,
+      "outcome": "recovered",
+      "recovery_steps": 4420,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11698,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 9,
+      "obstacle_cells": 9,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11046,
+      "outcome": "recovered",
+      "recovery_steps": 8115,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12188,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11906,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14684,
+      "outcome": "recovered",
+      "recovery_steps": 1328,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 6,
+      "obstacle_cells": 6,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 14478,
+      "outcome": "recovered",
+      "recovery_steps": 12676,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12632,
+      "outcome": "recovered",
+      "recovery_steps": 17257,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11356,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11296,
+      "outcome": "recovered",
+      "recovery_steps": 10101,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10880,
+      "outcome": "recovered",
+      "recovery_steps": 10127,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10880,
+      "outcome": "recovered",
+      "recovery_steps": 32760,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10974,
+      "outcome": "recovered",
+      "recovery_steps": 20432,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12086,
+      "outcome": "recovered",
+      "recovery_steps": 6142,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10984,
+      "outcome": "recovered",
+      "recovery_steps": 16989,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 10,
+      "obstacle_cells": 10,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11074,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 3,
+      "obstacle_cells": 3,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11878,
+      "outcome": "recovered",
+      "recovery_steps": 12392,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12084,
+      "outcome": "recovered",
+      "recovery_steps": 5745,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 4,
+      "obstacle_cells": 4,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11252,
+      "outcome": "recovered",
+      "recovery_steps": 311,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 5,
+      "obstacle_cells": 5,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12294,
+      "outcome": "recovered",
+      "recovery_steps": 9611,
+      "new_drift": [
+        -2,
+        -2
+      ],
+      "same_direction": true,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 11,
+      "obstacle_cells": 11,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11182,
+      "outcome": "recovered",
+      "recovery_steps": 19413,
+      "new_drift": [
+        2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 12190,
+      "outcome": "recovered",
+      "recovery_steps": 8896,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 11,
+      "obstacle_cells": 11,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11296,
+      "outcome": "recovered",
+      "recovery_steps": 9620,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 8,
+      "obstacle_cells": 8,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 13792,
+      "outcome": "recovered",
+      "recovery_steps": 13675,
+      "new_drift": [
+        -2,
+        2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 7,
+      "obstacle_cells": 7,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 11806,
+      "outcome": "recovered",
+      "recovery_steps": 23840,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 2,
+      "obstacle_cells": 2,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": null,
+      "outcome": "missed",
+      "recovery_steps": null,
+      "new_drift": null,
+      "same_direction": null,
+      "period": null
+    },
+    {
+      "periods_ahead": null,
+      "lateral": null,
+      "shape": "random",
+      "size": 12,
+      "obstacle_cells": 12,
+      "already_black": null,
+      "placed_at_step": 10830,
+      "contact_step": 10866,
+      "outcome": "recovered",
+      "recovery_steps": 565,
+      "new_drift": [
+        2,
+        -2
+      ],
+      "same_direction": false,
+      "period": 104
+    }
+  ]
+}
