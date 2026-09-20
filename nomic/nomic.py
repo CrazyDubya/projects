@@ -217,8 +217,8 @@ def make_api_call(llm_id, game_state, history):
         messages=[{"role": "user", "content": prompt}],
     )
 
-    # Access the content directly from the Message object
-    response_content = response.content
+    # Extract the text from the Message object's content blocks
+    response_content = response.content[0].text
 
     return response_content
 def extract_proposed_rules(response):
