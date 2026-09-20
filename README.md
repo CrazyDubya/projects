@@ -75,6 +75,7 @@ This repository contains **24 projects** organized into **4 main categories**:
 | **[4x](./4x/)** | Space simulation game | Colony management, diplomacy, tech trees, ship design |
 | **[Quantum_Chess](./Quantum_Chess/)** | Quantum mechanics chess | Superposition, entanglement, tunneling moves |
 | **[nomic](./nomic/)** | Rule-changing game engine | Dynamic rules, voting system, mixed human/AI players |
+| **[langtons_highway](./langtons_highway/)** | Langton's Ant highway conjecture, brute-forced | C + Python simulator, machine-checked highway certificate, all 3×3/4×4/5×5 starts (33.6M), auto-rendered social video |
 
 ### 🔧 Utilities & File Processors
 | Project | Description | Key Features |

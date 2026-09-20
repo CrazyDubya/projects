@@ -1,0 +1,36 @@
+{
+  "patterns": 33554432,
+  "status": {
+    "HIGHWAY": 33554432
+  },
+  "highway_fraction": 1.0,
+  "onset_min": 32,
+  "onset_min_pattern": 17781263,
+  "onset_max": 233232,
+  "onset_max_pattern": 31064692,
+  "onset_mean": 4250.44726395607,
+  "onset_median": 2059,
+  "visited_mean": 668.0674492418766,
+  "periods": {
+    "104": 33554432
+  },
+  "drifts": {
+    "-2,-2": 8446547,
+    "2,2": 8428157,
+    "2,-2": 8346625,
+    "-2,2": 8333103
+  },
+  "onset_not_exact": 0,
+  "timeouts_first_1000": [],
+  "oob_first_1000": [],
+  "n": 5,
+  "ant_start": [
+    2,
+    2
+  ],
+  "max_steps": 2000000,
+  "mode": "exhaustive",
+  "seed": null,
+  "wall_seconds": 334.3,
+  "workers": 4
+}
