@@ -1,5 +1,5 @@
 # Natural Language Processing
-nltk==3.6.5
+nltk==3.10.3
 textstat==0.7.2
 
 # Data processing and analysis
