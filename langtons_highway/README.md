@@ -163,6 +163,131 @@ the period past 104 is a matter of machine time, not new ideas.
 Data: `data/catalogue/instances_*.jsonl` (one line per (P, d) instance with
 timing and any solutions) and `data/catalogue/summary.json`.
 
+## Four follow-up experiments
+
+The survey and the catalogue both ask about *this* rule from *this* kind of
+start.  These four ask sideways questions, and two of them corrected
+something I had previously said.
+
+### 1. Is Langton's rule special?  (`turmite_survey.py`)
+
+A turmite rule is a string of L/R, one character per colour: on a cell of
+colour k the ant turns `rule[k]`, sets the cell to `(k+1) mod n`, and steps
+forward.  `RL` is Langton's Ant.  The certificate generalises unchanged, with
+"white" becoming "colour 0", because a cell's colour is still its visit count
+mod n.  Swapping every L and R mirrors the trajectory, so only rules starting
+with `R` are run.
+
+All 4,095 rules of length 1 to 12, 20 million steps each:
+
+| outcome | rules | |
+|---------|-------|--|
+| certified highway | **468** | 11.4% |
+| no highway within budget | 3,365 | |
+| grew off the grid | 250 | |
+| proved periodic (a cycle) | 12 | |
+
+**Langton's rule is not special.**  The highway fraction sits near 11% at
+every rule length from 6 to 12.  There are 135 distinct highway periods, the
+longest 1,968; period 104 is shared by just 11 rules, and the most common
+period is 18 (128 rules).  Of the 468 highway rules, 306 (65%) reach their
+highway faster than `RL` does; `RRL` gets there in 39 steps against Langton's
+9,977.  Drifts are usually diagonal but not always: (16,0), (8,0), (0,2),
+(12,-8) and (-3,11) all occur.
+
+"Bounded" is proved, not guessed.  An earlier version called a rule bounded
+when it stopped visiting new cells, which wrongly flagged `LRRRRRLLR` after it
+had densely filled a 1468x1468 region and was still growing.  The CYCLE class
+now comes from Brent's algorithm over an incremental hash of the whole grid,
+so it means the exact state recurred.
+
+**The budget caveat, tested.**  The largest exactly-measured onset is
+18,962,907 steps against a 20,000,000 budget, so the cutoff lies *inside* the
+onset distribution and "no highway" can only ever be an upper bound.  To
+measure how badly, 150 randomly chosen timed-out rules were rerun at ten times
+the budget (200 million steps): **none converted** (141 still timed out, 9 left
+the grid).  The 11.4% figure therefore looks stable rather than an artifact,
+but it remains a sample, and a rule needing 10^9 steps would still be misfiled.
+
+Six of the 468 onsets are bounds rather than measurements.  The backward scan
+that locates an onset can only look as far as the ring buffer holds, so when it
+reaches that wall it stops and the row is flagged `onset_exact = 0`; the true
+onset is then somewhere at or before the figure shown.  Those six rules are
+named in `summary.json` under `onset_inexact_rules`, and every highway entry
+carries its own `onset_exact` flag so the two kinds are never mixed.
+
+### 2. How hard is it to trap a highway?  (`trap.py`)
+
+A counterexample would have to be a configuration that keeps reabsorbing its
+own highway forever, so the nearest empirical question is how hard it is to
+stop one.  The ant builds its highway from an empty grid, an obstacle is
+dropped in the road ahead, and the run continues.  Obstacles are placed only
+after widening the visited bounding box, because the certificate treats
+everything outside that box as background and would otherwise certify a
+highway that is about to hit a wall.
+
+Of 245 trials, 188 actually struck the obstacle (the rest missed the road):
+
+| | |
+|--|--|
+| recovered a certified highway | **188 of 188** |
+| never recovered | 0 |
+| recovery after contact | 311 steps min, 7,047 median, 56,117 max |
+| period of the new highway | **104, every single time** |
+| left in the same direction | 67 |
+| left in a different direction | 121 |
+
+Even a 21-cell wall laid across the road is absorbed in a few thousand steps.
+The highway is easy to *deflect* and, at this scale, impossible to *destroy*:
+the direction is scrambled but the shape is not.  That is the dynamical
+counterpart of the catalogue result, where the period-104 highway was the only
+one that exists below period 104.
+
+### 3. The ant's past  (`backward.py`)
+
+The forward map on (grid, position, heading) is a bijection, so the ant has a
+unique past as well as a unique future.  That immediately kills a family of
+proof strategies: distinct configurations never merge, the highway is *not* an
+attractor in the contracting sense, and nothing that argues by shrinking
+basins can work.
+
+Running the inverse step from an empty grid gives no new system at all.  The
+time-reversed ant is the forward ant rotated 180 degrees:
+
+    backward position at step n  ==  rot180(forward position at step n-1) + (0,-1)
+
+with zero mismatches over 50,000 steps, and the two grids agreeing at every
+checkpoint.  The backward run therefore has the same onset of 9,977 and the
+same period 104, with the drift negated.  The past is the future seen upside
+down, so the conjecture is time-symmetric and a counterexample would have to
+fail in both directions at once.
+
+### 4. How long is the chaotic phase?  (`survey.py --random`)
+
+The exhaustive runs show a maximum onset of 43,264 for 3x3, 119,673 for 4x4
+and 233,232 for 5x5, which reads like fast growth with box size.  It is not.
+Those three runs drew 512, 65,536 and 33,554,432 patterns respectively, so
+they differ in sample size as much as in box size.  Drawing an equal 50,000
+random patterns at each size separates the two:
+
+| box | max onset | mean | median | 99.9th percentile |
+|-----|-----------|------|--------|-------------------|
+| 4x4 | 119,673 | 3,795 | 1,732 | 47,476 |
+| 5x5 | 88,940 | 4,253 | 2,042 | 57,877 |
+| 6x6 | 112,767 | 4,520 | 2,284 | 59,569 |
+| 7x7 | 107,981 | 4,745 | 2,499 | 58,872 |
+| 8x8 | 126,826 | 4,984 | 2,677 | 57,985 |
+
+At fixed sample size the **maximum is flat** and so is the upper percentile.
+What actually grows with the box is the typical case, mildly: the median rises
+about 55% from 4x4 to 8x8.  The earlier apparent growth of the maximum was a
+sample-size effect, and the claim that it grows with box size was wrong.
+
+All 250,000 of these patterns reached a certified highway, which extends the
+evidence to 6x6, 7x7 and 8x8 boxes that the exhaustive sweep never reached.
+
+Data: `data/turmites/`, `data/trapping.json`, `data/n{4..8}_random50000_*`.
+
 ## Honest limitations
 
 * Only patterns inside a centred *n*×*n* box with the ant at the box
@@ -187,6 +312,10 @@ python survey.py --n 8 --random 100000 # random sample of a bigger box
 python make_movie.py                   # renders output/langtons_highway.mp4
 python highway_catalogue.py --pmax 104 --radius 8   # the catalogue sweep (~2.4 h on 4 cores)
 python catalogue_summary.py            # -> data/catalogue/summary.json
+python turmite_survey.py --max-len 12  # classify every rule (~15 min on 4 cores)
+python trap.py                         # obstacle trials against the highway
+python backward.py                     # the time-reversal symmetry
+python survey.py --n 8 --random 50000  # equal-sample-size onset data
 pytest tests                           # from the repo root: pytest langtons_highway/tests
 ```
 
@@ -203,6 +332,10 @@ Dependencies: a C compiler for the survey; `numpy`, `pillow` and
 | `make_movie.py` | renders the vertical video and `output/poster.png` from the simulator and `data/` |
 | `highway_catalogue.py` | SAT enumeration of every highway (periodic drifting orbit) up to a period, with independent verification |
 | `catalogue_summary.py` | aggregates catalogue runs, checks grid completeness, groups highways |
+| `turmite_core.c` | n-colour turmite simulator: the certificate plus Brent cycle detection |
+| `turmite_survey.py` | classifies every rule up to a given length |
+| `trap.py` | drops obstacles in a running highway and measures the recovery |
+| `backward.py` | the inverse step, and the 180-degree time-reversal symmetry |
 | `tests/test_ant.py` | rule sanity, empty-grid onset 9,977, certificate rejects chaos, C vs Python |
 | `data/` | survey results (see above) |
 | `output/` | the video and its poster frame |
