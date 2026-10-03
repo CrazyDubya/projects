@@ -9423,6 +9423,8 @@ def get_sessions_api():
 @app.route("/costs")
 def costs_dashboard():
     """OpenRouter cost tracking dashboard"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return "No game running"
 
@@ -9922,6 +9924,8 @@ def analytics():
 @app.route("/gm-rules")
 def gm_rules_page():
     """Display Game Master interpreted rules"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return "No game running"
     
@@ -10221,6 +10225,8 @@ def get_enhanced_logs_api():
 @app.route("/api/costs")
 def get_costs_api():
     """API endpoint for OpenRouter cost tracking"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game running"})
 
@@ -10255,6 +10261,8 @@ def get_costs_api():
 @app.route("/api/context")
 def get_context_analytics():
     """API endpoint for context window analytics"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"error": "No game running"})
 
@@ -10373,8 +10381,6 @@ _analytics_cache = {"data": None, "timestamp": 0, "cache_duration": 300}  # 5 mi
 
 def aggregate_session_data():
     """Aggregate data from all completed game sessions"""
-    global _analytics_cache
-    
     # Check cache first
     current_time = time.time()
     if (_analytics_cache["data"] is not None and 
@@ -10617,6 +10623,8 @@ def generate_performance_chart_data(model_stats):
 @app.route("/human/turn")
 def human_turn():
     """Human player interface for their turn"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game or not hasattr(game, "players"):
         return "Game not initialized", 400
 
@@ -10920,6 +10928,8 @@ def human_turn():
 @app.route("/human/propose", methods=["POST"])
 def human_propose():
     """Handle human player proposal submission"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game or not hasattr(game, "players"):
         return jsonify({"success": False, "error": "Game not initialized"})
 
@@ -10997,6 +11007,8 @@ def human_propose():
 @app.route("/api/rule/<int:rule_id>")
 def get_rule_details(rule_id):
     """Get details of a specific rule for amendment purposes"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"success": False, "error": "No game running"})
     
@@ -11027,6 +11039,8 @@ def get_rule_details(rule_id):
 @app.route("/api/rules")
 def get_all_rules():
     """Get all current rules for browsing"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return jsonify({"success": False, "error": "No game running"})
     
@@ -11060,6 +11074,8 @@ def get_all_rules():
 @app.route("/human/rules")
 def human_rules_browser():
     """Rule browsing interface for human players"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game:
         return "No game running", 400
     
@@ -11231,6 +11247,8 @@ def human_rules_browser():
 @app.route("/human/vote")
 def human_vote():
     """Human player voting interface"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game or not game.current_proposal:
         return "No active proposal", 400
 
@@ -11327,6 +11345,8 @@ def human_vote():
 @app.route("/human/submit-vote", methods=["POST"])
 def human_submit_vote():
     """Handle human player vote submission"""
+    from flask import current_app
+    game = current_app.config.get('game')
     if not game or not game.current_proposal:
         return jsonify({"success": False, "error": "No active proposal"})
 
