@@ -1,0 +1,7 @@
+flask>=3.0
+gunicorn>=21.0
+quart>=0.19
+uvicorn[standard]>=0.27
+psycopg[binary]>=3.1
+asyncpg>=0.29
+httpx>=0.28
